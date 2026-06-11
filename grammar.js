@@ -12,6 +12,22 @@ export default grammar({
 
   word: $ => $._identifier,
 
+  conflicts: $ => [
+    // Django templates frequently place an opening tag inside {% if %}...{% else %}
+    // with the closing tag outside (tag pair crosses a block boundary). GLR tracks
+    // both paths: full element and bare STag/ETag. prec.dynamic(-1) on bare tags
+    // ensures the full element wins when both paths succeed (well-formed XML).
+    // Example :
+    // {% if has_dynamic_product %}
+    //     <blockTable colWidths="3.2cm,3.0cm,0.3cm,2.7cm,0.3cm,2.1cm,1.9cm,1.8cm">
+    // {% else %}
+    //     <blockTable colWidths="2.4cm,3.0cm,0.3cm,3.5cm,0.3cm,2.1cm,1.9cm,1.8cm">
+    // {% endif %}
+    //     ...
+    // </blockTable>
+    [$._node, $.element],
+  ],
+
   rules: {
     // At the document level we do NOT include CharData so that whitespace-only
     // lines (e.g. trailing newlines in test files) are consumed by extras
@@ -67,6 +83,13 @@ export default grammar({
       $.PI,
       $.Comment,
       $._django_node,
+      // Django templates often place opening or closing tags inside conditional
+      // blocks, causing the tag pair to cross Django block boundaries. Allow
+      // bare STag/ETag as fallback nodes so these patterns parse without error.
+      // prec.dynamic(-1) ensures full element wins when both paths succeed; bare
+      // tags only win when the element path fails (no matching close tag).
+      prec.dynamic(-1, $.STag),
+      prec.dynamic(-1, $.ETag),
     ),
 
     // =========================================================================
@@ -115,7 +138,7 @@ export default grammar({
     _att_content_double: _ => token(prec(-1, /([^"<&{]|\{[^{%#])+/)),
     _att_content_single: _ => token(prec(-1, /([^'<&{]|\{[^{%#])+/)),
 
-    content: $ => repeat1($._node),
+    content: $ => prec.left(repeat1($._node)),
 
     // =========================================================================
     // XML character data and special sections

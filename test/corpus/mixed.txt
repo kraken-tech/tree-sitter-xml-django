@@ -192,3 +192,55 @@ Processing instruction alongside Django
         (variable_name)))
     (ETag
       (Name))))
+
+==================
+Django tag boundary crossing: opening tag inside if/else, closing tag outside
+==================
+
+<story>{% for x in xs %}{% if cond %}<div class="a">{% else %}<div class="b">{% endif %}<p>text</p></div>{% endfor %}</story>
+
+---
+
+(document
+  (element
+    (STag
+      name: (Name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (keyword_operator)
+        (variable
+          (variable_name))
+        (paired_statement
+          (tag_name)
+          (variable
+            (variable_name))
+          (STag
+            name: (Name)
+            (Attribute
+              name: (Name)
+              value: (AttValue)))
+          (branch_statement
+            (tag_name))
+          (STag
+            name: (Name)
+            (Attribute
+              name: (Name)
+              value: (AttValue)))
+          (tag_name)
+          (end_paired_statement))
+        (element
+          (STag
+            name: (Name))
+          (content
+            (CharData))
+          (ETag
+            name: (Name)))
+        (ETag
+          name: (Name))
+        (tag_name)
+        (end_paired_statement)))
+    (ETag
+      name: (Name))))
