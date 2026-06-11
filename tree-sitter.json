@@ -1,0 +1,43 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "xmldjango",
+      "camelcase": "XmlDjango",
+      "title": "XML-Django",
+      "scope": "text.xml.django",
+      "file-types": [
+        "xml",
+        "rml"
+      ],
+      "injection-regex": "^xmldjango$",
+      "class-name": "TreeSitterXmldjango"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "UNLICENSED",
+    "description": "Django-XML template language grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "Laurent Putz",
+        "email": "laurent.putz@kraken.tech",
+        "url": ""
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/octoenergy/tree-sitter-xmldjango",
+      "funding": ""
+    }
+  },
+  "bindings": {
+    "c": false,
+    "go": false,
+    "java": false,
+    "node": false,
+    "python": true,
+    "rust": false,
+    "swift": false,
+    "zig": false
+  }
+}
