@@ -1,0 +1,233 @@
+==================
+Simple variable
+==================
+
+<root>{{ name }}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (variable
+        (variable_name)))
+    (ETag
+      (Name))))
+
+==================
+Dotted variable
+==================
+
+<root>{{ user.profile.name }}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (variable
+        (variable_name)))
+    (ETag
+      (Name))))
+
+==================
+Variable with filter
+==================
+
+<root>{{ name|lower }}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (variable
+        (variable_name)
+        (filter
+          (filter_name))))
+    (ETag
+      (Name))))
+
+==================
+Variable with filter and argument
+==================
+
+<root>{{ value|default:0 }}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (variable
+        (variable_name)
+        (filter
+          (filter_name)
+          (number))))
+    (ETag
+      (Name))))
+
+==================
+Variable with filter and dotted argument
+==================
+
+<root>{{ value|default:obj.attr }}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (variable
+        (variable_name)
+        (filter
+          (filter_name)
+          (filter_argument))))
+    (ETag
+      (Name))))
+
+==================
+Variable with quoted filter argument
+==================
+
+<root>{{ value|default:"fallback" }}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (variable
+        (variable_name)
+        (filter
+          (filter_name)
+          (filter_argument))))
+    (ETag
+      (Name))))
+
+==================
+Variable with chained filters
+==================
+
+<root>{{ name|lower|truncatechars:50 }}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (variable
+        (variable_name)
+        (filter
+          (filter_name))
+        (filter
+          (filter_name)
+          (number))))
+    (ETag
+      (Name))))
+
+==================
+String literal expression
+==================
+
+<root>{{ "hello" }}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (dj_string))
+    (ETag
+      (Name))))
+
+==================
+String with filter
+==================
+
+<root>{{ "hello"|upper }}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (dj_string
+        (filter
+          (filter_name))))
+    (ETag
+      (Name))))
+
+==================
+Expression in attribute value
+==================
+
+<root class="{{ active_class }}"/>
+
+---
+
+(document
+  (element
+    (EmptyElemTag
+      name: (Name)
+      (Attribute
+        name: (Name)
+        value: (AttValue
+          (variable
+            (variable_name)))))))
+
+==================
+Expression mixed with text in attribute
+==================
+
+<root class="item {{ extra }}"/>
+
+---
+
+(document
+  (element
+    (EmptyElemTag
+      name: (Name)
+      (Attribute
+        name: (Name)
+        value: (AttValue
+          (variable
+            (variable_name)))))))
+
+==================
+Multiple expressions in content
+==================
+
+<root>{{ a }} {{ b }}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (variable
+        (variable_name))
+      (variable
+        (variable_name)))
+    (ETag
+      (Name))))

@@ -1,0 +1,274 @@
+==================
+XML declaration
+==================
+
+<?xml version="1.0"?>
+<root/>
+
+---
+
+(document
+  (XMLDecl
+    (VersionNum))
+  (element
+    (EmptyElemTag
+      (Name))))
+
+==================
+XML declaration with encoding
+==================
+
+<?xml version="1.0" encoding="UTF-8"?>
+<root/>
+
+---
+
+(document
+  (XMLDecl
+    (VersionNum)
+    (EncName))
+  (element
+    (EmptyElemTag
+      (Name))))
+
+==================
+XML declaration with standalone
+==================
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root/>
+
+---
+
+(document
+  (XMLDecl
+    (VersionNum)
+    (EncName)
+    (Standalone))
+  (element
+    (EmptyElemTag
+      (Name))))
+
+==================
+Empty element
+==================
+
+<root/>
+
+---
+
+(document
+  (element
+    (EmptyElemTag
+      (Name))))
+
+==================
+Element with content
+==================
+
+<root>hello</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (CharData))
+    (ETag
+      (Name))))
+
+==================
+Nested elements
+==================
+
+<root><child/></root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (element
+        (EmptyElemTag
+          (Name))))
+    (ETag
+      (Name))))
+
+==================
+Element with attribute
+==================
+
+<root attr="value"/>
+
+---
+
+(document
+  (element
+    (EmptyElemTag
+      name: (Name)
+      (Attribute
+        name: (Name)
+        value: (AttValue)))))
+
+==================
+Element with multiple attributes
+==================
+
+<root a="1" b="2"/>
+
+---
+
+(document
+  (element
+    (EmptyElemTag
+      name: (Name)
+      (Attribute
+        name: (Name)
+        value: (AttValue))
+      (Attribute
+        name: (Name)
+        value: (AttValue)))))
+
+==================
+Namespaced element
+==================
+
+<ns:root xmlns:ns="http://example.com"/>
+
+---
+
+(document
+  (element
+    (EmptyElemTag
+      name: (Name)
+      (Attribute
+        name: (Name)
+        value: (AttValue)))))
+
+==================
+XML comment
+==================
+
+<root><!-- a comment --></root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (Comment))
+    (ETag
+      (Name))))
+
+==================
+CDATA section
+==================
+
+<root><![CDATA[some <raw> data]]></root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (CDSect
+        (CDStart)
+        (CData)))
+    (ETag
+      (Name))))
+
+==================
+Processing instruction
+==================
+
+<root><?php echo "hello"; ?></root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (PI
+        (PITarget)
+        (PIContent)))
+    (ETag
+      (Name))))
+
+==================
+Entity references
+==================
+
+<root>&amp;&lt;&gt;</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (EntityRef
+        (Name))
+      (EntityRef
+        (Name))
+      (EntityRef
+        (Name)))
+    (ETag
+      (Name))))
+
+==================
+Character reference
+==================
+
+<root>&#65;&#x41;</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (CharRef)
+      (CharRef))
+    (ETag
+      (Name))))
+
+==================
+Deeply nested elements
+==================
+
+<a><b><c>text</c></b></a>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (element
+        (STag
+          (Name))
+        (content
+          (element
+            (STag
+              (Name))
+            (content
+              (CharData))
+            (ETag
+              (Name))))
+        (ETag
+          (Name))))
+    (ETag
+      (Name))))

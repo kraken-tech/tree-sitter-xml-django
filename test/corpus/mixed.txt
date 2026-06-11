@@ -1,0 +1,194 @@
+==================
+Full document with XML declaration
+==================
+
+<?xml version="1.0" encoding="UTF-8"?>
+<report>
+    <title>{{ title }}</title>
+</report>
+
+---
+
+(document
+  (XMLDecl
+    (VersionNum)
+    (EncName))
+  (element
+    (STag
+      (Name))
+    (content
+      (element
+        (STag
+          (Name))
+        (content
+          (variable
+            (variable_name)))
+        (ETag
+          (Name))))
+    (ETag
+      (Name))))
+
+==================
+Django in element content alongside text
+==================
+
+<p>Hello, {{ user.name }}!</p>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (CharData)
+      (variable
+        (variable_name))
+      (CharData))
+    (ETag
+      (Name))))
+
+==================
+Django comment alongside XML comment
+==================
+
+<root>{# django comment #}<!-- xml comment --></root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (unpaired_dj_comment)
+      (Comment))
+    (ETag
+      (Name))))
+
+==================
+Django expression in attribute, text in content
+==================
+
+<item class="{{ status }}" id="42">label</item>
+
+---
+
+(document
+  (element
+    (STag
+      name: (Name)
+      (Attribute
+        name: (Name)
+        value: (AttValue
+          (variable
+            (variable_name))))
+      (Attribute
+        name: (Name)
+        value: (AttValue)))
+    (content
+      (CharData))
+    (ETag
+      name: (Name))))
+
+==================
+Deeply nested Django inside XML
+==================
+
+<outer><inner>{% if x %}<leaf>{{ x }}</leaf>{% endif %}</inner></outer>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (element
+        (STag
+          (Name))
+        (content
+          (paired_statement
+            (tag_name)
+            (variable
+              (variable_name))
+            (element
+              (STag
+                (Name))
+              (content
+                (variable
+                  (variable_name)))
+              (ETag
+                (Name)))
+            (tag_name)
+            (end_paired_statement)))
+        (ETag
+          (Name))))
+    (ETag
+      (Name))))
+
+==================
+XML entity inside Django context
+==================
+
+<root>{% if flag %}&amp;{% endif %}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (EntityRef
+          (Name))
+        (tag_name)
+        (end_paired_statement)))
+    (ETag
+      (Name))))
+
+==================
+CDATA alongside Django
+==================
+
+<root>{{ value }}<![CDATA[<raw>]]></root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (variable
+        (variable_name))
+      (CDSect
+        (CDStart)
+        (CData)))
+    (ETag
+      (Name))))
+
+==================
+Processing instruction alongside Django
+==================
+
+<root><?pi content?>{{ value }}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (PI
+        (PITarget)
+        (PIContent))
+      (variable
+        (variable_name)))
+    (ETag
+      (Name))))

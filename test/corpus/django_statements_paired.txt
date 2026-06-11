@@ -1,0 +1,223 @@
+==================
+blocktrans statement
+==================
+
+<root>{% blocktrans %}<p>text</p>{% endblocktrans %}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (paired_statement
+        (tag_name)
+        (element
+          (STag
+            (Name))
+          (content
+            (CharData))
+          (ETag
+            (Name)))
+        (tag_name)
+        (end_paired_statement)))
+    (ETag
+      (Name))))
+
+==================
+blocktranslate statement
+==================
+
+<root>{% blocktranslate %}<p>text</p>{% endblocktranslate %}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (paired_statement
+        (tag_name)
+        (element
+          (STag
+            (Name))
+          (content
+            (CharData))
+          (ETag
+            (Name)))
+        (tag_name)
+        (end_paired_statement)))
+    (ETag
+      (Name))))
+
+==================
+verbatim statement
+==================
+
+<root>{% verbatim %}<p>plain text</p>{% endverbatim %}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (paired_statement
+        (tag_name)
+        (element
+          (STag
+            (Name))
+          (content
+            (CharData))
+          (ETag
+            (Name)))
+        (tag_name)
+        (end_paired_statement)))
+    (ETag
+      (Name))))
+
+==================
+ifchanged statement
+==================
+
+<root>{% for x in xs %}{% ifchanged x %}<item/>{% endifchanged %}{% endfor %}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (keyword_operator)
+        (variable
+          (variable_name))
+        (paired_statement
+          (tag_name)
+          (variable
+            (variable_name))
+          (element
+            (EmptyElemTag
+              (Name)))
+          (tag_name)
+          (end_paired_statement))
+        (tag_name)
+        (end_paired_statement)))
+    (ETag
+      (Name))))
+
+==================
+if with boolean
+==================
+
+<root>{% if True %}<item/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (paired_statement
+        (tag_name)
+        (boolean)
+        (element
+          (EmptyElemTag
+            (Name)))
+        (tag_name)
+        (end_paired_statement)))
+    (ETag
+      (Name))))
+
+==================
+if with number comparison
+==================
+
+<root>{% if count == 5 %}<item/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (operator)
+        (number)
+        (element
+          (EmptyElemTag
+            (Name)))
+        (tag_name)
+        (end_paired_statement)))
+    (ETag
+      (Name))))
+
+==================
+if with and operator
+==================
+
+<root>{% if a and b %}<item/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (keyword_operator)
+        (variable
+          (variable_name))
+        (element
+          (EmptyElemTag
+            (Name)))
+        (tag_name)
+        (end_paired_statement)))
+    (ETag
+      (Name))))
+
+==================
+for loop with tuple unpacking
+==================
+
+<root>{% for k v in pairs %}<item/>{% endfor %}</root>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (variable
+          (variable_name))
+        (keyword_operator)
+        (variable
+          (variable_name))
+        (element
+          (EmptyElemTag
+            (Name)))
+        (tag_name)
+        (end_paired_statement)))
+    (ETag
+      (Name))))
