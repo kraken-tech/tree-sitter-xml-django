@@ -81,7 +81,7 @@ export default grammar({
     STag: $ => seq(
       '<',
       field('name', $.Name),
-      repeat($.Attribute),
+      repeat(choice($.Attribute, $._django_node)),
       '>',
     ),
 
@@ -94,7 +94,7 @@ export default grammar({
     EmptyElemTag: $ => seq(
       '<',
       field('name', $.Name),
-      repeat($.Attribute),
+      repeat(choice($.Attribute, $._django_node)),
       '/>',
     ),
 
@@ -108,8 +108,8 @@ export default grammar({
     // are hidden nodes so they don't clutter the tree when there is no Django
     // content.
     AttValue: $ => choice(
-      seq('"', repeat(choice($._att_content_double, $._django_node)), '"'),
-      seq("'", repeat(choice($._att_content_single, $._django_node)), "'"),
+      seq('"', repeat(choice($._att_content_double, $._Reference, $._django_node)), '"'),
+      seq("'", repeat(choice($._att_content_single, $._Reference, $._django_node)), "'"),
     ),
 
     _att_content_double: _ => token(prec(-1, /([^"<&{]|\{[^{%#])+/)),
