@@ -12,6 +12,11 @@ export default grammar({
 
   word: $ => $._identifier,
 
+  extras: $ => [
+    /\s/,
+    $.doctypedecl,
+  ],
+
   conflicts: $ => [
     // Django templates frequently place an opening tag inside {% if %}...{% else %}
     // with the closing tag outside (tag pair crosses a block boundary). GLR tracks
@@ -69,6 +74,32 @@ export default grammar({
     Standalone: _ => token(choice(
       seq('"', choice('yes', 'no'), '"'),
       seq("'", choice('yes', 'no'), "'"),
+    )),
+
+    // =========================================================================
+    // DOCTYPE declaration
+    // =========================================================================
+
+    doctypedecl: $ => seq(
+      '<!DOCTYPE',
+      field('name', $.Name),
+      optional($.ExternalID),
+      '>',
+    ),
+
+    ExternalID: $ => choice(
+      seq('SYSTEM', $.SystemLiteral),
+      seq('PUBLIC', $.PubidLiteral, $.SystemLiteral),
+    ),
+
+    SystemLiteral: _ => token(choice(
+      seq('"', /[^"]*/, '"'),
+      seq("'", /[^']*/, "'"),
+    )),
+
+    PubidLiteral: _ => token(choice(
+      seq('"', /[a-zA-Z0-9 \r\n\-()+,./:=?;!*#@$_%]*/, '"'),
+      seq("'", /[a-zA-Z0-9 \r\n\-()+,./:=?;!*#@$_%]*/, "'"),
     )),
 
     // =========================================================================

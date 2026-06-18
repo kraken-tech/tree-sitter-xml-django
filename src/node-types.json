@@ -171,6 +171,25 @@
     }
   },
   {
+    "type": "ExternalID",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "PubidLiteral",
+          "named": true
+        },
+        {
+          "type": "SystemLiteral",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "PI",
     "named": true,
     "fields": {},
@@ -378,6 +397,33 @@
       "types": [
         {
           "type": "filter",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "doctypedecl",
+    "named": true,
+    "extra": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "Name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "ExternalID",
           "named": true
         }
       ]
@@ -713,6 +759,10 @@
     "named": false
   },
   {
+    "type": "<!DOCTYPE",
+    "named": false
+  },
+  {
     "type": "</",
     "named": false
   },
@@ -773,7 +823,23 @@
     "named": true
   },
   {
+    "type": "PUBLIC",
+    "named": false
+  },
+  {
+    "type": "PubidLiteral",
+    "named": true
+  },
+  {
+    "type": "SYSTEM",
+    "named": false
+  },
+  {
     "type": "Standalone",
+    "named": true
+  },
+  {
+    "type": "SystemLiteral",
     "named": true
   },
   {

@@ -272,3 +272,62 @@ Deeply nested elements
           (Name))))
     (ETag
       (Name))))
+
+==================
+DOCTYPE with SYSTEM identifier standalone
+==================
+
+<!DOCTYPE document SYSTEM "rml.dtd">
+
+---
+
+(document
+  (doctypedecl
+    name: (Name)
+    (ExternalID
+      (SystemLiteral))))
+
+==================
+DOCTYPE with PUBLIC identifier standalone
+==================
+
+<!DOCTYPE document PUBLIC "-//RML//DTD ReportLab//EN" "rml.dtd">
+
+---
+
+(document
+  (doctypedecl
+    name: (Name)
+    (ExternalID
+      (PubidLiteral)
+      (SystemLiteral))))
+
+==================
+DOCTYPE in full RML-style document
+==================
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document SYSTEM "rml.dtd">
+<document>
+  <section/>
+</document>
+
+---
+
+(document
+  (XMLDecl
+    (VersionNum)
+    (EncName))
+  (doctypedecl
+    name: (Name)
+    (ExternalID
+      (SystemLiteral)))
+  (element
+    (STag
+      name: (Name))
+    (content
+      (element
+        (EmptyElemTag
+          name: (Name))))
+    (ETag
+      name: (Name))))

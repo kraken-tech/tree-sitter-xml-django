@@ -3,6 +3,7 @@ Full document with XML declaration
 ==================
 
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document SYSTEM "rml.dtd">
 <report>
     <title>{{ title }}</title>
 </report>
@@ -13,6 +14,10 @@ Full document with XML declaration
   (XMLDecl
     (VersionNum)
     (EncName))
+  (doctypedecl
+    (Name)
+    (ExternalID
+      (SystemLiteral)))
   (element
     (STag
       (Name))
