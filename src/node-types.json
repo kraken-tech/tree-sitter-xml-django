@@ -16,10 +16,6 @@
           "named": true
         },
         {
-          "type": "dj_string",
-          "named": true
-        },
-        {
           "type": "paired_statement",
           "named": true
         },
@@ -29,10 +25,6 @@
         },
         {
           "type": "unpaired_statement",
-          "named": true
-        },
-        {
-          "type": "variable",
           "named": true
         }
       ]
@@ -133,10 +125,6 @@
           "named": true
         },
         {
-          "type": "dj_string",
-          "named": true
-        },
-        {
           "type": "paired_statement",
           "named": true
         },
@@ -146,10 +134,6 @@
         },
         {
           "type": "unpaired_statement",
-          "named": true
-        },
-        {
-          "type": "variable",
           "named": true
         }
       ]
@@ -232,10 +216,6 @@
           "named": true
         },
         {
-          "type": "dj_string",
-          "named": true
-        },
-        {
           "type": "paired_statement",
           "named": true
         },
@@ -245,10 +225,6 @@
         },
         {
           "type": "unpaired_statement",
-          "named": true
-        },
-        {
-          "type": "variable",
           "named": true
         }
       ]
@@ -361,10 +337,6 @@
           "named": true
         },
         {
-          "type": "dj_string",
-          "named": true
-        },
-        {
           "type": "element",
           "named": true
         },
@@ -378,10 +350,6 @@
         },
         {
           "type": "unpaired_statement",
-          "named": true
-        },
-        {
-          "type": "variable",
           "named": true
         }
       ]
@@ -451,10 +419,6 @@
           "named": true
         },
         {
-          "type": "dj_string",
-          "named": true
-        },
-        {
           "type": "element",
           "named": true
         },
@@ -468,10 +432,6 @@
         },
         {
           "type": "unpaired_statement",
-          "named": true
-        },
-        {
-          "type": "variable",
           "named": true
         }
       ]
@@ -911,15 +871,7 @@
     "named": false
   },
   {
-    "type": "{{",
-    "named": false
-  },
-  {
     "type": "|",
-    "named": false
-  },
-  {
-    "type": "}}",
     "named": false
   }
 ]

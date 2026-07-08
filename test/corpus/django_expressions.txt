@@ -11,8 +11,7 @@ Simple variable
     (STag
       (Name))
     (content
-      (variable
-        (variable_name)))
+      (CharData))
     (ETag
       (Name))))
 
@@ -29,8 +28,7 @@ Dotted variable
     (STag
       (Name))
     (content
-      (variable
-        (variable_name)))
+      (CharData))
     (ETag
       (Name))))
 
@@ -47,10 +45,7 @@ Variable with filter
     (STag
       (Name))
     (content
-      (variable
-        (variable_name)
-        (filter
-          (filter_name))))
+      (CharData))
     (ETag
       (Name))))
 
@@ -67,11 +62,7 @@ Variable with filter and argument
     (STag
       (Name))
     (content
-      (variable
-        (variable_name)
-        (filter
-          (filter_name)
-          (number))))
+      (CharData))
     (ETag
       (Name))))
 
@@ -88,11 +79,7 @@ Variable with filter and dotted argument
     (STag
       (Name))
     (content
-      (variable
-        (variable_name)
-        (filter
-          (filter_name)
-          (filter_argument))))
+      (CharData))
     (ETag
       (Name))))
 
@@ -109,11 +96,7 @@ Variable with quoted filter argument
     (STag
       (Name))
     (content
-      (variable
-        (variable_name)
-        (filter
-          (filter_name)
-          (filter_argument))))
+      (CharData))
     (ETag
       (Name))))
 
@@ -130,13 +113,7 @@ Variable with chained filters
     (STag
       (Name))
     (content
-      (variable
-        (variable_name)
-        (filter
-          (filter_name))
-        (filter
-          (filter_name)
-          (number))))
+      (CharData))
     (ETag
       (Name))))
 
@@ -153,7 +130,7 @@ String literal expression
     (STag
       (Name))
     (content
-      (dj_string))
+      (CharData))
     (ETag
       (Name))))
 
@@ -170,9 +147,7 @@ String with filter
     (STag
       (Name))
     (content
-      (dj_string
-        (filter
-          (filter_name))))
+      (CharData))
     (ETag
       (Name))))
 
@@ -190,9 +165,7 @@ Expression in attribute value
       name: (Name)
       (Attribute
         name: (Name)
-        value: (AttValue
-          (variable
-            (variable_name)))))))
+        value: (AttValue)))))
 
 ==================
 Expression mixed with text in attribute
@@ -208,9 +181,23 @@ Expression mixed with text in attribute
       name: (Name)
       (Attribute
         name: (Name)
-        value: (AttValue
-          (variable
-            (variable_name)))))))
+        value: (AttValue)))))
+
+==================
+Expression surrounded by text in attribute
+==================
+
+<img imageName="{{ asset_root }}/octopus-energy-germany/arrow-right-long.svg"/>
+
+---
+
+(document
+  (element
+    (EmptyElemTag
+      name: (Name)
+      (Attribute
+        name: (Name)
+        value: (AttValue)))))
 
 ==================
 Multiple expressions in content
@@ -225,9 +212,40 @@ Multiple expressions in content
     (STag
       (Name))
     (content
-      (variable
-        (variable_name))
-      (variable
-        (variable_name)))
+      (CharData))
+    (ETag
+      (Name))))
+
+==================
+Expression surrounded by text in content
+==================
+
+<td>Amount for {{ charge.description }}</td>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (CharData))
+    (ETag
+      (Name))))
+
+==================
+Multiple expressions surrounded by text in content
+==================
+
+<p>{{ greeting }}, {{ user.name }}! You owe {{ amount|floatformat:2 }}.</p>
+
+---
+
+(document
+  (element
+    (STag
+      (Name))
+    (content
+      (CharData))
     (ETag
       (Name))))

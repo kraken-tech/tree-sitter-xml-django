@@ -158,16 +158,18 @@ export default grammar({
       field('value', $.AttValue),
     ),
 
-    // Attribute values may contain Django expressions. The plain-text portions
-    // are hidden nodes so they don't clutter the tree when there is no Django
-    // content.
+    // Attribute values may contain Django statements/comments. The plain-text
+    // portions are hidden nodes so they don't clutter the tree when there is
+    // no Django content. Django variable expressions ({{ ... }}) are treated
+    // as literal text here (see CharData below) so they merge into the
+    // surrounding text instead of appearing as separate nodes.
     AttValue: $ => choice(
       seq('"', repeat(choice($._att_content_double, $._Reference, $._django_node)), '"'),
       seq("'", repeat(choice($._att_content_single, $._Reference, $._django_node)), "'"),
     ),
 
-    _att_content_double: _ => token(prec(-1, /([^"<&{]|\{[^{%#])+/)),
-    _att_content_single: _ => token(prec(-1, /([^'<&{]|\{[^{%#])+/)),
+    _att_content_double: _ => token(prec(-1, /([^"<&{]|\{[^%#])+/)),
+    _att_content_single: _ => token(prec(-1, /([^'<&{]|\{[^%#])+/)),
 
     content: $ => prec.left(repeat1($._node)),
 
@@ -175,7 +177,9 @@ export default grammar({
     // XML character data and special sections
     // =========================================================================
 
-    CharData: _ => token(prec(-1, /([^<&{]|\{[^{%#])+/)),
+    // Django variable expressions ({{ ... }}) are treated as literal text:
+    // only {% ... %} (statements) and {# ... #} (comments) break CharData.
+    CharData: _ => token(prec(-1, /([^<&{]|\{[^%#])+/)),
 
     CDSect: $ => seq($.CDStart, optional($.CData), ']]>'),
 
@@ -206,17 +210,19 @@ export default grammar({
     // Django nodes
     // =========================================================================
 
+    // Note: Django variable expressions ({{ ... }}) are intentionally not a
+    // choice here. They are swallowed as literal text by CharData / attribute
+    // text (see above) instead of being parsed into their own nodes. The
+    // `variable` and `dj_string` rules below remain in use for {% ... %}
+    // statement attributes (e.g. {% if some_var %}, {% with x=value %}).
     _django_node: $ => choice(
-      $._django_expression,
       $._django_statement,
       $._django_comment,
     ),
 
     // -------------------------------------------------------------------------
-    // Expressions:  {{ variable }}  or  {{ "string" }}
+    // Variables and string literals, used within {% ... %} statement tags.
     // -------------------------------------------------------------------------
-
-    _django_expression: $ => seq('{{', choice($.variable, $.dj_string), '}}'),
 
     variable: $ => seq(
       $.variable_name,
@@ -243,7 +249,7 @@ export default grammar({
     ),
 
     // A quoted string literal, optionally followed by filters.  Used in
-    // {{ "..." }} expressions and in tag attributes.
+    // {% ... %} statement tag attributes.
     dj_string: $ => seq(
       choice(
         seq("'", /[^']*/, "'"),

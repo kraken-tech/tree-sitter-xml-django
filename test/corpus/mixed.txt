@@ -26,8 +26,7 @@ Full document with XML declaration
         (STag
           (Name))
         (content
-          (variable
-            (variable_name)))
+          (CharData))
         (ETag
           (Name))))
     (ETag
@@ -46,9 +45,6 @@ Django in element content alongside text
     (STag
       (Name))
     (content
-      (CharData)
-      (variable
-        (variable_name))
       (CharData))
     (ETag
       (Name))))
@@ -85,9 +81,7 @@ Django expression in attribute, text in content
       name: (Name)
       (Attribute
         name: (Name)
-        value: (AttValue
-          (variable
-            (variable_name))))
+        value: (AttValue))
       (Attribute
         name: (Name)
         value: (AttValue)))
@@ -121,8 +115,7 @@ Deeply nested Django inside XML
               (STag
                 (Name))
               (content
-                (variable
-                  (variable_name)))
+                (CharData))
               (ETag
                 (Name)))
             (tag_name)
@@ -169,8 +162,7 @@ CDATA alongside Django
     (STag
       (Name))
     (content
-      (variable
-        (variable_name))
+      (CharData)
       (CDSect
         (CDStart)
         (CData)))
@@ -193,8 +185,7 @@ Processing instruction alongside Django
       (PI
         (PITarget)
         (PIContent))
-      (variable
-        (variable_name)))
+      (CharData))
     (ETag
       (Name))))
 

@@ -280,8 +280,7 @@ with statement
           (variable_name))
         (variable
           (variable_name))
-        (variable
-          (variable_name))
+        (CharData)
         (tag_name)
         (end_paired_statement)))
     (ETag
@@ -307,8 +306,7 @@ autoescape statement
           (STag
             (Name))
           (content
-            (variable
-              (variable_name)))
+            (CharData))
           (ETag
             (Name)))
         (tag_name)
