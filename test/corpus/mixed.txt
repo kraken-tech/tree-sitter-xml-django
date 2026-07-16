@@ -240,3 +240,124 @@ Django tag boundary crossing: opening tag inside if/else, closing tag outside
         (end_paired_statement)))
     (ETag
       name: (Name))))
+
+==================
+Multiple sibling elements as children of paired statement
+==================
+
+{% if forloop.counter == my_list|length %}
+    <tr height="1cm">
+        <td></td>
+    </tr>
+    <tr height="0.5cm">
+        <td leftPadding="0"><para style="normal"><font face="Chromatophore-Medium">Total value</font> in Kilos</para></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td rightPadding="0"><para style="normal-medium" alignment="RIGHT">{{ total_value|round_decimal_places_down:0|floatformat:"0g" }} kg</para></td>
+    </tr>
+{% endif %}
+
+---
+
+(document
+  (paired_statement
+    (tag_name)
+    (variable
+      (variable_name))
+    (operator)
+    (variable
+      (variable_name)
+      (filter
+        (filter_name)))
+    (element
+      (STag
+        (Name)
+        (Attribute
+          (Name)
+          (AttValue)))
+      (content
+        (element
+          (STag
+            (Name))
+          (ETag
+            (Name))))
+      (ETag
+        (Name)))
+    (element
+      (STag
+        (Name)
+        (Attribute
+          (Name)
+          (AttValue)))
+      (content
+        (element
+          (STag
+            (Name)
+            (Attribute
+              (Name)
+              (AttValue)))
+          (content
+            (element
+              (STag
+                (Name)
+                (Attribute
+                  (Name)
+                  (AttValue)))
+              (content
+                (element
+                  (STag
+                    (Name)
+                    (Attribute
+                      (Name)
+                      (AttValue)))
+                  (content
+                    (CharData))
+                  (ETag
+                    (Name)))
+                (CharData))
+              (ETag
+                (Name))))
+          (ETag
+            (Name)))
+        (element
+          (STag
+            (Name))
+          (ETag
+            (Name)))
+        (element
+          (STag
+            (Name))
+          (ETag
+            (Name)))
+        (element
+          (STag
+            (Name))
+          (ETag
+            (Name)))
+        (element
+          (STag
+            (Name)
+            (Attribute
+              (Name)
+              (AttValue)))
+          (content
+            (element
+              (STag
+                (Name)
+                (Attribute
+                  (Name)
+                  (AttValue))
+                (Attribute
+                  (Name)
+                  (AttValue)))
+              (content
+                (CharData))
+              (ETag
+                (Name))))
+          (ETag
+            (Name))))
+      (ETag
+        (Name)))
+    (tag_name)
+    (end_paired_statement)))

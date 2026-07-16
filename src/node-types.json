@@ -321,19 +321,11 @@
           "named": true
         },
         {
-          "type": "ETag",
-          "named": true
-        },
-        {
           "type": "EntityRef",
           "named": true
         },
         {
           "type": "PI",
-          "named": true
-        },
-        {
-          "type": "STag",
           "named": true
         },
         {

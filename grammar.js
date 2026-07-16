@@ -30,7 +30,7 @@ export default grammar({
     // {% endif %}
     //     ...
     // </blockTable>
-    [$._node, $.element],
+    [$._body_node, $.element],
   ],
 
   rules: {
@@ -106,6 +106,8 @@ export default grammar({
     // Content nodes (inside elements or Django block bodies)
     // =========================================================================
 
+    // Used inside XML element content. No bare tags — ambiguity is confined to
+    // Django statement bodies where tag pairs may cross block boundaries.
     _node: $ => choice(
       $.element,
       $.CharData,
@@ -114,11 +116,20 @@ export default grammar({
       $.PI,
       $.Comment,
       $._django_node,
-      // Django templates often place opening or closing tags inside conditional
-      // blocks, causing the tag pair to cross Django block boundaries. Allow
-      // bare STag/ETag as fallback nodes so these patterns parse without error.
-      // prec.dynamic(-1) ensures full element wins when both paths succeed; bare
-      // tags only win when the element path fails (no matching close tag).
+    ),
+
+    // Used inside Django statement bodies (if/for/paired). Bare STag/ETag allow
+    // tag pairs that cross Django block boundaries to parse without error.
+    // prec.dynamic(-1) ensures full element wins when both paths succeed; bare
+    // tags only win when the element path fails (no matching close tag).
+    _body_node: $ => choice(
+      $.element,
+      $.CharData,
+      $._Reference,
+      $.CDSect,
+      $.PI,
+      $.Comment,
+      $._django_node,
       prec.dynamic(-1, $.STag),
       prec.dynamic(-1, $.ETag),
     ),
@@ -282,21 +293,21 @@ export default grammar({
       ];
       return choice(...tags.map(tag => seq(
         '{%', alias(tag, $.tag_name), repeat($._dj_attribute), '%}',
-        repeat($._node),
+        repeat($._body_node),
         '{%', alias('end' + tag, $.tag_name), repeat($._dj_attribute), alias('%}', $.end_paired_statement),
       )));
     },
 
     if_statement: $ => seq(
       '{%', alias('if', $.tag_name), repeat($._dj_attribute), '%}',
-      repeat($._node),
+      repeat($._body_node),
       repeat(prec.left(seq(
         alias($.elif_clause, $.branch_statement),
-        repeat($._node),
+        repeat($._body_node),
       ))),
       optional(seq(
         alias($.else_clause, $.branch_statement),
-        repeat($._node),
+        repeat($._body_node),
       )),
       '{%', alias('endif', $.tag_name), alias('%}', $.end_paired_statement),
     ),
@@ -306,10 +317,10 @@ export default grammar({
 
     for_statement: $ => seq(
       '{%', alias('for', $.tag_name), repeat($._dj_attribute), '%}',
-      repeat($._node),
+      repeat($._body_node),
       optional(seq(
         alias($.empty_clause, $.branch_statement),
-        repeat($._node),
+        repeat($._body_node),
       )),
       '{%', alias('endfor', $.tag_name), alias('%}', $.end_paired_statement),
     ),
