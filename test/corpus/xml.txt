@@ -8,11 +8,11 @@ XML declaration
 ---
 
 (document
-  (XMLDecl
-    (VersionNum))
+  (xml_decl
+    (version_num))
   (element
-    (EmptyElemTag
-      (Name))))
+    (self_closing_tag
+      (name))))
 
 ==================
 XML declaration with encoding
@@ -24,12 +24,12 @@ XML declaration with encoding
 ---
 
 (document
-  (XMLDecl
-    (VersionNum)
-    (EncName))
+  (xml_decl
+    (version_num)
+    (enc_name))
   (element
-    (EmptyElemTag
-      (Name))))
+    (self_closing_tag
+      (name))))
 
 ==================
 XML declaration with standalone
@@ -41,13 +41,13 @@ XML declaration with standalone
 ---
 
 (document
-  (XMLDecl
-    (VersionNum)
-    (EncName)
-    (Standalone))
+  (xml_decl
+    (version_num)
+    (enc_name)
+    (standalone_value))
   (element
-    (EmptyElemTag
-      (Name))))
+    (self_closing_tag
+      (name))))
 
 ==================
 Empty element
@@ -59,8 +59,8 @@ Empty element
 
 (document
   (element
-    (EmptyElemTag
-      (Name))))
+    (self_closing_tag
+      (name))))
 
 ==================
 Element with content
@@ -72,12 +72,12 @@ Element with content
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Nested elements
@@ -89,14 +89,14 @@ Nested elements
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (element
-        (EmptyElemTag
-          (Name))))
-    (ETag
-      (Name))))
+        (self_closing_tag
+          (name))))
+    (end_tag
+      (name))))
 
 ==================
 Element with attribute
@@ -108,11 +108,11 @@ Element with attribute
 
 (document
   (element
-    (EmptyElemTag
-      name: (Name)
-      (Attribute
-        name: (Name)
-        value: (AttValue)))))
+    (self_closing_tag
+      name: (name)
+      (attribute
+        name: (name)
+        value: (att_value)))))
 
 ==================
 Element with multiple attributes
@@ -124,14 +124,14 @@ Element with multiple attributes
 
 (document
   (element
-    (EmptyElemTag
-      name: (Name)
-      (Attribute
-        name: (Name)
-        value: (AttValue))
-      (Attribute
-        name: (Name)
-        value: (AttValue)))))
+    (self_closing_tag
+      name: (name)
+      (attribute
+        name: (name)
+        value: (att_value))
+      (attribute
+        name: (name)
+        value: (att_value)))))
 
 ==================
 Namespaced element
@@ -143,11 +143,11 @@ Namespaced element
 
 (document
   (element
-    (EmptyElemTag
-      name: (Name)
-      (Attribute
-        name: (Name)
-        value: (AttValue)))))
+    (self_closing_tag
+      name: (name)
+      (attribute
+        name: (name)
+        value: (att_value)))))
 
 ==================
 XML comment
@@ -159,12 +159,12 @@ XML comment
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (Comment))
-    (ETag
-      (Name))))
+      (comment))
+    (end_tag
+      (name))))
 
 ==================
 CDATA section
@@ -176,14 +176,14 @@ CDATA section
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CDSect
-        (CDStart)
-        (CData)))
-    (ETag
-      (Name))))
+      (cdata_section
+        (cdata_start)
+        (cdata)))
+    (end_tag
+      (name))))
 
 ==================
 Processing instruction
@@ -195,14 +195,14 @@ Processing instruction
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (PI
-        (PITarget)
-        (PIContent)))
-    (ETag
-      (Name))))
+      (processing_instruction
+        (pi_target)
+        (pi_content)))
+    (end_tag
+      (name))))
 
 ==================
 Entity references
@@ -214,17 +214,17 @@ Entity references
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (EntityRef
-        (Name))
-      (EntityRef
-        (Name))
-      (EntityRef
-        (Name)))
-    (ETag
-      (Name))))
+      (entity_ref
+        (name))
+      (entity_ref
+        (name))
+      (entity_ref
+        (name)))
+    (end_tag
+      (name))))
 
 ==================
 Character reference
@@ -236,13 +236,13 @@ Character reference
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharRef)
-      (CharRef))
-    (ETag
-      (Name))))
+      (char_ref)
+      (char_ref))
+    (end_tag
+      (name))))
 
 ==================
 Deeply nested elements
@@ -254,24 +254,24 @@ Deeply nested elements
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (element
-        (STag
-          (Name))
+        (start_tag
+          (name))
         (content
           (element
-            (STag
-              (Name))
+            (start_tag
+              (name))
             (content
-              (CharData))
-            (ETag
-              (Name))))
-        (ETag
-          (Name))))
-    (ETag
-      (Name))))
+              (char_data))
+            (end_tag
+              (name))))
+        (end_tag
+          (name))))
+    (end_tag
+      (name))))
 
 ==================
 DOCTYPE with SYSTEM identifier standalone
@@ -282,10 +282,10 @@ DOCTYPE with SYSTEM identifier standalone
 ---
 
 (document
-  (doctypedecl
-    name: (Name)
-    (ExternalID
-      (SystemLiteral))))
+  (doctype_decl
+    name: (name)
+    (external_id
+      (system_literal))))
 
 ==================
 DOCTYPE with PUBLIC identifier standalone
@@ -296,11 +296,11 @@ DOCTYPE with PUBLIC identifier standalone
 ---
 
 (document
-  (doctypedecl
-    name: (Name)
-    (ExternalID
-      (PubidLiteral)
-      (SystemLiteral))))
+  (doctype_decl
+    name: (name)
+    (external_id
+      (pubid_literal)
+      (system_literal))))
 
 ==================
 DOCTYPE in full RML-style document
@@ -315,19 +315,19 @@ DOCTYPE in full RML-style document
 ---
 
 (document
-  (XMLDecl
-    (VersionNum)
-    (EncName))
-  (doctypedecl
-    name: (Name)
-    (ExternalID
-      (SystemLiteral)))
+  (xml_decl
+    (version_num)
+    (enc_name))
+  (doctype_decl
+    name: (name)
+    (external_id
+      (system_literal)))
   (element
-    (STag
-      name: (Name))
+    (start_tag
+      name: (name))
     (content
       (element
-        (EmptyElemTag
-          name: (Name))))
-    (ETag
-      name: (Name))))
+        (self_closing_tag
+          name: (name))))
+    (end_tag
+      name: (name))))

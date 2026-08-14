@@ -11,26 +11,26 @@ Full document with XML declaration
 ---
 
 (document
-  (XMLDecl
-    (VersionNum)
-    (EncName))
-  (doctypedecl
-    (Name)
-    (ExternalID
-      (SystemLiteral)))
+  (xml_decl
+    (version_num)
+    (enc_name))
+  (doctype_decl
+    (name)
+    (external_id
+      (system_literal)))
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (element
-        (STag
-          (Name))
+        (start_tag
+          (name))
         (content
-          (CharData))
-        (ETag
-          (Name))))
-    (ETag
-      (Name))))
+          (char_data))
+        (end_tag
+          (name))))
+    (end_tag
+      (name))))
 
 ==================
 Django in element content alongside text
@@ -42,12 +42,12 @@ Django in element content alongside text
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Django comment alongside XML comment
@@ -59,13 +59,13 @@ Django comment alongside XML comment
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (unpaired_dj_comment)
-      (Comment))
-    (ETag
-      (Name))))
+      (comment))
+    (end_tag
+      (name))))
 
 ==================
 Django expression in attribute, text in content
@@ -77,18 +77,18 @@ Django expression in attribute, text in content
 
 (document
   (element
-    (STag
-      name: (Name)
-      (Attribute
-        name: (Name)
-        value: (AttValue))
-      (Attribute
-        name: (Name)
-        value: (AttValue)))
+    (start_tag
+      name: (name)
+      (attribute
+        name: (name)
+        value: (att_value))
+      (attribute
+        name: (name)
+        value: (att_value)))
     (content
-      (CharData))
-    (ETag
-      name: (Name))))
+      (char_data))
+    (end_tag
+      name: (name))))
 
 ==================
 Deeply nested Django inside XML
@@ -100,30 +100,30 @@ Deeply nested Django inside XML
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (element
-        (STag
-          (Name))
+        (start_tag
+          (name))
         (content
           (paired_statement
             (tag_name)
             (variable
               (variable_name))
             (element
-              (STag
-                (Name))
+              (start_tag
+                (name))
               (content
-                (CharData))
-              (ETag
-                (Name)))
+                (char_data))
+              (end_tag
+                (name)))
             (tag_name)
             (end_paired_statement)))
-        (ETag
-          (Name))))
-    (ETag
-      (Name))))
+        (end_tag
+          (name))))
+    (end_tag
+      (name))))
 
 ==================
 XML entity inside Django context
@@ -135,19 +135,19 @@ XML entity inside Django context
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
         (variable
           (variable_name))
-        (EntityRef
-          (Name))
+        (entity_ref
+          (name))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 CDATA alongside Django
@@ -159,15 +159,15 @@ CDATA alongside Django
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData)
-      (CDSect
-        (CDStart)
-        (CData)))
-    (ETag
-      (Name))))
+      (char_data)
+      (cdata_section
+        (cdata_start)
+        (cdata)))
+    (end_tag
+      (name))))
 
 ==================
 Processing instruction alongside Django
@@ -179,15 +179,15 @@ Processing instruction alongside Django
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (PI
-        (PITarget)
-        (PIContent))
-      (CharData))
-    (ETag
-      (Name))))
+      (processing_instruction
+        (pi_target)
+        (pi_content))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Django tag boundary crossing: opening tag inside if/else, closing tag outside
@@ -199,8 +199,8 @@ Django tag boundary crossing: opening tag inside if/else, closing tag outside
 
 (document
   (element
-    (STag
-      name: (Name))
+    (start_tag
+      name: (name))
     (content
       (paired_statement
         (tag_name)
@@ -213,33 +213,33 @@ Django tag boundary crossing: opening tag inside if/else, closing tag outside
           (tag_name)
           (variable
             (variable_name))
-          (STag
-            name: (Name)
-            (Attribute
-              name: (Name)
-              value: (AttValue)))
+          (start_tag
+            name: (name)
+            (attribute
+              name: (name)
+              value: (att_value)))
           (branch_statement
             (tag_name))
-          (STag
-            name: (Name)
-            (Attribute
-              name: (Name)
-              value: (AttValue)))
+          (start_tag
+            name: (name)
+            (attribute
+              name: (name)
+              value: (att_value)))
           (tag_name)
           (end_paired_statement))
         (element
-          (STag
-            name: (Name))
+          (start_tag
+            name: (name))
           (content
-            (CharData))
-          (ETag
-            name: (Name)))
-        (ETag
-          name: (Name))
+            (char_data))
+          (end_tag
+            name: (name)))
+        (end_tag
+          name: (name))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      name: (Name))))
+    (end_tag
+      name: (name))))
 
 ==================
 Multiple sibling elements as children of paired statement
@@ -271,93 +271,93 @@ Multiple sibling elements as children of paired statement
       (filter
         (filter_name)))
     (element
-      (STag
-        (Name)
-        (Attribute
-          (Name)
-          (AttValue)))
+      (start_tag
+        (name)
+        (attribute
+          (name)
+          (att_value)))
       (content
         (element
-          (STag
-            (Name))
-          (ETag
-            (Name))))
-      (ETag
-        (Name)))
+          (start_tag
+            (name))
+          (end_tag
+            (name))))
+      (end_tag
+        (name)))
     (element
-      (STag
-        (Name)
-        (Attribute
-          (Name)
-          (AttValue)))
+      (start_tag
+        (name)
+        (attribute
+          (name)
+          (att_value)))
       (content
         (element
-          (STag
-            (Name)
-            (Attribute
-              (Name)
-              (AttValue)))
+          (start_tag
+            (name)
+            (attribute
+              (name)
+              (att_value)))
           (content
             (element
-              (STag
-                (Name)
-                (Attribute
-                  (Name)
-                  (AttValue)))
+              (start_tag
+                (name)
+                (attribute
+                  (name)
+                  (att_value)))
               (content
                 (element
-                  (STag
-                    (Name)
-                    (Attribute
-                      (Name)
-                      (AttValue)))
+                  (start_tag
+                    (name)
+                    (attribute
+                      (name)
+                      (att_value)))
                   (content
-                    (CharData))
-                  (ETag
-                    (Name)))
-                (CharData))
-              (ETag
-                (Name))))
-          (ETag
-            (Name)))
+                    (char_data))
+                  (end_tag
+                    (name)))
+                (char_data))
+              (end_tag
+                (name))))
+          (end_tag
+            (name)))
         (element
-          (STag
-            (Name))
-          (ETag
-            (Name)))
+          (start_tag
+            (name))
+          (end_tag
+            (name)))
         (element
-          (STag
-            (Name))
-          (ETag
-            (Name)))
+          (start_tag
+            (name))
+          (end_tag
+            (name)))
         (element
-          (STag
-            (Name))
-          (ETag
-            (Name)))
+          (start_tag
+            (name))
+          (end_tag
+            (name)))
         (element
-          (STag
-            (Name)
-            (Attribute
-              (Name)
-              (AttValue)))
+          (start_tag
+            (name)
+            (attribute
+              (name)
+              (att_value)))
           (content
             (element
-              (STag
-                (Name)
-                (Attribute
-                  (Name)
-                  (AttValue))
-                (Attribute
-                  (Name)
-                  (AttValue)))
+              (start_tag
+                (name)
+                (attribute
+                  (name)
+                  (att_value))
+                (attribute
+                  (name)
+                  (att_value)))
               (content
-                (CharData))
-              (ETag
-                (Name))))
-          (ETag
-            (Name))))
-      (ETag
-        (Name)))
+                (char_data))
+              (end_tag
+                (name))))
+          (end_tag
+            (name))))
+      (end_tag
+        (name)))
     (tag_name)
     (end_paired_statement)))

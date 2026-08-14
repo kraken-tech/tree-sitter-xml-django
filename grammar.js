@@ -14,14 +14,14 @@ export default grammar({
 
   extras: $ => [
     /\s/,
-    $.doctypedecl,
+    $.doctype_decl,
   ],
 
   conflicts: $ => [
     // Django templates frequently place an opening tag inside {% if %}...{% else %}
     // with the closing tag outside (tag pair crosses a block boundary). GLR tracks
-    // both paths: full element and bare STag/ETag. prec.dynamic(-1) on bare tags
-    // ensures the full element wins when both paths succeed (well-formed XML).
+    // both paths: full element and bare start_tag/end_tag. prec.dynamic(-1) on bare
+    // tags ensures the full element wins when both paths succeed (well-formed XML).
     // Example :
     // {% if has_dynamic_product %}
     //     <blockTable colWidths="3.2cm,3.0cm,0.3cm,2.7cm,0.3cm,2.1cm,1.9cm,1.8cm">
@@ -34,18 +34,18 @@ export default grammar({
   ],
 
   rules: {
-    // At the document level we do NOT include CharData so that whitespace-only
+    // At the document level we do NOT include char_data so that whitespace-only
     // lines (e.g. trailing newlines in test files) are consumed by extras
     // instead of generating spurious nodes.
     document: $ => seq(
-      optional($.XMLDecl),
+      optional($.xml_decl),
       repeat($._top_level_node),
     ),
 
     _top_level_node: $ => choice(
       $.element,
-      $.PI,
-      $.Comment,
+      $.processing_instruction,
+      $.comment,
       $._django_node,
     ),
 
@@ -53,25 +53,25 @@ export default grammar({
     // XML Declaration
     // =========================================================================
 
-    XMLDecl: $ => seq(
+    xml_decl: $ => seq(
       '<?', 'xml',
-      seq('version', '=', $.VersionNum),
-      optional(seq('encoding', '=', $.EncName)),
-      optional(seq('standalone', '=', $.Standalone)),
+      seq('version', '=', $.version_num),
+      optional(seq('encoding', '=', $.enc_name)),
+      optional(seq('standalone', '=', $.standalone_value)),
       '?>',
     ),
 
-    VersionNum: _ => token(choice(
+    version_num: _ => token(choice(
       seq('"', /1\.[0-9]+/, '"'),
       seq("'", /1\.[0-9]+/, "'"),
     )),
 
-    EncName: _ => token(choice(
+    enc_name: _ => token(choice(
       seq('"', /[A-Za-z][A-Za-z0-9._-]*/, '"'),
       seq("'", /[A-Za-z][A-Za-z0-9._-]*/, "'"),
     )),
 
-    Standalone: _ => token(choice(
+    standalone_value: _ => token(choice(
       seq('"', choice('yes', 'no'), '"'),
       seq("'", choice('yes', 'no'), "'"),
     )),
@@ -80,24 +80,24 @@ export default grammar({
     // DOCTYPE declaration
     // =========================================================================
 
-    doctypedecl: $ => seq(
+    doctype_decl: $ => seq(
       '<!DOCTYPE',
-      field('name', $.Name),
-      optional($.ExternalID),
+      field('name', $.name),
+      optional($.external_id),
       '>',
     ),
 
-    ExternalID: $ => choice(
-      seq('SYSTEM', $.SystemLiteral),
-      seq('PUBLIC', $.PubidLiteral, $.SystemLiteral),
+    external_id: $ => choice(
+      seq('SYSTEM', $.system_literal),
+      seq('PUBLIC', $.pubid_literal, $.system_literal),
     ),
 
-    SystemLiteral: _ => token(choice(
+    system_literal: _ => token(choice(
       seq('"', /[^"]*/, '"'),
       seq("'", /[^']*/, "'"),
     )),
 
-    PubidLiteral: _ => token(choice(
+    pubid_literal: _ => token(choice(
       seq('"', /[a-zA-Z0-9 \r\n\-()+,./:=?;!*#@$_%]*/, '"'),
       seq("'", /[a-zA-Z0-9 \r\n\-()+,./:=?;!*#@$_%]*/, "'"),
     )),
@@ -110,28 +110,28 @@ export default grammar({
     // Django statement bodies where tag pairs may cross block boundaries.
     _node: $ => choice(
       $.element,
-      $.CharData,
-      $._Reference,
-      $.CDSect,
-      $.PI,
-      $.Comment,
+      $.char_data,
+      $._reference,
+      $.cdata_section,
+      $.processing_instruction,
+      $.comment,
       $._django_node,
     ),
 
-    // Used inside Django statement bodies (if/for/paired). Bare STag/ETag allow
-    // tag pairs that cross Django block boundaries to parse without error.
+    // Used inside Django statement bodies (if/for/paired). Bare start_tag/end_tag
+    // allow tag pairs that cross Django block boundaries to parse without error.
     // prec.dynamic(-1) ensures full element wins when both paths succeed; bare
     // tags only win when the element path fails (no matching close tag).
     _body_node: $ => choice(
       $.element,
-      $.CharData,
-      $._Reference,
-      $.CDSect,
-      $.PI,
-      $.Comment,
+      $.char_data,
+      $._reference,
+      $.cdata_section,
+      $.processing_instruction,
+      $.comment,
       $._django_node,
-      prec.dynamic(-1, $.STag),
-      prec.dynamic(-1, $.ETag),
+      prec.dynamic(-1, $.start_tag),
+      prec.dynamic(-1, $.end_tag),
     ),
 
     // =========================================================================
@@ -139,44 +139,44 @@ export default grammar({
     // =========================================================================
 
     element: $ => choice(
-      $.EmptyElemTag,
-      seq($.STag, optional($.content), $.ETag),
+      $.self_closing_tag,
+      seq($.start_tag, optional($.content), $.end_tag),
     ),
 
-    STag: $ => seq(
+    start_tag: $ => seq(
       '<',
-      field('name', $.Name),
-      repeat(choice($.Attribute, $._django_node)),
+      field('name', $.name),
+      repeat(choice($.attribute, $._django_node)),
       '>',
     ),
 
-    ETag: $ => seq(
+    end_tag: $ => seq(
       '</',
-      field('name', $.Name),
+      field('name', $.name),
       '>',
     ),
 
-    EmptyElemTag: $ => seq(
+    self_closing_tag: $ => seq(
       '<',
-      field('name', $.Name),
-      repeat(choice($.Attribute, $._django_node)),
+      field('name', $.name),
+      repeat(choice($.attribute, $._django_node)),
       '/>',
     ),
 
-    Attribute: $ => seq(
-      field('name', $.Name),
+    attribute: $ => seq(
+      field('name', $.name),
       '=',
-      field('value', $.AttValue),
+      field('value', $.att_value),
     ),
 
     // Attribute values may contain Django statements/comments. The plain-text
     // portions are hidden nodes so they don't clutter the tree when there is
     // no Django content. Django variable expressions ({{ ... }}) are treated
-    // as literal text here (see CharData below) so they merge into the
+    // as literal text here (see char_data below) so they merge into the
     // surrounding text instead of appearing as separate nodes.
-    AttValue: $ => choice(
-      seq('"', repeat(choice($._att_content_double, $._Reference, $._django_node)), '"'),
-      seq("'", repeat(choice($._att_content_single, $._Reference, $._django_node)), "'"),
+    att_value: $ => choice(
+      seq('"', repeat(choice($._att_content_double, $._reference, $._django_node)), '"'),
+      seq("'", repeat(choice($._att_content_single, $._reference, $._django_node)), "'"),
     ),
 
     _att_content_double: _ => token(prec(-1, /([^"<&{]|\{[^%#])+/)),
@@ -189,40 +189,40 @@ export default grammar({
     // =========================================================================
 
     // Django variable expressions ({{ ... }}) are treated as literal text:
-    // only {% ... %} (statements) and {# ... #} (comments) break CharData.
-    CharData: _ => token(prec(-1, /([^<&{]|\{[^%#])+/)),
+    // only {% ... %} (statements) and {# ... #} (comments) break char_data.
+    char_data: _ => token(prec(-1, /([^<&{]|\{[^%#])+/)),
 
-    CDSect: $ => seq($.CDStart, optional($.CData), ']]>'),
+    cdata_section: $ => seq($.cdata_start, optional($.cdata), ']]>'),
 
-    CDStart: _ => '<![CDATA[',
+    cdata_start: _ => '<![CDATA[',
 
-    CData: _ => /([^\]]|\][^\]]|\]\][^>])+/,
+    cdata: _ => /([^\]]|\][^\]]|\]\][^>])+/,
 
-    PI: $ => seq('<?', $.PITarget, optional($.PIContent), '?>'),
+    processing_instruction: $ => seq('<?', $.pi_target, optional($.pi_content), '?>'),
 
-    PITarget: _ => /[a-zA-Z_][a-zA-Z0-9._-]*/,
+    pi_target: _ => /[a-zA-Z_][a-zA-Z0-9._-]*/,
 
-    PIContent: _ => /[^?]+(\?[^>][^?]*)*/,
+    pi_content: _ => /[^?]+(\?[^>][^?]*)*/,
 
-    Comment: _ => seq('<!--', /([^-]|-[^-])*/, '-->'),
+    comment: _ => seq('<!--', /([^-]|-[^-])*/, '-->'),
 
-    _Reference: $ => choice($.EntityRef, $.CharRef),
+    _reference: $ => choice($.entity_ref, $.char_ref),
 
-    EntityRef: $ => seq('&', $.Name, ';'),
+    entity_ref: $ => seq('&', $.name, ';'),
 
-    CharRef: _ => choice(
+    char_ref: _ => choice(
       seq('&#', /[0-9]+/, ';'),
       seq('&#x', /[0-9a-fA-F]+/, ';'),
     ),
 
-    Name: _ => /[a-zA-Z_:][a-zA-Z0-9._:-]*/,
+    name: _ => /[a-zA-Z_:][a-zA-Z0-9._:-]*/,
 
     // =========================================================================
     // Django nodes
     // =========================================================================
 
     // Note: Django variable expressions ({{ ... }}) are intentionally not a
-    // choice here. They are swallowed as literal text by CharData / attribute
+    // choice here. They are swallowed as literal text by char_data / attribute
     // text (see above) instead of being parsed into their own nodes. The
     // `variable` and `dj_string` rules below remain in use for {% ... %}
     // statement attributes (e.g. {% if some_var %}, {% with x=value %}).

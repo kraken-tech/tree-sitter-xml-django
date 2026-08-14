@@ -8,12 +8,12 @@ Simple variable
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Dotted variable
@@ -25,12 +25,12 @@ Dotted variable
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Variable with filter
@@ -42,12 +42,12 @@ Variable with filter
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Variable with filter and argument
@@ -59,12 +59,12 @@ Variable with filter and argument
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Variable with filter and dotted argument
@@ -76,12 +76,12 @@ Variable with filter and dotted argument
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Variable with quoted filter argument
@@ -93,12 +93,12 @@ Variable with quoted filter argument
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Variable with chained filters
@@ -110,12 +110,12 @@ Variable with chained filters
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 String literal expression
@@ -127,12 +127,12 @@ String literal expression
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 String with filter
@@ -144,12 +144,12 @@ String with filter
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Expression in attribute value
@@ -161,11 +161,11 @@ Expression in attribute value
 
 (document
   (element
-    (EmptyElemTag
-      name: (Name)
-      (Attribute
-        name: (Name)
-        value: (AttValue)))))
+    (self_closing_tag
+      name: (name)
+      (attribute
+        name: (name)
+        value: (att_value)))))
 
 ==================
 Expression mixed with text in attribute
@@ -177,11 +177,11 @@ Expression mixed with text in attribute
 
 (document
   (element
-    (EmptyElemTag
-      name: (Name)
-      (Attribute
-        name: (Name)
-        value: (AttValue)))))
+    (self_closing_tag
+      name: (name)
+      (attribute
+        name: (name)
+        value: (att_value)))))
 
 ==================
 Expression surrounded by text in attribute
@@ -193,11 +193,11 @@ Expression surrounded by text in attribute
 
 (document
   (element
-    (EmptyElemTag
-      name: (Name)
-      (Attribute
-        name: (Name)
-        value: (AttValue)))))
+    (self_closing_tag
+      name: (name)
+      (attribute
+        name: (name)
+        value: (att_value)))))
 
 ==================
 Multiple expressions in content
@@ -209,12 +209,12 @@ Multiple expressions in content
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Expression surrounded by text in content
@@ -226,12 +226,12 @@ Expression surrounded by text in content
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
 
 ==================
 Multiple expressions surrounded by text in content
@@ -243,9 +243,9 @@ Multiple expressions surrounded by text in content
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
-      (CharData))
-    (ETag
-      (Name))))
+      (char_data))
+    (end_tag
+      (name))))
