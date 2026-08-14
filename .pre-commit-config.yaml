@@ -1,0 +1,37 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-xml
+      - id: check-yaml
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: no-commit-to-branch
+        args: [--branch, main, --pattern, '[A-Z].*']
+      - id: trailing-whitespace
+
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.40.0
+    hooks:
+      - id: typos
+
+  - repo: local
+    hooks:
+      - id: tree-sitter-test
+        name: Tree-sitter corpus tests
+        language: system
+        entry: npx tree-sitter test
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: commits
+        name: Commit quality checks
+        language: system
+        entry: uv run pytest bindings/python/tests/test_commits.py
+        pass_filenames: false
+        stages: [pre-push]
