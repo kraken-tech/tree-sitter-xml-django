@@ -22,7 +22,13 @@ readme = "README.md"
 Homepage = "https://github.com/octoenergy/tree-sitter-xmldjango"
 
 [project.optional-dependencies]
-core = ["tree-sitter~=0.24"]
+core = ["tree-sitter~=0.26"]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=3.0",
+    "pytest>=8.0",
+]
 
 [tool.cibuildwheel]
 build = "cp310-*"

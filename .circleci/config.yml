@@ -1,0 +1,100 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@6
+  ktl-nexus: krakentech/ktl-nexus@8.1.0
+
+executors:
+  default:
+    docker:
+      - image: cimg/python:3.13
+    resource_class: small
+
+jobs:
+  lint:
+    executor: default
+    steps:
+      - checkout
+      - node/install:
+          node-version: lts
+      - ktl-nexus/login
+      - restore_cache:
+          keys:
+            - v1-uv-{{ checksum "uv.lock" }}
+            - v1-uv-
+      - restore_cache:
+          keys:
+            - v1-pre-commit-{{ checksum ".pre-commit-config.yaml" }}
+            - v1-pre-commit-
+      - run:
+          name: Install dependencies
+          command: make dev
+      - run:
+          name: Run pre-commit
+          command: uv run pre-commit run --all-files
+      - save_cache:
+          key: v1-uv-{{ checksum "uv.lock" }}
+          paths:
+            - ~/.cache/uv
+      - save_cache:
+          key: v1-pre-commit-{{ checksum ".pre-commit-config.yaml" }}
+          paths:
+            - ~/.cache/pre-commit
+
+  test:
+    executor: default
+    steps:
+      - checkout
+      - node/install:
+          node-version: lts
+      - ktl-nexus/login
+      - restore_cache:
+          keys:
+            - v1-uv-{{ checksum "uv.lock" }}
+            - v1-uv-
+      - run:
+          name: Install dependencies
+          command: make dev
+      - run:
+          name: Test grammar (corpus tests)
+          command: npx tree-sitter test
+      - run:
+          name: Test Python bindings
+          command: |
+            mkdir -p test-results
+            uv run pytest bindings/python/tests/ --junitxml=test-results/pytest.xml
+      - store_test_results:
+          path: test-results
+      - save_cache:
+          key: v1-uv-{{ checksum "uv.lock" }}
+          paths:
+            - ~/.cache/uv
+
+  publish:
+    executor: default
+    steps:
+      - checkout
+      - ktl-nexus/login
+      - ktl-nexus/configure_uv
+      - run:
+          name: Install build tools
+          command: pipx install build twine
+      - run:
+          name: Build package
+          command: make package
+      - ktl-nexus/publish_python_package
+
+workflows:
+  test-build-publish:
+    jobs:
+      - lint
+      - test
+      - publish:
+          requires:
+            - lint
+            - test
+          filters:
+            branches:
+              only: main
+            tags:
+              only: /^v\d+\.\d+\.\d+/
