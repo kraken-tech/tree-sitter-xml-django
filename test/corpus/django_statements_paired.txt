@@ -8,22 +8,22 @@ blocktrans statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
         (element
-          (STag
-            (Name))
+          (start_tag
+            (name))
           (content
-            (CharData))
-          (ETag
-            (Name)))
+            (char_data))
+          (end_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 blocktranslate statement
@@ -35,22 +35,22 @@ blocktranslate statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
         (element
-          (STag
-            (Name))
+          (start_tag
+            (name))
           (content
-            (CharData))
-          (ETag
-            (Name)))
+            (char_data))
+          (end_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 verbatim statement
@@ -62,22 +62,22 @@ verbatim statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
         (element
-          (STag
-            (Name))
+          (start_tag
+            (name))
           (content
-            (CharData))
-          (ETag
-            (Name)))
+            (char_data))
+          (end_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 ifchanged statement
@@ -89,8 +89,8 @@ ifchanged statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
@@ -104,14 +104,14 @@ ifchanged statement
           (variable
             (variable_name))
           (element
-            (EmptyElemTag
-              (Name)))
+            (self_closing_tag
+              (name)))
           (tag_name)
           (end_paired_statement))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 if with boolean
@@ -123,19 +123,19 @@ if with boolean
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
         (boolean)
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 if with number comparison
@@ -147,8 +147,8 @@ if with number comparison
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
@@ -157,12 +157,12 @@ if with number comparison
         (operator)
         (number)
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 if with and operator
@@ -174,8 +174,8 @@ if with and operator
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
@@ -185,12 +185,12 @@ if with and operator
         (variable
           (variable_name))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 for loop with tuple unpacking
@@ -202,8 +202,8 @@ for loop with tuple unpacking
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
@@ -215,9 +215,9 @@ for loop with tuple unpacking
         (variable
           (variable_name))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))

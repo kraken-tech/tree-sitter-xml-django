@@ -8,13 +8,13 @@ Unpaired statement - csrf_token
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (unpaired_statement
         (tag_name)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 Unpaired statement - extends
@@ -26,14 +26,14 @@ Unpaired statement - extends
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (unpaired_statement
         (tag_name)
         (dj_string)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 Unpaired statement - include
@@ -45,8 +45,8 @@ Unpaired statement - include
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (unpaired_statement
         (tag_name)
@@ -56,8 +56,8 @@ Unpaired statement - include
           (variable_name))
         (dj_string)
         (keyword)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 Unpaired statement - load
@@ -69,15 +69,15 @@ Unpaired statement - load
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (unpaired_statement
         (tag_name)
         (variable
           (variable_name))))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 if statement
@@ -89,20 +89,20 @@ if statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
         (variable
           (variable_name))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 if/else statement
@@ -114,25 +114,25 @@ if/else statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
         (variable
           (variable_name))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (branch_statement
           (tag_name))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 if/elif/else statement
@@ -144,32 +144,32 @@ if/elif/else statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
         (variable
           (variable_name))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (branch_statement
           (tag_name)
           (variable
             (variable_name)))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (branch_statement
           (tag_name))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 for statement
@@ -181,8 +181,8 @@ for statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
@@ -192,12 +192,12 @@ for statement
         (variable
           (variable_name))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 for/empty statement
@@ -209,8 +209,8 @@ for/empty statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
@@ -220,17 +220,17 @@ for/empty statement
         (variable
           (variable_name))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (branch_statement
           (tag_name))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 block statement
@@ -242,24 +242,24 @@ block statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
         (variable
           (variable_name))
         (element
-          (STag
-            (Name))
+          (start_tag
+            (name))
           (content
-            (CharData))
-          (ETag
-            (Name)))
+            (char_data))
+          (end_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 with statement
@@ -271,8 +271,8 @@ with statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
@@ -280,11 +280,11 @@ with statement
           (variable_name))
         (variable
           (variable_name))
-        (CharData)
+        (char_data)
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 autoescape statement
@@ -296,23 +296,23 @@ autoescape statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
         (keyword)
         (element
-          (STag
-            (Name))
+          (start_tag
+            (name))
           (content
-            (CharData))
-          (ETag
-            (Name)))
+            (char_data))
+          (end_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 spaceless statement
@@ -324,22 +324,22 @@ spaceless statement
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
         (element
-          (STag
-            (Name))
+          (start_tag
+            (name))
           (content
-            (CharData))
-          (ETag
-            (Name)))
+            (char_data))
+          (end_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 Django comment
@@ -351,12 +351,12 @@ Django comment
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (unpaired_dj_comment))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 Nested for inside if
@@ -368,8 +368,8 @@ Nested for inside if
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
@@ -383,14 +383,14 @@ Nested for inside if
           (variable
             (variable_name))
           (element
-            (EmptyElemTag
-              (Name)))
+            (self_closing_tag
+              (name)))
           (tag_name)
           (end_paired_statement))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 if with comparison operator
@@ -402,8 +402,8 @@ if with comparison operator
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
@@ -412,12 +412,12 @@ if with comparison operator
         (operator)
         (number)
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 if with keyword operator
@@ -429,8 +429,8 @@ if with keyword operator
 
 (document
   (element
-    (STag
-      (Name))
+    (start_tag
+      (name))
     (content
       (paired_statement
         (tag_name)
@@ -440,12 +440,12 @@ if with keyword operator
         (variable
           (variable_name))
         (element
-          (EmptyElemTag
-            (Name)))
+          (self_closing_tag
+            (name)))
         (tag_name)
         (end_paired_statement)))
-    (ETag
-      (Name))))
+    (end_tag
+      (name))))
 
 ==================
 Statement at document level
@@ -461,5 +461,5 @@ Statement at document level
     (tag_name)
     (dj_string))
   (element
-    (EmptyElemTag
-      (Name))))
+    (self_closing_tag
+      (name))))

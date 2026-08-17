@@ -1,6 +1,6 @@
 [
   {
-    "type": "AttValue",
+    "type": "att_value",
     "named": true,
     "fields": {},
     "children": {
@@ -8,11 +8,11 @@
       "required": false,
       "types": [
         {
-          "type": "CharRef",
+          "type": "char_ref",
           "named": true
         },
         {
-          "type": "EntityRef",
+          "type": "entity_ref",
           "named": true
         },
         {
@@ -31,7 +31,7 @@
     }
   },
   {
-    "type": "Attribute",
+    "type": "attribute",
     "named": true,
     "fields": {
       "name": {
@@ -39,7 +39,7 @@
         "required": true,
         "types": [
           {
-            "type": "Name",
+            "type": "name",
             "named": true
           }
         ]
@@ -49,208 +49,11 @@
         "required": true,
         "types": [
           {
-            "type": "AttValue",
+            "type": "att_value",
             "named": true
           }
         ]
       }
-    }
-  },
-  {
-    "type": "CDSect",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "CDStart",
-          "named": true
-        },
-        {
-          "type": "CData",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "CharRef",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "Comment",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "ETag",
-    "named": true,
-    "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "Name",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "EmptyElemTag",
-    "named": true,
-    "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "Name",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "Attribute",
-          "named": true
-        },
-        {
-          "type": "paired_statement",
-          "named": true
-        },
-        {
-          "type": "unpaired_dj_comment",
-          "named": true
-        },
-        {
-          "type": "unpaired_statement",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "EntityRef",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "Name",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "ExternalID",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "PubidLiteral",
-          "named": true
-        },
-        {
-          "type": "SystemLiteral",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "PI",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "PIContent",
-          "named": true
-        },
-        {
-          "type": "PITarget",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "STag",
-    "named": true,
-    "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "Name",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "Attribute",
-          "named": true
-        },
-        {
-          "type": "paired_statement",
-          "named": true
-        },
-        {
-          "type": "unpaired_dj_comment",
-          "named": true
-        },
-        {
-          "type": "unpaired_statement",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "XMLDecl",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "EncName",
-          "named": true
-        },
-        {
-          "type": "Standalone",
-          "named": true
-        },
-        {
-          "type": "VersionNum",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -297,6 +100,35 @@
     }
   },
   {
+    "type": "cdata_section",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "cdata",
+          "named": true
+        },
+        {
+          "type": "cdata_start",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "char_ref",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "comment",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "content",
     "named": true,
     "fields": {},
@@ -305,27 +137,19 @@
       "required": false,
       "types": [
         {
-          "type": "CDSect",
+          "type": "cdata_section",
           "named": true
         },
         {
-          "type": "CharData",
+          "type": "char_data",
           "named": true
         },
         {
-          "type": "CharRef",
+          "type": "char_ref",
           "named": true
         },
         {
-          "type": "Comment",
-          "named": true
-        },
-        {
-          "type": "EntityRef",
-          "named": true
-        },
-        {
-          "type": "PI",
+          "type": "comment",
           "named": true
         },
         {
@@ -333,7 +157,15 @@
           "named": true
         },
         {
+          "type": "entity_ref",
+          "named": true
+        },
+        {
           "type": "paired_statement",
+          "named": true
+        },
+        {
+          "type": "processing_instruction",
           "named": true
         },
         {
@@ -363,7 +195,7 @@
     }
   },
   {
-    "type": "doctypedecl",
+    "type": "doctype_decl",
     "named": true,
     "extra": true,
     "fields": {
@@ -372,7 +204,7 @@
         "required": true,
         "types": [
           {
-            "type": "Name",
+            "type": "name",
             "named": true
           }
         ]
@@ -383,7 +215,7 @@
       "required": false,
       "types": [
         {
-          "type": "ExternalID",
+          "type": "external_id",
           "named": true
         }
       ]
@@ -399,15 +231,7 @@
       "required": false,
       "types": [
         {
-          "type": "Comment",
-          "named": true
-        },
-        {
-          "type": "PI",
-          "named": true
-        },
-        {
-          "type": "XMLDecl",
+          "type": "comment",
           "named": true
         },
         {
@@ -419,11 +243,19 @@
           "named": true
         },
         {
+          "type": "processing_instruction",
+          "named": true
+        },
+        {
           "type": "unpaired_dj_comment",
           "named": true
         },
         {
           "type": "unpaired_statement",
+          "named": true
+        },
+        {
+          "type": "xml_decl",
           "named": true
         }
       ]
@@ -438,19 +270,69 @@
       "required": true,
       "types": [
         {
-          "type": "ETag",
-          "named": true
-        },
-        {
-          "type": "EmptyElemTag",
-          "named": true
-        },
-        {
-          "type": "STag",
-          "named": true
-        },
-        {
           "type": "content",
+          "named": true
+        },
+        {
+          "type": "end_tag",
+          "named": true
+        },
+        {
+          "type": "self_closing_tag",
+          "named": true
+        },
+        {
+          "type": "start_tag",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "end_tag",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "name",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "entity_ref",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "external_id",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "pubid_literal",
+          "named": true
+        },
+        {
+          "type": "system_literal",
           "named": true
         }
       ]
@@ -493,43 +375,27 @@
       "required": true,
       "types": [
         {
-          "type": "CDSect",
-          "named": true
-        },
-        {
-          "type": "CharData",
-          "named": true
-        },
-        {
-          "type": "CharRef",
-          "named": true
-        },
-        {
-          "type": "Comment",
-          "named": true
-        },
-        {
-          "type": "ETag",
-          "named": true
-        },
-        {
-          "type": "EntityRef",
-          "named": true
-        },
-        {
-          "type": "PI",
-          "named": true
-        },
-        {
-          "type": "STag",
-          "named": true
-        },
-        {
           "type": "boolean",
           "named": true
         },
         {
           "type": "branch_statement",
+          "named": true
+        },
+        {
+          "type": "cdata_section",
+          "named": true
+        },
+        {
+          "type": "char_data",
+          "named": true
+        },
+        {
+          "type": "char_ref",
+          "named": true
+        },
+        {
+          "type": "comment",
           "named": true
         },
         {
@@ -542,6 +408,14 @@
         },
         {
           "type": "end_paired_statement",
+          "named": true
+        },
+        {
+          "type": "end_tag",
+          "named": true
+        },
+        {
+          "type": "entity_ref",
           "named": true
         },
         {
@@ -565,6 +439,14 @@
           "named": true
         },
         {
+          "type": "processing_instruction",
+          "named": true
+        },
+        {
+          "type": "start_tag",
+          "named": true
+        },
+        {
           "type": "tag_name",
           "named": true
         },
@@ -578,6 +460,101 @@
         },
         {
           "type": "variable",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "processing_instruction",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "pi_content",
+          "named": true
+        },
+        {
+          "type": "pi_target",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "self_closing_tag",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "attribute",
+          "named": true
+        },
+        {
+          "type": "paired_statement",
+          "named": true
+        },
+        {
+          "type": "unpaired_dj_comment",
+          "named": true
+        },
+        {
+          "type": "unpaired_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "start_tag",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "attribute",
+          "named": true
+        },
+        {
+          "type": "paired_statement",
+          "named": true
+        },
+        {
+          "type": "unpaired_dj_comment",
+          "named": true
+        },
+        {
+          "type": "unpaired_statement",
           "named": true
         }
       ]
@@ -645,6 +622,29 @@
         },
         {
           "type": "variable_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "xml_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "enc_name",
+          "named": true
+        },
+        {
+          "type": "standalone_value",
+          "named": true
+        },
+        {
+          "type": "version_num",
           "named": true
         }
       ]
@@ -747,56 +747,12 @@
     "named": false
   },
   {
-    "type": "CDStart",
-    "named": true
-  },
-  {
-    "type": "CData",
-    "named": true
-  },
-  {
-    "type": "CharData",
-    "named": true
-  },
-  {
-    "type": "EncName",
-    "named": true
-  },
-  {
-    "type": "Name",
-    "named": true
-  },
-  {
-    "type": "PIContent",
-    "named": true
-  },
-  {
-    "type": "PITarget",
-    "named": true
-  },
-  {
     "type": "PUBLIC",
     "named": false
   },
   {
-    "type": "PubidLiteral",
-    "named": true
-  },
-  {
     "type": "SYSTEM",
     "named": false
-  },
-  {
-    "type": "Standalone",
-    "named": true
-  },
-  {
-    "type": "SystemLiteral",
-    "named": true
-  },
-  {
-    "type": "VersionNum",
-    "named": true
   },
   {
     "type": "]]>",
@@ -804,6 +760,22 @@
   },
   {
     "type": "boolean",
+    "named": true
+  },
+  {
+    "type": "cdata",
+    "named": true
+  },
+  {
+    "type": "cdata_start",
+    "named": true
+  },
+  {
+    "type": "char_data",
+    "named": true
+  },
+  {
+    "type": "enc_name",
     "named": true
   },
   {
@@ -831,12 +803,36 @@
     "named": true
   },
   {
+    "type": "name",
+    "named": true
+  },
+  {
     "type": "number",
+    "named": true
+  },
+  {
+    "type": "pi_content",
+    "named": true
+  },
+  {
+    "type": "pi_target",
+    "named": true
+  },
+  {
+    "type": "pubid_literal",
     "named": true
   },
   {
     "type": "standalone",
     "named": false
+  },
+  {
+    "type": "standalone_value",
+    "named": true
+  },
+  {
+    "type": "system_literal",
+    "named": true
   },
   {
     "type": "tag_name",
@@ -849,6 +845,10 @@
   {
     "type": "version",
     "named": false
+  },
+  {
+    "type": "version_num",
+    "named": true
   },
   {
     "type": "xml",
