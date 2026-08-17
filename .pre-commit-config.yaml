@@ -11,6 +11,7 @@ repos:
       - id: check-yaml
       - id: debug-statements
       - id: end-of-file-fixer
+        exclude: ^src/((grammar|node-types)\.json|parser\.c)$
       - id: no-commit-to-branch
         args: [--branch, main, --pattern, '[A-Z].*']
       - id: trailing-whitespace
@@ -26,6 +27,14 @@ repos:
         name: Tree-sitter corpus tests
         language: system
         entry: npx tree-sitter test
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: parser-sync-check
+        name: Check generated src/ files are in sync with grammar.js
+        language: system
+        entry: bash -c 'npx tree-sitter generate && git diff --exit-code -- src/grammar.json src/node-types.json src/parser.c'
+        files: grammar\.js
         pass_filenames: false
         stages: [pre-commit]
 
