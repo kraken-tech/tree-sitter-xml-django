@@ -87,9 +87,15 @@ jobs:
 workflows:
   test-build-publish:
     jobs:
-      - lint
-      - test
+      - lint:
+          context:
+            - KTL_NEXUS
+      - test:
+          context:
+            - KTL_NEXUS
       - publish:
+          context:
+            - KTL_NEXUS
           requires:
             - lint
             - test
