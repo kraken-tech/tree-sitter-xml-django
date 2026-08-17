@@ -339,6 +339,7 @@ core = [
 dev = [
     { name = "pre-commit" },
     { name = "pytest" },
+    { name = "tree-sitter" },
 ]
 
 [package.metadata]
@@ -349,6 +350,7 @@ provides-extras = ["core"]
 dev = [
     { name = "pre-commit", specifier = ">=3.0" },
     { name = "pytest", specifier = ">=8.0" },
+    { name = "tree-sitter", specifier = "~=0.26" },
 ]
 
 [[package]]

@@ -9,7 +9,7 @@ Supports `.xml` and `.rml` files using Django template syntax embedded in XML.
 - Node.js (for grammar generation)
 - Python 3.x (for Python bindings)
 - [tree-sitter CLI](https://github.com/tree-sitter/tree-sitter)
-                                                                                                                                                                                                                                        
+
 ## Usage
 
 ### Python
