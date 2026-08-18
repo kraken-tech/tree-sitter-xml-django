@@ -19,6 +19,13 @@
           ]
         },
         {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_prolog_node"
+          }
+        },
+        {
           "type": "CHOICE",
           "members": [
             {
@@ -36,6 +43,23 @@
             "type": "SYMBOL",
             "name": "_top_level_node"
           }
+        }
+      ]
+    },
+    "_prolog_node": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "processing_instruction"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "comment"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_django_node"
         }
       ]
     },
@@ -2294,6 +2318,10 @@
     [
       "_body_node",
       "element"
+    ],
+    [
+      "_prolog_node",
+      "_top_level_node"
     ]
   ],
   "precedences": [],

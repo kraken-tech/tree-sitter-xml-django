@@ -351,6 +351,72 @@ DOCTYPE without XML declaration
       name: (name))))
 
 ==================
+Comment before DOCTYPE in prolog (no XML declaration)
+==================
+
+<!-- preamble -->
+<!DOCTYPE document SYSTEM "rml.dtd">
+<root/>
+
+---
+
+(document
+  (comment)
+  (doctype_decl
+    name: (name)
+    (external_id
+      (system_literal)))
+  (element
+    (self_closing_tag
+      name: (name))))
+
+==================
+Comment between XML declaration and DOCTYPE
+==================
+
+<?xml version="1.0"?>
+<!-- preamble -->
+<!DOCTYPE document SYSTEM "rml.dtd">
+<root/>
+
+---
+
+(document
+  (xml_decl
+    (version_num))
+  (comment)
+  (doctype_decl
+    name: (name)
+    (external_id
+      (system_literal)))
+  (element
+    (self_closing_tag
+      name: (name))))
+
+==================
+Comment after DOCTYPE before root element
+==================
+
+<?xml version="1.0"?>
+<!DOCTYPE document SYSTEM "rml.dtd">
+<!-- postamble -->
+<root/>
+
+---
+
+(document
+  (xml_decl
+    (version_num))
+  (doctype_decl
+    name: (name)
+    (external_id
+      (system_literal)))
+  (comment)
+  (element
+    (self_closing_tag
+      name: (name))))
+
+==================
 DOCTYPE as literal text in element content is parsed as char_data
 ==================
 
