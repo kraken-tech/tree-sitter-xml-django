@@ -224,7 +224,6 @@
   {
     "type": "doctype_decl",
     "named": true,
-    "extra": true,
     "fields": {
       "name": {
         "multiple": false,
@@ -263,6 +262,10 @@
         },
         {
           "type": "dj_variable_expr",
+          "named": true
+        },
+        {
+          "type": "doctype_decl",
           "named": true
         },
         {

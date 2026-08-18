@@ -14,7 +14,6 @@ export default grammar({
 
   extras: $ => [
     /\s/,
-    $.doctype_decl,
   ],
 
   conflicts: $ => [
@@ -39,6 +38,7 @@ export default grammar({
     // instead of generating spurious nodes.
     document: $ => seq(
       optional($.xml_decl),
+      optional($.doctype_decl),
       repeat($._top_level_node),
     ),
 
