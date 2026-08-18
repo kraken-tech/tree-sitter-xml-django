@@ -280,7 +280,9 @@ with statement
           (variable_name))
         (variable
           (variable_name))
-        (char_data)
+        (dj_variable_expr
+          (variable
+            (variable_name)))
         (tag_name)
         (end_paired_statement)))
     (end_tag
@@ -306,7 +308,9 @@ autoescape statement
           (start_tag
             (name))
           (content
-            (char_data))
+            (dj_variable_expr
+              (variable
+                (variable_name))))
           (end_tag
             (name)))
         (tag_name)

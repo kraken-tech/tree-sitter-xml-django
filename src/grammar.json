@@ -742,7 +742,7 @@
         "value": -1,
         "content": {
           "type": "PATTERN",
-          "value": "([^\"<&{]|\\{[^%#])+"
+          "value": "([^\"<&{]|\\{[^{%#])+"
         }
       }
     },
@@ -753,7 +753,7 @@
         "value": -1,
         "content": {
           "type": "PATTERN",
-          "value": "([^'<&{]|\\{[^%#])+"
+          "value": "([^'<&{]|\\{[^{%#])+"
         }
       }
     },
@@ -775,7 +775,7 @@
         "value": -1,
         "content": {
           "type": "PATTERN",
-          "value": "([^<&{]|\\{[^%#])+"
+          "value": "([^<&{]|\\{[^{%#])+"
         }
       }
     },
@@ -944,11 +944,41 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "dj_variable_expr"
+        },
+        {
+          "type": "SYMBOL",
           "name": "_django_statement"
         },
         {
           "type": "SYMBOL",
           "name": "_django_comment"
+        }
+      ]
+    },
+    "dj_variable_expr": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{{"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "variable"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "dj_string"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "}}"
         }
       ]
     },
