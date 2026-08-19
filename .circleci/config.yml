@@ -32,7 +32,7 @@ jobs:
           command: make dev
       - run:
           name: Run pre-commit
-          command: uv run pre-commit run --all-files
+          command: SKIP=no-commit-to-branch uv run pre-commit run --all-files
       - save_cache:
           key: v1-uv-{{ checksum "uv.lock" }}
           paths:
