@@ -24,7 +24,37 @@ parser = Parser(language)
 tree = parser.parse(b"<root>{% if condition %}<child/>{% endif %}</root>")
 ```
 
+## Contributing
 
+### First-time setup
+
+Requires Node.js, [uv](https://docs.astral.sh/uv/), and Python 3.10+.
+
+```bash
+# Install Node.js and Python dependencies
+make dev
+
+# Install pre-commit hooks
+uvx pre-commit install --install-hooks
+```
+
+`make dev` runs `npm install` (tree-sitter CLI) and `uv sync` (Python dev dependencies) in one step.
+
+#### Common tasks
+
+| Command | Description |
+|---|---|
+| `make generate` | Re-generate `src/parser.c` from `grammar.js` |
+| `make test` | Run tree-sitter corpus tests and Python tests |
+| `make package` | Build the Python distribution package |
+
+### Not (yet) implemented
+
+Query files (typically found at `/queries/*.scm`) are not implemented in this grammar.
+The only use case for this library at the time of writing is programmatic
+tree manipulation, not editor integration. Implement these if the grammar is ever adopted
+for editor use (syntax highlighting, language injection, symbol navigation), or if we
+ever open-source this grammar parser.
 
 ## License
 
