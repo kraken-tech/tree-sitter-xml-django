@@ -61,6 +61,11 @@
     }
   },
   {
+    "type": "boolean",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "branch_statement",
     "named": true,
     "fields": {},
@@ -394,6 +399,16 @@
         }
       ]
     }
+  },
+  {
+    "type": "keyword",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "keyword_operator",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "operator",
@@ -793,6 +808,10 @@
     "named": false
   },
   {
+    "type": "False",
+    "named": false
+  },
+  {
     "type": "PUBLIC",
     "named": false
   },
@@ -801,12 +820,24 @@
     "named": false
   },
   {
+    "type": "True",
+    "named": false
+  },
+  {
     "type": "]]>",
     "named": false
   },
   {
-    "type": "boolean",
-    "named": true
+    "type": "and",
+    "named": false
+  },
+  {
+    "type": "as",
+    "named": false
+  },
+  {
+    "type": "by",
+    "named": false
   },
   {
     "type": "cdata",
@@ -841,20 +872,44 @@
     "named": true
   },
   {
-    "type": "keyword",
-    "named": true
+    "type": "from",
+    "named": false
   },
   {
-    "type": "keyword_operator",
-    "named": true
+    "type": "in",
+    "named": false
+  },
+  {
+    "type": "is",
+    "named": false
   },
   {
     "type": "name",
     "named": true
   },
   {
+    "type": "not",
+    "named": false
+  },
+  {
     "type": "number",
     "named": true
+  },
+  {
+    "type": "off",
+    "named": false
+  },
+  {
+    "type": "on",
+    "named": false
+  },
+  {
+    "type": "only",
+    "named": false
+  },
+  {
+    "type": "or",
+    "named": false
   },
   {
     "type": "pi_content",
@@ -867,6 +922,14 @@
   {
     "type": "pubid_literal",
     "named": true
+  },
+  {
+    "type": "random",
+    "named": false
+  },
+  {
+    "type": "silent",
+    "named": false
   },
   {
     "type": "standalone",
@@ -895,6 +958,10 @@
   {
     "type": "version_num",
     "named": true
+  },
+  {
+    "type": "with",
+    "named": false
   },
   {
     "type": "xml",

@@ -452,6 +452,134 @@ if with keyword operator
       (name))))
 
 ==================
+Variable name with keyword prefix is not split by lexer
+==================
+
+<root>{% if android %}<item/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+Variable name with keyword substring not at prefix is not split (coffer)
+==================
+
+<root>{% if coffer %}<item/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+Variables with keyword prefixes in compound condition are not split (cannot, intercept)
+==================
+
+<root>{% if cannot intercept %}<item/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (variable
+          (variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+Variable with keyword prefix after keyword operator is not split (not intercept)
+==================
+
+<root>{% if not intercept %}<item/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (keyword_operator)
+        (variable
+          (variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+Variable name starting with boolean prefix is not split (Falsetto)
+==================
+
+<root>{% if Falsetto %}<item/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
 keyword with no trailing whitespace before closing tag
 ==================
 
