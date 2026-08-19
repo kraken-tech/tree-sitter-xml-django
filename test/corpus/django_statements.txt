@@ -452,6 +452,74 @@ if with keyword operator
       (name))))
 
 ==================
+keyword with no trailing whitespace before closing tag
+==================
+
+<root>{% autoescape on%}<p/>{% endautoescape %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (keyword)
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+keyword at end of unpaired statement with no trailing whitespace
+==================
+
+<root>{% include "x.html" only%}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (unpaired_statement
+        (tag_name)
+        (dj_string)
+        (keyword)))
+    (end_tag
+      (name))))
+
+==================
+boolean with no trailing whitespace before closing tag
+==================
+
+<root>{% if True%}<item/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (boolean)
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
 Statement at document level
 ==================
 
