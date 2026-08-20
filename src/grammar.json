@@ -1234,6 +1234,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "dj_comment_statement"
+        },
+        {
+          "type": "SYMBOL",
           "name": "unpaired_statement"
         }
       ]
@@ -2067,6 +2071,73 @@
         }
       ]
     },
+    "dj_comment_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{%"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "STRING",
+            "value": "comment"
+          },
+          "named": true,
+          "value": "tag_name"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_dj_attribute"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "%}"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "comment_content"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "{%"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "STRING",
+            "value": "endcomment"
+          },
+          "named": true,
+          "value": "tag_name"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "STRING",
+            "value": "%}"
+          },
+          "named": true,
+          "value": "end_paired_statement"
+        }
+      ]
+    },
+    "comment_content": {
+      "type": "SYMBOL",
+      "name": "_comment_body_text"
+    },
     "_dj_attribute": {
       "type": "SEQ",
       "members": [
@@ -2297,7 +2368,16 @@
     ]
   ],
   "precedences": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "_error_recovery_sentinel"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_comment_body_text"
+    }
+  ],
   "inline": [],
   "supertypes": [],
   "reserved": {}
