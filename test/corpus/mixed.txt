@@ -26,7 +26,9 @@ Full document with XML declaration
         (start_tag
           (name))
         (content
-          (char_data))
+          (dj_variable_expr
+            (variable
+              (variable_name))))
         (end_tag
           (name))))
     (end_tag
@@ -45,6 +47,10 @@ Django in element content alongside text
     (start_tag
       (name))
     (content
+      (char_data)
+      (dj_variable_expr
+        (variable
+          (variable_name)))
       (char_data))
     (end_tag
       (name))))
@@ -81,7 +87,10 @@ Django expression in attribute, text in content
       name: (name)
       (attribute
         name: (name)
-        value: (att_value))
+        value: (att_value
+          (dj_variable_expr
+            (variable
+              (variable_name)))))
       (attribute
         name: (name)
         value: (att_value)))
@@ -115,7 +124,9 @@ Deeply nested Django inside XML
               (start_tag
                 (name))
               (content
-                (char_data))
+                (dj_variable_expr
+                  (variable
+                    (variable_name))))
               (end_tag
                 (name)))
             (tag_name)
@@ -162,7 +173,9 @@ CDATA alongside Django
     (start_tag
       (name))
     (content
-      (char_data)
+      (dj_variable_expr
+        (variable
+          (variable_name)))
       (cdata_section
         (cdata_start)
         (cdata)))
@@ -185,7 +198,9 @@ Processing instruction alongside Django
       (processing_instruction
         (pi_target)
         (pi_content))
-      (char_data))
+      (dj_variable_expr
+        (variable
+          (variable_name))))
     (end_tag
       (name))))
 
@@ -352,6 +367,15 @@ Multiple sibling elements as children of paired statement
                   (name)
                   (att_value)))
               (content
+                (dj_variable_expr
+                  (variable
+                    (variable_name)
+                    (filter
+                      (filter_name)
+                      (number))
+                    (filter
+                      (filter_name)
+                      (filter_argument))))
                 (char_data))
               (end_tag
                 (name))))

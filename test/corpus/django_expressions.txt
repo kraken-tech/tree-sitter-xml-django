@@ -11,7 +11,9 @@ Simple variable
     (start_tag
       (name))
     (content
-      (char_data))
+      (dj_variable_expr
+        (variable
+          (variable_name))))
     (end_tag
       (name))))
 
@@ -28,7 +30,9 @@ Dotted variable
     (start_tag
       (name))
     (content
-      (char_data))
+      (dj_variable_expr
+        (variable
+          (variable_name))))
     (end_tag
       (name))))
 
@@ -45,7 +49,11 @@ Variable with filter
     (start_tag
       (name))
     (content
-      (char_data))
+      (dj_variable_expr
+        (variable
+          (variable_name)
+          (filter
+            (filter_name)))))
     (end_tag
       (name))))
 
@@ -62,7 +70,12 @@ Variable with filter and argument
     (start_tag
       (name))
     (content
-      (char_data))
+      (dj_variable_expr
+        (variable
+          (variable_name)
+          (filter
+            (filter_name)
+            (number)))))
     (end_tag
       (name))))
 
@@ -79,7 +92,12 @@ Variable with filter and dotted argument
     (start_tag
       (name))
     (content
-      (char_data))
+      (dj_variable_expr
+        (variable
+          (variable_name)
+          (filter
+            (filter_name)
+            (filter_argument)))))
     (end_tag
       (name))))
 
@@ -96,7 +114,12 @@ Variable with quoted filter argument
     (start_tag
       (name))
     (content
-      (char_data))
+      (dj_variable_expr
+        (variable
+          (variable_name)
+          (filter
+            (filter_name)
+            (filter_argument)))))
     (end_tag
       (name))))
 
@@ -113,7 +136,14 @@ Variable with chained filters
     (start_tag
       (name))
     (content
-      (char_data))
+      (dj_variable_expr
+        (variable
+          (variable_name)
+          (filter
+            (filter_name))
+          (filter
+            (filter_name)
+            (number)))))
     (end_tag
       (name))))
 
@@ -130,7 +160,8 @@ String literal expression
     (start_tag
       (name))
     (content
-      (char_data))
+      (dj_variable_expr
+        (dj_string)))
     (end_tag
       (name))))
 
@@ -147,7 +178,10 @@ String with filter
     (start_tag
       (name))
     (content
-      (char_data))
+      (dj_variable_expr
+        (dj_string
+          (filter
+            (filter_name)))))
     (end_tag
       (name))))
 
@@ -165,7 +199,10 @@ Expression in attribute value
       name: (name)
       (attribute
         name: (name)
-        value: (att_value)))))
+        value: (att_value
+          (dj_variable_expr
+            (variable
+              (variable_name))))))))
 
 ==================
 Expression mixed with text in attribute
@@ -181,7 +218,10 @@ Expression mixed with text in attribute
       name: (name)
       (attribute
         name: (name)
-        value: (att_value)))))
+        value: (att_value
+          (dj_variable_expr
+            (variable
+              (variable_name))))))))
 
 ==================
 Expression surrounded by text in attribute
@@ -197,7 +237,10 @@ Expression surrounded by text in attribute
       name: (name)
       (attribute
         name: (name)
-        value: (att_value)))))
+        value: (att_value
+          (dj_variable_expr
+            (variable
+              (variable_name))))))))
 
 ==================
 Multiple expressions in content
@@ -212,7 +255,12 @@ Multiple expressions in content
     (start_tag
       (name))
     (content
-      (char_data))
+      (dj_variable_expr
+        (variable
+          (variable_name)))
+      (dj_variable_expr
+        (variable
+          (variable_name))))
     (end_tag
       (name))))
 
@@ -229,7 +277,10 @@ Expression surrounded by text in content
     (start_tag
       (name))
     (content
-      (char_data))
+      (char_data)
+      (dj_variable_expr
+        (variable
+          (variable_name))))
     (end_tag
       (name))))
 
@@ -246,6 +297,20 @@ Multiple expressions surrounded by text in content
     (start_tag
       (name))
     (content
+      (dj_variable_expr
+        (variable
+          (variable_name)))
+      (char_data)
+      (dj_variable_expr
+        (variable
+          (variable_name)))
+      (char_data)
+      (dj_variable_expr
+        (variable
+          (variable_name)
+          (filter
+            (filter_name)
+            (number))))
       (char_data))
     (end_tag
       (name))))
