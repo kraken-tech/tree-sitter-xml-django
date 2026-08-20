@@ -73,6 +73,19 @@ jobs:
     executor: default
     steps:
       - checkout
+      - run:
+          name: Check if version already published
+          command: |
+            VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+            TAG="v${VERSION}"
+            echo "export VERSION=$VERSION" >> "$BASH_ENV"
+            echo "export TAG=$TAG" >> "$BASH_ENV"
+            if git ls-remote --tags origin "refs/tags/$TAG" | grep -q .; then
+              echo "Tag $TAG already exists — version $VERSION has been published. Skipping."
+              circleci-agent step halt
+            else
+              echo "No tag for $TAG found — version $VERSION is new. Will publish."
+            fi
       - ktl-nexus/login
       - ktl-nexus/configure_uv
       - run:
@@ -82,6 +95,13 @@ jobs:
           name: Build package
           command: make package
       - ktl-nexus/publish_python_package
+      - run:
+          name: Tag release on GitHub
+          command: |
+            git config user.email "ci-bot@kraken.tech"
+            git config user.name "CI"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push https://${GITHUB_TOKEN}@github.com/octoenergy/tree-sitter-xmldjango.git "$TAG"
 
 workflows:
   test-build-publish:
@@ -95,11 +115,10 @@ workflows:
       - publish:
           context:
             - KTL_NEXUS
+            - BILLING_TEAM_GITHUB_TOKEN
           requires:
             - lint
             - test
           filters:
             branches:
               only: main
-            tags:
-              only: /^v\d+\.\d+\.\d+/
