@@ -377,21 +377,23 @@ export default grammar({
     // Django keywords and operators
     // -------------------------------------------------------------------------
 
-    keyword: _ => token(seq(
-      choice('on', 'off', 'with', 'as', 'silent', 'only', 'from', 'random', 'by'),
-      /\s/,
-    )),
+    // Bare string literals take priority over the variable_name regex at equal length.
+    // Combined with word: $ => $._identifier, they are never matched
+    // as a keyword prefix inside a longer identifier (e.g. 'and' won't split 'android'
+    // into keyword_operator + variable_name). Multi-word operators still use token() so
+    // they are matched as an atomic unit including the embedded space.
+    keyword: _ => choice('on', 'off', 'with', 'as', 'silent', 'only', 'from', 'random', 'by'),
 
-    keyword_operator: _ => token(seq(
-      choice('and', 'or', 'not', 'in', 'not in', 'is', 'is not'),
-      /\s/,
-    )),
+    keyword_operator: _ => choice(
+      'and', 'or', 'not', 'in', 'is',
+      token(choice('not in', 'is not')),
+    ),
 
     operator: _ => choice('==', '!=', '<', '>', '<=', '>='),
 
     number: _ => /[0-9]+(\.[0-9]+)?/,
 
-    boolean: _ => token(seq(choice('True', 'False'), /\s/)),
+    boolean: _ => choice('True', 'False'),
 
     _identifier: _ => /[a-zA-Z_]\w*/,
   },
