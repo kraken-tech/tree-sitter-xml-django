@@ -298,6 +298,8 @@ export default grammar({
 
     variable_name: _ => /[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*/,
 
+    block_name: _ => /[a-zA-Z_][a-zA-Z0-9_-]*/,
+
     filter: $ => seq(
       $.filter_name,
       optional(seq(':', choice($.filter_argument, $._quoted_filter_argument, $.number))),
@@ -333,6 +335,7 @@ export default grammar({
       $.paired_statement,
       alias($.if_statement, $.paired_statement),
       alias($.for_statement, $.paired_statement),
+      alias($.block_statement, $.paired_statement),
       $.dj_comment_statement,
       $.unpaired_statement,
     ),
@@ -340,7 +343,6 @@ export default grammar({
     paired_statement: $ => {
       const tags = [
         'autoescape',
-        'block',
         'blocktrans',
         'blocktranslate',
         'ifchanged',
@@ -382,6 +384,15 @@ export default grammar({
     ),
 
     empty_clause: $ => seq('{%', alias('empty', $.tag_name), '%}'),
+
+    // Block tags require their own rule because block names allow hyphens
+    // (e.g. `{% block price-sheet-header %}`), which the generic variable_name
+    // regex does not accept.
+    block_statement: $ => seq(
+      '{%', alias('block', $.tag_name), $.block_name, '%}',
+      repeat($._body_node),
+      '{%', alias('endblock', $.tag_name), optional($.block_name), alias('%}', $.end_paired_statement),
+    ),
 
     unpaired_statement: $ => seq(
       '{%', alias($._identifier, $.tag_name), repeat($._dj_attribute), '%}',
