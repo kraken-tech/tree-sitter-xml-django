@@ -87,21 +87,31 @@ jobs:
               echo "No tag for $TAG found — version $VERSION is new. Will publish."
             fi
       - ktl-nexus/login
-      - ktl-nexus/configure_uv
       - run:
           name: Install build tools
           command: pipx install build twine
       - run:
           name: Build package
           command: make package
-      - ktl-nexus/publish_python_package
+      - run:
+          name: Publish package to Nexus
+          command: |
+            twine upload \
+              --skip-existing \
+              --client-cert="${HOME}/certificates/ktl-ca-circleci.pem" \
+              --cert="/etc/ssl/certs/ca-certificates.crt" \
+              --repository-url="https://${KTL_NEXUS_URL}/repository/pypi-kraken/" \
+              --username="${KTL_NEXUS_CI_USER_READWRITE_USERNAME}" \
+              --password="${KTL_NEXUS_CI_USER_READWRITE_PASSWORD}" \
+              dist/*
       - run:
           name: Tag release on GitHub
           command: |
             git config user.email "ci-bot@kraken.tech"
             git config user.name "CI"
             git tag -a "$TAG" -m "Release $TAG"
-            git push https://${GITHUB_TOKEN}@github.com/octoenergy/tree-sitter-xmldjango.git "$TAG"
+            git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/octoenergy/tree-sitter-xmldjango.git"
+            git push origin "$TAG"
 
 workflows:
   test-build-publish:
