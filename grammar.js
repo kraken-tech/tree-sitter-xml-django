@@ -14,7 +14,6 @@ export default grammar({
 
   extras: $ => [
     /\s/,
-    $.doctype_decl,
   ],
 
   conflicts: $ => [
@@ -31,15 +30,31 @@ export default grammar({
     //     ...
     // </blockTable>
     [$._body_node, $.element],
+    // _prolog_node is a subset of _top_level_node. GLR tracks both until an
+    // element or <!DOCTYPE token resolves which repeat we're in.
+    [$._prolog_node, $._top_level_node],
   ],
 
   rules: {
     // At the document level we do NOT include char_data so that whitespace-only
     // lines (e.g. trailing newlines in test files) are consumed by extras
     // instead of generating spurious nodes.
+    //
+    // The prolog follows the XML spec: xml_decl?, misc*, doctype_decl?, misc*
+    // where misc = comment | processing_instruction | django_node.
+    // _prolog_node captures those misc nodes so that DOCTYPE remains restricted
+    // to the prolog without barring valid comments/PIs/Django statements around it.
     document: $ => seq(
       optional($.xml_decl),
+      repeat($._prolog_node),
+      optional($.doctype_decl),
       repeat($._top_level_node),
+    ),
+
+    _prolog_node: $ => choice(
+      $.processing_instruction,
+      $.comment,
+      $._django_node,
     ),
 
     _top_level_node: $ => choice(

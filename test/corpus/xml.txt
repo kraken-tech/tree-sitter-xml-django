@@ -331,3 +331,143 @@ DOCTYPE in full RML-style document
           name: (name))))
     (end_tag
       name: (name))))
+
+==================
+DOCTYPE without XML declaration
+==================
+
+<!DOCTYPE document SYSTEM "rml.dtd">
+<root/>
+
+---
+
+(document
+  (doctype_decl
+    name: (name)
+    (external_id
+      (system_literal)))
+  (element
+    (self_closing_tag
+      name: (name))))
+
+==================
+Comment before DOCTYPE in prolog (no XML declaration)
+==================
+
+<!-- preamble -->
+<!DOCTYPE document SYSTEM "rml.dtd">
+<root/>
+
+---
+
+(document
+  (comment)
+  (doctype_decl
+    name: (name)
+    (external_id
+      (system_literal)))
+  (element
+    (self_closing_tag
+      name: (name))))
+
+==================
+Comment between XML declaration and DOCTYPE
+==================
+
+<?xml version="1.0"?>
+<!-- preamble -->
+<!DOCTYPE document SYSTEM "rml.dtd">
+<root/>
+
+---
+
+(document
+  (xml_decl
+    (version_num))
+  (comment)
+  (doctype_decl
+    name: (name)
+    (external_id
+      (system_literal)))
+  (element
+    (self_closing_tag
+      name: (name))))
+
+==================
+Comment after DOCTYPE before root element
+==================
+
+<?xml version="1.0"?>
+<!DOCTYPE document SYSTEM "rml.dtd">
+<!-- postamble -->
+<root/>
+
+---
+
+(document
+  (xml_decl
+    (version_num))
+  (doctype_decl
+    name: (name)
+    (external_id
+      (system_literal)))
+  (comment)
+  (element
+    (self_closing_tag
+      name: (name))))
+
+==================
+DOCTYPE as literal text in element content is parsed as char_data
+==================
+
+<root>The DOCTYPE declaration</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (char_data))
+    (end_tag
+      (name))))
+
+==================
+DOCTYPE inside element content produces an error
+==================
+
+<root><!DOCTYPE x></root>
+
+---
+
+(document
+  (element
+    (start_tag
+      name: (name))
+    (ERROR
+      (UNEXPECTED 'D')
+      (tag_name)
+      (tag_name))
+    (end_tag
+      name: (name))))
+
+==================
+DOCTYPE inside Django body block produces an error
+==================
+
+{% if condition %}<!DOCTYPE x>{% endif %}
+
+---
+
+(document
+  (paired_statement
+    (tag_name)
+    (variable
+      (variable_name))
+    (ERROR
+      (UNEXPECTED 'D')
+      (tag_name)
+      (tag_name))
+    (tag_name)
+    (end_paired_statement)))
