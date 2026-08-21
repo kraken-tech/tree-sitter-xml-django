@@ -108,6 +108,28 @@ comment statement with multiple blocks in same document
       (name))))
 
 ==================
+slot statement
+==================
+
+<para>{% slot "col_header" %}default text{% endslot %}</para>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (dj_string)
+        (char_data)
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
 blocktrans statement
 ==================
 

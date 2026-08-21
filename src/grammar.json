@@ -1558,6 +1558,71 @@
               "type": "ALIAS",
               "content": {
                 "type": "STRING",
+                "value": "slot"
+              },
+              "named": true,
+              "value": "tag_name"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_dj_attribute"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "%}"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_body_node"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "{%"
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "STRING",
+                "value": "endslot"
+              },
+              "named": true,
+              "value": "tag_name"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_dj_attribute"
+              }
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "STRING",
+                "value": "%}"
+              },
+              "named": true,
+              "value": "end_paired_statement"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "{%"
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "STRING",
                 "value": "spaceless"
               },
               "named": true,

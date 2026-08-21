@@ -354,6 +354,7 @@ export default grammar({
         'blocktrans',
         'blocktranslate',
         'ifchanged',
+        'slot',
         'spaceless',
         'verbatim',
         'with',
