@@ -94,7 +94,7 @@
           "named": true
         },
         {
-          "type": "number",
+          "type": "number_expr",
           "named": true
         },
         {
@@ -238,7 +238,7 @@
           "named": true
         },
         {
-          "type": "number",
+          "type": "number_expr",
           "named": true
         },
         {
@@ -281,6 +281,10 @@
       "types": [
         {
           "type": "dj_string",
+          "named": true
+        },
+        {
+          "type": "number_expr",
           "named": true
         },
         {
@@ -479,6 +483,25 @@
     "fields": {}
   },
   {
+    "type": "number_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "filter",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "operator",
     "named": true,
     "fields": {}
@@ -556,7 +579,7 @@
           "named": true
         },
         {
-          "type": "number",
+          "type": "number_expr",
           "named": true
         },
         {
@@ -735,7 +758,7 @@
           "named": true
         },
         {
-          "type": "number",
+          "type": "number_expr",
           "named": true
         },
         {

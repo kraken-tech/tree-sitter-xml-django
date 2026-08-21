@@ -358,3 +358,66 @@ Negative float filter argument
             (number)))))
     (end_tag
       (name))))
+
+==================
+Bare integer literal expression
+==================
+
+<root>{{ 0 }}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_variable_expr
+        (number_expr
+          (number))))
+    (end_tag
+      (name))))
+
+==================
+Integer literal with filter and argument
+==================
+
+<root>{{ 0|spanish_number:2 }}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_variable_expr
+        (number_expr
+          (number)
+          (filter
+            (filter_name)
+            (number)))))
+    (end_tag
+      (name))))
+
+==================
+Negative integer literal with filter
+==================
+
+<root>{{ -1|multiply:-1 }}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_variable_expr
+        (number_expr
+          (number)
+          (filter
+            (filter_name)
+            (number)))))
+    (end_tag
+      (name))))

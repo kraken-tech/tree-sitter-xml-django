@@ -277,12 +277,13 @@ export default grammar({
     ),
 
     // -------------------------------------------------------------------------
-    // Expressions: {{ variable }} or {{ "string" }}, optionally with filters.
+    // Expressions: {{ variable }}, {{ "string" }}, or {{ 0 }}, optionally
+    // with filters.
     // -------------------------------------------------------------------------
 
     dj_variable_expr: $ => seq(
       '{{',
-      choice($.variable, $.dj_string),
+      choice($.variable, $.dj_string, $.number_expr),
       '}}',
     ),
 
@@ -293,6 +294,13 @@ export default grammar({
 
     variable: $ => seq(
       $.variable_name,
+      repeat(seq('|', $.filter)),
+    ),
+
+    // A number literal optionally followed by filters.  Mirrors `variable` and
+    // `dj_string` so that {{ 0|filter:arg }} is valid.
+    number_expr: $ => seq(
+      $.number,
       repeat(seq('|', $.filter)),
     ),
 
@@ -418,7 +426,7 @@ export default grammar({
         $.keyword,
         $.keyword_operator,
         $.operator,
-        $.number,
+        $.number_expr,
         $.boolean,
         $.dj_string,
         $.variable,
