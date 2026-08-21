@@ -250,7 +250,8 @@ if with number comparison
         (variable
           (variable_name))
         (operator)
-        (number)
+        (number_expr
+          (number))
         (element
           (self_closing_tag
             (name)))

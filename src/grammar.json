@@ -1009,6 +1009,10 @@
             {
               "type": "SYMBOL",
               "name": "dj_string"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "number_expr"
             }
           ]
         },
@@ -1024,6 +1028,31 @@
         {
           "type": "SYMBOL",
           "name": "variable_name"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "|"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "filter"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "number_expr": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "number"
         },
         {
           "type": "REPEAT",
@@ -2173,7 +2202,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "number"
+              "name": "number_expr"
             },
             {
               "type": "SYMBOL",

@@ -500,7 +500,8 @@ if with comparison operator
         (variable
           (variable_name))
         (operator)
-        (number)
+        (number_expr
+          (number))
         (element
           (self_closing_tag
             (name)))
@@ -768,7 +769,8 @@ if with negative number comparison
         (variable
           (variable_name))
         (operator)
-        (number)
+        (number_expr
+          (number))
         (element
           (self_closing_tag
             (name)))
