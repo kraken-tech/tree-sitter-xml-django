@@ -1049,7 +1049,7 @@
     },
     "block_name": {
       "type": "PATTERN",
-      "value": "[a-zA-Z_][a-zA-Z0-9_-]*"
+      "value": "[a-zA-Z_][a-zA-Z0-9_.+-]*"
     },
     "filter": {
       "type": "SEQ",
