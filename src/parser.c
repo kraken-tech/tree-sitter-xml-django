@@ -3129,6 +3129,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
     case 138:
       ACCEPT_TOKEN(aux_sym_char_ref_token1);
       if (lookahead == '.') ADVANCE(76);
+      if (lookahead == '_') ADVANCE(75);
       if (('0' <= lookahead && lookahead <= '9')) ADVANCE(138);
       if (('A' <= lookahead && lookahead <= 'F') ||
           ('a' <= lookahead && lookahead <= 'f')) ADVANCE(147);
@@ -3837,10 +3838,12 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
     case 233:
       ACCEPT_TOKEN(sym_number);
       if (lookahead == '.') ADVANCE(76);
+      if (lookahead == '_') ADVANCE(75);
       if (('0' <= lookahead && lookahead <= '9')) ADVANCE(233);
       END_STATE();
     case 234:
       ACCEPT_TOKEN(sym_number);
+      if (lookahead == '_') ADVANCE(76);
       if (('0' <= lookahead && lookahead <= '9')) ADVANCE(234);
       END_STATE();
     case 235:

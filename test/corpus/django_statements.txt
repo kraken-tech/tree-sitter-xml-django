@@ -778,3 +778,31 @@ if with negative number comparison
         (end_paired_statement)))
     (end_tag
       (name))))
+
+==================
+if with underscore digit separator in number
+==================
+
+<root>{% if amount > 300_00 %}<item/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (operator)
+        (number_expr
+          (number))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
