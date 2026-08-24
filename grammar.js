@@ -439,7 +439,7 @@ export default grammar({
 
     operator: _ => choice('==', '!=', '<', '>', '<=', '>='),
 
-    number: _ => /[0-9]+(\.[0-9]+)?/,
+    number: _ => /-?[0-9]+(\.[0-9]+)?/,
 
     boolean: _ => choice('True', 'False'),
 

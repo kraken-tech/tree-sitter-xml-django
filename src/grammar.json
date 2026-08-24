@@ -2346,7 +2346,7 @@
     },
     "number": {
       "type": "PATTERN",
-      "value": "[0-9]+(\\.[0-9]+)?"
+      "value": "-?[0-9]+(\\.[0-9]+)?"
     },
     "boolean": {
       "type": "CHOICE",
