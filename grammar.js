@@ -298,7 +298,7 @@ export default grammar({
 
     variable_name: _ => /[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*/,
 
-    block_name: _ => /[a-zA-Z_][a-zA-Z0-9_-]*/,
+    block_name: _ => /[a-zA-Z_][a-zA-Z0-9_.+-]*/,
 
     filter: $ => seq(
       $.filter_name,

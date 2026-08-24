@@ -290,6 +290,64 @@ block statement with hyphenated name
       (name))))
 
 ==================
+block statement with dotted name
+==================
+
+<root>{% block first_page.logo %}<p>text</p>{% endblock first_page.logo %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (block_name)
+        (element
+          (start_tag
+            (name))
+          (content
+            (char_data))
+          (end_tag
+            (name)))
+        (tag_name)
+        (block_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+block statement with plus in name
+==================
+
+<root>{% block page_2+_header %}<p>text</p>{% endblock page_2+_header %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (block_name)
+        (element
+          (start_tag
+            (name))
+          (content
+            (char_data))
+          (end_tag
+            (name)))
+        (tag_name)
+        (block_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
 with statement
 ==================
 
