@@ -49,6 +49,8 @@ export default grammar({
     //     ...
     // </blockTable>
     [$._body_node, $.element],
+    // Same conflict for regular XML content
+    [$._node, $.element],
     // _prolog_node is a subset of _top_level_node (it excludes elements and
     // DOCTYPE).  The parser can't tell which repeat it's in until it sees an
     // element or <!DOCTYPE token, so both interpretations are tracked until
@@ -142,8 +144,22 @@ export default grammar({
     // Content nodes (inside elements or Django block bodies)
     // =========================================================================
 
-    // Used inside XML element content. No bare tags — ambiguity is confined to
-    // Django statement bodies where tag pairs may cross block boundaries.
+    // Used inside XML element content.  A bare start_tag is included at low
+    // priority so that an opening tag whose matching close tag is buried inside
+    // a Django conditional branch can fall back to a bare (unpaired) start_tag
+    // instead of producing an ERROR.  The close tag inside the branch body is
+    // already handled by _body_node's bare end_tag support.
+    //
+    // Example:
+    //   <keepTogether>              ← _node context; close tag not reachable here
+    //     {% if ... %}
+    //       </keepTogether>         ← _body_node bare end_tag, already works
+    //     {% elif ... %}
+    //       </keepTogether>
+    //     {% endif %}
+    //
+    // We deliberately do NOT add bare end_tag here: legitimate element close tags
+    // live at _node scope and must not compete with element-closing semantics.
     _node: $ => choice(
       $.element,
       $.char_data,
@@ -152,6 +168,7 @@ export default grammar({
       $.processing_instruction,
       $.comment,
       $._django_node,
+      prec.dynamic(-1, $.start_tag),
     ),
 
     // Used inside Django statement bodies (if/for/paired). Bare start_tag/end_tag

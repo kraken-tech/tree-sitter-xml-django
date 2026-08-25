@@ -494,6 +494,14 @@
         {
           "type": "SYMBOL",
           "name": "_django_node"
+        },
+        {
+          "type": "PREC_DYNAMIC",
+          "value": -1,
+          "content": {
+            "type": "SYMBOL",
+            "name": "start_tag"
+          }
         }
       ]
     },
@@ -2478,6 +2486,10 @@
   "conflicts": [
     [
       "_body_node",
+      "element"
+    ],
+    [
+      "_node",
       "element"
     ],
     [

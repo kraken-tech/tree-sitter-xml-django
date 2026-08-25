@@ -257,6 +257,38 @@ Django tag boundary crossing: opening tag inside if/else, closing tag outside
       name: (name))))
 
 ==================
+Django tag boundary crossing: opening tag outside if, closing tag inside each branch
+==================
+
+<story><keepTogether>{% if a %}</keepTogether>{% elif b %}</keepTogether>{% endif %}</story>
+
+---
+
+(document
+  (element
+    (start_tag
+      name: (name))
+    (content
+      (start_tag
+        name: (name))
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (end_tag
+          name: (name))
+        (branch_statement
+          (tag_name)
+          (variable
+            (variable_name)))
+        (end_tag
+          name: (name))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      name: (name))))
+
+==================
 Multiple sibling elements as children of paired statement
 ==================
 

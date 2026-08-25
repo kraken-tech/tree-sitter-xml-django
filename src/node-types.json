@@ -215,6 +215,10 @@
           "named": true
         },
         {
+          "type": "start_tag",
+          "named": true
+        },
+        {
           "type": "unpaired_dj_comment",
           "named": true
         },
