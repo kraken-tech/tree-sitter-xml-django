@@ -348,6 +348,72 @@ block statement with plus in name
       (name))))
 
 ==================
+block statement wrapping document root element
+==================
+
+{% block document %}
+<document><p>text</p></document>
+{% endblock %}
+
+---
+
+(document
+  (dj_paired_statement
+    (dj_tag_name)
+    (dj_block_name)
+    (char_data)
+    (element
+      (start_tag
+        (name))
+      (content
+        (element
+          (start_tag
+            (name))
+          (content
+            (char_data))
+          (end_tag
+            (name))))
+      (end_tag
+        (name)))
+    (dj_tag_name)
+    (dj_end_paired_statement)))
+
+==================
+extends with block statement wrapping document root element
+==================
+
+{% extends "base.rml" %}
+{% block document %}
+<document><p>text</p></document>
+{% endblock %}
+
+---
+
+(document
+  (dj_unpaired_statement
+    (dj_tag_name)
+    (dj_string))
+  (dj_paired_statement
+    (dj_tag_name)
+    (dj_block_name)
+    (char_data)
+    (element
+      (start_tag
+        (name))
+      (content
+        (element
+          (start_tag
+            (name))
+          (content
+            (char_data))
+          (end_tag
+            (name))))
+      (end_tag
+        (name)))
+    (dj_tag_name)
+    (dj_end_paired_statement)))
+
+==================
 with statement
 ==================
 
