@@ -77,6 +77,65 @@ tree manipulation, not editor integration. Implement these if the grammar is eve
 for editor use (syntax highlighting, language injection, symbol navigation), or if we
 ever open-source this grammar parser.
 
+## Limitations
+
+### XML tags spanning Django conditional branches
+
+Django templates sometimes use conditional blocks to select between variants of
+an XML structure, relying on the template engine to produce valid XML at render
+time even though the static source is not well-formed XML.  Any XML tag that
+opens or closes across a Django branch boundary — in either direction — will
+produce incorrect parse trees:
+
+```django
+{# open before block, close inside branch — ERROR nodes #}
+<keepTogether>
+    {% if necf_state %}
+        </keepTogether>
+    {% elif vic_state %}
+        </keepTogether>
+    {% endif %}
+
+{# open inside branches, close after block — wrong tree, no ERROR nodes #}
+{% if wide %}
+    <keepTogether>
+{% else %}
+    <keepTogether>
+{% endif %}
+</keepTogether>
+```
+
+The second case appears to parse without `ERROR` nodes when the pattern sits at
+the document root, but in practice these templates have a wrapping parent
+element.  Inside XML element content (`_node`), bare `end_tag` is not allowed,
+so the closing tag is silently consumed as the close of the parent element
+instead, producing a structurally wrong tree.
+
+Adding bare `start_tag`/`end_tag` alternatives to regular XML content causes
+GLR ambiguity: the parser begins treating every ordinary opening tag as a bare
+node and orphans its close tag, breaking large amounts of valid XML.
+
+The one exception is when **both** the mismatched open and close tags land
+inside Django statement bodies (e.g. inside a `{% for %}` or `{% block %}`
+body), because that context already allows bare tags:
+
+```django
+{% for item in items %}
+    {% if wide %}<keepTogether>{% else %}<keepTogether>{% endif %}
+    <para>{{ item }}</para>
+    </keepTogether>    {# inside the for body — parses without error #}
+{% endfor %}
+```
+
+**If a fix becomes necessary:** the principled path is an **external scanner**
+(C code in `src/scanner.c`) that maintains a stack of open XML element names.
+When it encounters a `</tag>` whose name is not on the stack it emits a
+distinct `_orphan_end_tag` token rather than a normal `end_tag`, allowing the
+grammar to admit it in `_node` context without competing with legitimate close
+tags.  This is non-trivial — the scanner needs to coordinate with Django block
+boundaries — but it avoids the GLR ambiguity that makes the pure-grammar
+approach unworkable.
+
 ## License
 
 UNLICENSED
