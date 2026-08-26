@@ -1797,36 +1797,22 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "SYMBOL",
-            "name": "_body_node"
-          }
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "PREC_LEFT",
-            "value": 0,
-            "content": {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "ALIAS",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "elif_clause"
-                  },
-                  "named": true,
-                  "value": "branch_statement"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_body_node"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "elif_clause"
                 },
-                {
-                  "type": "REPEAT",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "_body_node"
-                  }
-                }
-              ]
-            }
+                "named": true,
+                "value": "branch_statement"
+              }
+            ]
           }
         },
         {
@@ -1886,14 +1872,10 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "{%"
-        },
-        {
           "type": "ALIAS",
           "content": {
-            "type": "STRING",
-            "value": "elif"
+            "type": "SYMBOL",
+            "name": "_elif_tag_open"
           },
           "named": true,
           "value": "tag_name"
@@ -2111,23 +2093,10 @@
           ]
         },
         {
-          "type": "STRING",
-          "value": "{%"
-        },
-        {
           "type": "ALIAS",
           "content": {
-            "type": "STRING",
-            "value": "endcomment"
-          },
-          "named": true,
-          "value": "tag_name"
-        },
-        {
-          "type": "ALIAS",
-          "content": {
-            "type": "STRING",
-            "value": "%}"
+            "type": "SYMBOL",
+            "name": "_endcomment_tag"
           },
           "named": true,
           "value": "end_paired_statement"
@@ -2376,6 +2345,14 @@
     {
       "type": "SYMBOL",
       "name": "_comment_body_text"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_elif_tag_open"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_endcomment_tag"
     }
   ],
   "inline": [],

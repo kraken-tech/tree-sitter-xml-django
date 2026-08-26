@@ -12,6 +12,7 @@ export default grammar({
 
   word: $ => $._identifier,
 
+  // Tokens emitted by src/scanner.c
   externals: $ => [
     // Dummy token that is never referenced in any grammar rule, so the parser
     // never asks the external scanner to produce it during normal parsing.
@@ -21,12 +22,25 @@ export default grammar({
     // and immediately returns false, which prevents it from accidentally
     // consuming content that isn't actually a comment body.
     $._error_recovery_sentinel,
-    // Scanned by src/scanner.c: consumes everything between {% comment %} and
+    // Consumes everything between {% comment %} and
     // the first {% endcomment %}, treating the body as opaque raw text.
     // Using an external scanner guarantees the first occurrence of
     // {% endcomment %} stops the token regardless of other {%...%} sequences
     // that may appear in the body.
     $._comment_body_text,
+    // Consumes the full `{% elif` opening sequence
+    // (including the leading `{%` and any whitespace) as a single token, emitted
+    // only when the parser is inside an if_statement context.  Consuming `{%`
+    // inside the scanner — rather than relying on the grammar's anonymous `{%`
+    // token followed by a separate `elif` keyword — prevents the GLR parser from
+    // losing the elif_clause parse path when a body node (`{% include %}`, etc.)
+    // was the last thing parsed before the elif.
+    $._elif_tag_open,
+    // Consumes the entire `{% endcomment %}` closing
+    // sequence (including `%}`) as a single opaque token.  Emitting it as one
+    // unit prevents the `%}` from being ambiguous with the closing `%}` of
+    // enclosing `{% if %}` blocks at deep nesting levels.
+    $._endcomment_tag,
   ],
 
   extras: $ => [
@@ -343,11 +357,10 @@ export default grammar({
 
     if_statement: $ => seq(
       '{%', alias('if', $.tag_name), repeat($._dj_attribute), '%}',
-      repeat($._body_node),
-      repeat(prec.left(seq(
+      repeat(choice(
+        $._body_node,
         alias($.elif_clause, $.branch_statement),
-        repeat($._body_node),
-      ))),
+      )),
       optional(seq(
         alias($.else_clause, $.branch_statement),
         repeat($._body_node),
@@ -355,7 +368,7 @@ export default grammar({
       '{%', alias('endif', $.tag_name), alias('%}', $.end_paired_statement),
     ),
 
-    elif_clause: $ => seq('{%', alias('elif', $.tag_name), repeat($._dj_attribute), '%}'),
+    elif_clause: $ => seq(alias($._elif_tag_open, $.tag_name), repeat($._dj_attribute), '%}'),
     else_clause: $ => seq('{%', alias('else', $.tag_name), '%}'),
 
     for_statement: $ => seq(
@@ -379,7 +392,7 @@ export default grammar({
     dj_comment_statement: $ => seq(
       '{%', alias('comment', $.tag_name), repeat($._dj_attribute), '%}',
       optional($.comment_content),
-      '{%', alias('endcomment', $.tag_name), alias('%}', $.end_paired_statement),
+      alias($._endcomment_tag, $.end_paired_statement),
     ),
 
     // comment_content is produced by the external scanner in src/scanner.c.
