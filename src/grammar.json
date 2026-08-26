@@ -81,6 +81,14 @@
         {
           "type": "SYMBOL",
           "name": "_django_node"
+        },
+        {
+          "type": "PREC_DYNAMIC",
+          "value": -1,
+          "content": {
+            "type": "SYMBOL",
+            "name": "end_tag"
+          }
         }
       ]
     },
@@ -527,6 +535,10 @@
         {
           "type": "SYMBOL",
           "name": "_django_node"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "doctype_decl"
         },
         {
           "type": "PREC_DYNAMIC",

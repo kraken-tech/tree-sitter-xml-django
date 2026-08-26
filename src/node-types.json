@@ -370,6 +370,10 @@
           "named": true
         },
         {
+          "type": "end_tag",
+          "named": true
+        },
+        {
           "type": "paired_statement",
           "named": true
         },
@@ -577,6 +581,10 @@
         },
         {
           "type": "dj_variable_expr",
+          "named": true
+        },
+        {
+          "type": "doctype_decl",
           "named": true
         },
         {

@@ -97,6 +97,11 @@ export default grammar({
       $.processing_instruction,
       $.comment,
       $._django_node,
+      // Bare end_tag at the document root: handles the case where a Django block
+      // or paired statement opens an XML element in its body but the matching
+      // close tag falls outside the statement (at the document root level).
+      // Kept at dynamic priority -1 so it only wins when no element is open.
+      prec.dynamic(-1, $.end_tag),
     ),
 
     // =========================================================================
@@ -180,6 +185,7 @@ export default grammar({
       $.processing_instruction,
       $.comment,
       $._django_node,
+      $.doctype_decl,
       prec.dynamic(-1, $.start_tag),
       prec.dynamic(-1, $.end_tag),
     ),
