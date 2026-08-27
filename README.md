@@ -59,6 +59,15 @@ CI will detect that the version has no corresponding git tag, publish the packag
 
 If a merge to `main` does not include a version bump, the publish step is skipped silently.
 
+### The external scanner at src/scanner.c
+
+Using the parser requires a binding in your target language that calls the generated file `src/parser.c`.
+For more complex "lookahead" rules, `src/scanner.c` provides a collection of methods that expose tokens
+referenced in `parser.c`. It is worth noting that `parser.c` cannot be edited directly without breaking
+the synchronisation between `grammar.js` and `parser.c`, but `scanner.c` _can_ be edited so long as the
+method names don't change. The CI will only detect differences between the generated `parser.c` file and
+its grammar rules in `grammar.js`, and from the perspective of the parser, a change to the method logic
+doesn't change what it sees - only the method name that it calls.
 
 ### Not (yet) implemented
 
