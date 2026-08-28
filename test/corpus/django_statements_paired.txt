@@ -120,8 +120,8 @@ blocktrans statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
+      (dj_paired_statement
+        (dj_tag_name)
         (element
           (start_tag
             (name))
@@ -129,8 +129,8 @@ blocktrans statement
             (char_data))
           (end_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -147,8 +147,8 @@ blocktranslate statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
+      (dj_paired_statement
+        (dj_tag_name)
         (element
           (start_tag
             (name))
@@ -156,8 +156,8 @@ blocktranslate statement
             (char_data))
           (end_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -174,8 +174,8 @@ verbatim statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
+      (dj_paired_statement
+        (dj_tag_name)
         (element
           (start_tag
             (name))
@@ -183,8 +183,8 @@ verbatim statement
             (char_data))
           (end_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -201,24 +201,24 @@ ifchanged statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (keyword_operator)
-        (variable
-          (variable_name))
-        (paired_statement
-          (tag_name)
-          (variable
-            (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
+        (dj_paired_statement
+          (dj_tag_name)
+          (dj_variable
+            (dj_variable_name))
           (element
             (self_closing_tag
               (name)))
-          (tag_name)
-          (end_paired_statement))
-        (tag_name)
-        (end_paired_statement)))
+          (dj_tag_name)
+          (dj_end_paired_statement))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -235,14 +235,14 @@ if with boolean
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (boolean)
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_boolean)
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -259,18 +259,18 @@ if with number comparison
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (operator)
-        (number_expr
-          (number))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_operator)
+        (dj_number_expr
+          (dj_number)
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -287,18 +287,18 @@ if with and operator
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (keyword_operator)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -315,20 +315,20 @@ for loop with comma-separated tuple unpacking
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (variable
-          (variable_name))
-        (keyword_operator)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 

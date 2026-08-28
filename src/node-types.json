@@ -16,23 +16,23 @@
           "named": true
         },
         {
+          "type": "dj_paired_statement",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_comment",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_statement",
+          "named": true
+        },
+        {
           "type": "dj_variable_expr",
           "named": true
         },
         {
           "type": "entity_ref",
-          "named": true
-        },
-        {
-          "type": "paired_statement",
-          "named": true
-        },
-        {
-          "type": "unpaired_dj_comment",
-          "named": true
-        },
-        {
-          "type": "unpaired_statement",
           "named": true
         }
       ]
@@ -65,71 +65,23 @@
             "named": true
           },
           {
+            "type": "dj_paired_statement",
+            "named": true
+          },
+          {
+            "type": "dj_unpaired_comment",
+            "named": true
+          },
+          {
+            "type": "dj_unpaired_statement",
+            "named": true
+          },
+          {
             "type": "dj_variable_expr",
-            "named": true
-          },
-          {
-            "type": "paired_statement",
-            "named": true
-          },
-          {
-            "type": "unpaired_dj_comment",
-            "named": true
-          },
-          {
-            "type": "unpaired_statement",
             "named": true
           }
         ]
       }
-    }
-  },
-  {
-    "type": "boolean",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "branch_statement",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "boolean",
-          "named": true
-        },
-        {
-          "type": "dj_string",
-          "named": true
-        },
-        {
-          "type": "keyword",
-          "named": true
-        },
-        {
-          "type": "keyword_operator",
-          "named": true
-        },
-        {
-          "type": "number_expr",
-          "named": true
-        },
-        {
-          "type": "operator",
-          "named": true
-        },
-        {
-          "type": "tag_name",
-          "named": true
-        },
-        {
-          "type": "variable",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -162,11 +114,6 @@
     "fields": {}
   },
   {
-    "type": "comment_content",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "content",
     "named": true,
     "fields": {},
@@ -195,6 +142,18 @@
           "named": true
         },
         {
+          "type": "dj_paired_statement",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_comment",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_statement",
+          "named": true
+        },
+        {
           "type": "dj_variable_expr",
           "named": true
         },
@@ -207,23 +166,64 @@
           "named": true
         },
         {
-          "type": "paired_statement",
-          "named": true
-        },
-        {
           "type": "processing_instruction",
-          "named": true
-        },
-        {
-          "type": "unpaired_dj_comment",
-          "named": true
-        },
-        {
-          "type": "unpaired_statement",
           "named": true
         }
       ]
     }
+  },
+  {
+    "type": "dj_boolean",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "dj_branch_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dj_boolean",
+          "named": true
+        },
+        {
+          "type": "dj_keyword",
+          "named": true
+        },
+        {
+          "type": "dj_keyword_operator",
+          "named": true
+        },
+        {
+          "type": "dj_number_expr",
+          "named": true
+        },
+        {
+          "type": "dj_operator",
+          "named": true
+        },
+        {
+          "type": "dj_string",
+          "named": true
+        },
+        {
+          "type": "dj_tag_name",
+          "named": true
+        },
+        {
+          "type": "dj_variable",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dj_comment_content",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "dj_comment_statement",
@@ -234,11 +234,31 @@
       "required": true,
       "types": [
         {
-          "type": "boolean",
+          "type": "dj_boolean",
           "named": true
         },
         {
-          "type": "comment_content",
+          "type": "dj_comment_content",
+          "named": true
+        },
+        {
+          "type": "dj_end_paired_statement",
+          "named": true
+        },
+        {
+          "type": "dj_keyword",
+          "named": true
+        },
+        {
+          "type": "dj_keyword_operator",
+          "named": true
+        },
+        {
+          "type": "dj_number_expr",
+          "named": true
+        },
+        {
+          "type": "dj_operator",
           "named": true
         },
         {
@@ -246,31 +266,188 @@
           "named": true
         },
         {
-          "type": "end_paired_statement",
+          "type": "dj_tag_name",
           "named": true
         },
         {
-          "type": "keyword",
+          "type": "dj_variable",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dj_filter",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dj_filter_argument",
           "named": true
         },
         {
-          "type": "keyword_operator",
+          "type": "dj_filter_name",
           "named": true
         },
         {
-          "type": "number_expr",
+          "type": "dj_number",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dj_filter_argument",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "dj_keyword",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "dj_keyword_operator",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "dj_number_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dj_filter",
           "named": true
         },
         {
-          "type": "operator",
+          "type": "dj_number",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dj_operator",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "dj_paired_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "cdata_section",
           "named": true
         },
         {
-          "type": "tag_name",
+          "type": "char_data",
           "named": true
         },
         {
-          "type": "variable",
+          "type": "char_ref",
+          "named": true
+        },
+        {
+          "type": "comment",
+          "named": true
+        },
+        {
+          "type": "dj_block_name",
+          "named": true
+        },
+        {
+          "type": "dj_boolean",
+          "named": true
+        },
+        {
+          "type": "dj_branch_statement",
+          "named": true
+        },
+        {
+          "type": "dj_comment_statement",
+          "named": true
+        },
+        {
+          "type": "dj_end_paired_statement",
+          "named": true
+        },
+        {
+          "type": "dj_keyword",
+          "named": true
+        },
+        {
+          "type": "dj_keyword_operator",
+          "named": true
+        },
+        {
+          "type": "dj_number_expr",
+          "named": true
+        },
+        {
+          "type": "dj_operator",
+          "named": true
+        },
+        {
+          "type": "dj_paired_statement",
+          "named": true
+        },
+        {
+          "type": "dj_string",
+          "named": true
+        },
+        {
+          "type": "dj_tag_name",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_comment",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_statement",
+          "named": true
+        },
+        {
+          "type": "dj_variable",
+          "named": true
+        },
+        {
+          "type": "dj_variable_expr",
+          "named": true
+        },
+        {
+          "type": "doctype_decl",
+          "named": true
+        },
+        {
+          "type": "element",
+          "named": true
+        },
+        {
+          "type": "end_tag",
+          "named": true
+        },
+        {
+          "type": "entity_ref",
+          "named": true
+        },
+        {
+          "type": "processing_instruction",
+          "named": true
+        },
+        {
+          "type": "start_tag",
           "named": true
         }
       ]
@@ -285,7 +462,74 @@
       "required": false,
       "types": [
         {
-          "type": "filter",
+          "type": "dj_filter",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dj_unpaired_comment",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "dj_unpaired_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dj_boolean",
+          "named": true
+        },
+        {
+          "type": "dj_keyword",
+          "named": true
+        },
+        {
+          "type": "dj_keyword_operator",
+          "named": true
+        },
+        {
+          "type": "dj_number_expr",
+          "named": true
+        },
+        {
+          "type": "dj_operator",
+          "named": true
+        },
+        {
+          "type": "dj_string",
+          "named": true
+        },
+        {
+          "type": "dj_tag_name",
+          "named": true
+        },
+        {
+          "type": "dj_variable",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dj_variable",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dj_filter",
+          "named": true
+        },
+        {
+          "type": "dj_variable_name",
           "named": true
         }
       ]
@@ -300,19 +544,24 @@
       "required": true,
       "types": [
         {
+          "type": "dj_number_expr",
+          "named": true
+        },
+        {
           "type": "dj_string",
           "named": true
         },
         {
-          "type": "number_expr",
-          "named": true
-        },
-        {
-          "type": "variable",
+          "type": "dj_variable",
           "named": true
         }
       ]
     }
+  },
+  {
+    "type": "dj_variable_name",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "doctype_decl",
@@ -358,6 +607,18 @@
           "named": true
         },
         {
+          "type": "dj_paired_statement",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_comment",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_statement",
+          "named": true
+        },
+        {
           "type": "dj_variable_expr",
           "named": true
         },
@@ -374,19 +635,7 @@
           "named": true
         },
         {
-          "type": "paired_statement",
-          "named": true
-        },
-        {
           "type": "processing_instruction",
-          "named": true
-        },
-        {
-          "type": "unpaired_dj_comment",
-          "named": true
-        },
-        {
-          "type": "unpaired_statement",
           "named": true
         },
         {
@@ -474,183 +723,6 @@
     }
   },
   {
-    "type": "filter",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "filter_argument",
-          "named": true
-        },
-        {
-          "type": "filter_name",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "filter_argument",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "keyword",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "keyword_operator",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "number_expr",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "filter",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "operator",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "paired_statement",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "block_name",
-          "named": true
-        },
-        {
-          "type": "boolean",
-          "named": true
-        },
-        {
-          "type": "branch_statement",
-          "named": true
-        },
-        {
-          "type": "cdata_section",
-          "named": true
-        },
-        {
-          "type": "char_data",
-          "named": true
-        },
-        {
-          "type": "char_ref",
-          "named": true
-        },
-        {
-          "type": "comment",
-          "named": true
-        },
-        {
-          "type": "dj_comment_statement",
-          "named": true
-        },
-        {
-          "type": "dj_string",
-          "named": true
-        },
-        {
-          "type": "dj_variable_expr",
-          "named": true
-        },
-        {
-          "type": "doctype_decl",
-          "named": true
-        },
-        {
-          "type": "element",
-          "named": true
-        },
-        {
-          "type": "end_paired_statement",
-          "named": true
-        },
-        {
-          "type": "end_tag",
-          "named": true
-        },
-        {
-          "type": "entity_ref",
-          "named": true
-        },
-        {
-          "type": "keyword",
-          "named": true
-        },
-        {
-          "type": "keyword_operator",
-          "named": true
-        },
-        {
-          "type": "number_expr",
-          "named": true
-        },
-        {
-          "type": "operator",
-          "named": true
-        },
-        {
-          "type": "paired_statement",
-          "named": true
-        },
-        {
-          "type": "processing_instruction",
-          "named": true
-        },
-        {
-          "type": "start_tag",
-          "named": true
-        },
-        {
-          "type": "tag_name",
-          "named": true
-        },
-        {
-          "type": "unpaired_dj_comment",
-          "named": true
-        },
-        {
-          "type": "unpaired_statement",
-          "named": true
-        },
-        {
-          "type": "variable",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "processing_instruction",
     "named": true,
     "fields": {},
@@ -697,19 +769,19 @@
           "named": true
         },
         {
+          "type": "dj_paired_statement",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_comment",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_statement",
+          "named": true
+        },
+        {
           "type": "dj_variable_expr",
-          "named": true
-        },
-        {
-          "type": "paired_statement",
-          "named": true
-        },
-        {
-          "type": "unpaired_dj_comment",
-          "named": true
-        },
-        {
-          "type": "unpaired_statement",
           "named": true
         }
       ]
@@ -743,95 +815,23 @@
           "named": true
         },
         {
+          "type": "dj_paired_statement",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_comment",
+          "named": true
+        },
+        {
+          "type": "dj_unpaired_statement",
+          "named": true
+        },
+        {
           "type": "dj_variable_expr",
           "named": true
-        },
-        {
-          "type": "paired_statement",
-          "named": true
-        },
-        {
-          "type": "unpaired_dj_comment",
-          "named": true
-        },
-        {
-          "type": "unpaired_statement",
-          "named": true
         }
       ]
     }
-  },
-  {
-    "type": "unpaired_dj_comment",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "unpaired_statement",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "boolean",
-          "named": true
-        },
-        {
-          "type": "dj_string",
-          "named": true
-        },
-        {
-          "type": "keyword",
-          "named": true
-        },
-        {
-          "type": "keyword_operator",
-          "named": true
-        },
-        {
-          "type": "number_expr",
-          "named": true
-        },
-        {
-          "type": "operator",
-          "named": true
-        },
-        {
-          "type": "tag_name",
-          "named": true
-        },
-        {
-          "type": "variable",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "variable",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "filter",
-          "named": true
-        },
-        {
-          "type": "variable_name",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "variable_name",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "xml_decl",
@@ -981,10 +981,6 @@
     "named": false
   },
   {
-    "type": "block_name",
-    "named": true
-  },
-  {
     "type": "by",
     "named": false
   },
@@ -1001,20 +997,32 @@
     "named": true
   },
   {
+    "type": "dj_block_name",
+    "named": true
+  },
+  {
+    "type": "dj_end_paired_statement",
+    "named": true
+  },
+  {
+    "type": "dj_filter_name",
+    "named": true
+  },
+  {
+    "type": "dj_number",
+    "named": true
+  },
+  {
+    "type": "dj_tag_name",
+    "named": true
+  },
+  {
     "type": "enc_name",
     "named": true
   },
   {
     "type": "encoding",
     "named": false
-  },
-  {
-    "type": "end_paired_statement",
-    "named": true
-  },
-  {
-    "type": "filter_name",
-    "named": true
   },
   {
     "type": "from",
@@ -1035,10 +1043,6 @@
   {
     "type": "not",
     "named": false
-  },
-  {
-    "type": "number",
-    "named": true
   },
   {
     "type": "off",
@@ -1086,10 +1090,6 @@
   },
   {
     "type": "system_literal",
-    "named": true
-  },
-  {
-    "type": "tag_name",
     "named": true
   },
   {

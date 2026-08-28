@@ -447,8 +447,8 @@ DOCTYPE inside element content produces an error
       name: (name))
     (ERROR
       (UNEXPECTED 'D')
-      (tag_name)
-      (tag_name))
+      (dj_tag_name)
+      (dj_tag_name))
     (end_tag
       name: (name))))
 
@@ -461,14 +461,14 @@ DOCTYPE inside Django body block
 ---
 
 (document
-  (paired_statement
-    (tag_name)
-    (variable
-      (variable_name))
+  (dj_paired_statement
+    (dj_tag_name)
+    (dj_variable
+      (dj_variable_name))
     (doctype_decl
       (name))
-    (tag_name)
-    (end_paired_statement)))
+    (dj_tag_name)
+    (dj_end_paired_statement)))
 
 ==================
 DOCTYPE inside Django with statement body
