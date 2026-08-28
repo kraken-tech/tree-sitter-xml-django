@@ -245,6 +245,31 @@ Character reference
       (name))))
 
 ==================
+Whitespace between sibling closing tags is preserved as char_data
+==================
+
+<para>A word is <b>bold</b> </para>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (char_data)
+      (element
+        (start_tag
+          (name))
+        (content
+          (char_data))
+        (end_tag
+          (name)))
+      (char_data))
+    (end_tag
+      (name))))
+
+==================
 Deeply nested elements
 ==================
 
@@ -326,9 +351,11 @@ DOCTYPE in full RML-style document
     (start_tag
       name: (name))
     (content
+      (char_data)
       (element
         (self_closing_tag
-          name: (name))))
+          name: (name)))
+      (char_data))
     (end_tag
       name: (name))))
 
