@@ -125,7 +125,7 @@ workflows:
       - publish:
           context:
             - KTL_NEXUS
-            - BILLING_TEAM_GITHUB_TOKEN
+            - ISSUANCE_TEAM
           requires:
             - lint
             - test
