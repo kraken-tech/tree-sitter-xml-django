@@ -427,6 +427,15 @@ export default grammar({
     // the multi-block case.
     dj_comment_content: $ => $._dj_comment_body_text,
 
+    // A key=value pair used in {% with key=value %}, {% include ... with key=val %},
+    // custom tags with keyword arguments, etc.  The LHS is an assignment_target —
+    // a name being bound, distinct from a variable being read.
+    dj_assignment: $ => seq(
+      field('name', alias($.dj_variable_name, $.dj_assignment_target)),
+      '=',
+      field('value', choice($.dj_variable, $.dj_string, $.dj_number, $.dj_boolean)),
+    ),
+
     _dj_attribute: $ => seq(
       choice(
         $.dj_keyword,
@@ -436,8 +445,9 @@ export default grammar({
         $.dj_boolean,
         $.dj_string,
         $.dj_variable,
+        $.dj_assignment,
       ),
-      optional(choice(',', '=')),
+      optional(','),
     ),
 
     // -------------------------------------------------------------------------
