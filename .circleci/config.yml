@@ -105,13 +105,29 @@ jobs:
               --password="${KTL_NEXUS_CI_USER_READWRITE_PASSWORD}" \
               dist/*
       - run:
+          name: Generate GitHub App installation token
+          command: |
+            echo "${GITHUB_APP_PRIVATE_KEY_BASE64}" | base64 -d > /tmp/gh_app_key.pem
+            now=$(date +%s)
+            header=$(printf '{"alg":"RS256","typ":"JWT"}' | base64 | tr -d '=\n' | tr '+/' '-_')
+            payload=$(printf '{"iat":%s,"exp":%s,"iss":%s}' "$((now-60))" "$((now+540))" "${GITHUB_APP_ID}" | base64 | tr -d '=\n' | tr '+/' '-_')
+            signature=$(printf '%s' "${header}.${payload}" | openssl dgst -sha256 -sign /tmp/gh_app_key.pem -binary | base64 | tr -d '=\n' | tr '+/' '-_')
+            JWT="${header}.${payload}.${signature}"
+            INSTALLATION_TOKEN=$(curl -sf \
+              -X POST \
+              -H "Authorization: Bearer ${JWT}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/app/installations/${GITHUB_APP_INSTALLATION_ID}/access_tokens" \
+              | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+            echo "export GITHUB_TOKEN=${INSTALLATION_TOKEN}" >> "$BASH_ENV"
+            rm -f /tmp/gh_app_key.pem
+      - run:
           name: Tag release on GitHub
           command: |
             git config user.email "ci-bot@kraken.tech"
             git config user.name "CI"
             git tag -a "$TAG" -m "Release $TAG"
-            git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/octoenergy/tree-sitter-xmldjango.git"
-            git push origin "$TAG"
+            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/octoenergy/tree-sitter-xmldjango.git" "$TAG"
 
 workflows:
   test-build-publish:

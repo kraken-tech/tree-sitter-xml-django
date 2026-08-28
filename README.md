@@ -59,26 +59,6 @@ CI will detect that the version has no corresponding git tag, publish the packag
 
 If a merge to `main` does not include a version bump, the publish step is skipped silently.
 
-### Troubleshooting
-
-#### Publish failures after token expiry
-
-The GitHub fine-grained token used to push release tags (stored as `GITHUB_TOKEN` in the CircleCI `BILLING_TEAM_GITHUB_TOKEN` context) expires after one year. When it does, merges to `main` that include a version bump will fail at the **"Tag release on GitHub"** step with an error along the lines of:
-
-```
-remote: Invalid username or password.
-fatal: Authentication failed for 'https://github.com/octoenergy/tree-sitter-xmldjango.git'
-```
-
-To fix it, generate a new token and update the CircleCI context:
-
-1. Go to GitHub → your profile → **Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**
-2. Set the resource owner to `octoenergy`, repository access to `tree-sitter-xmldjango` only, and **Contents** permission to `Read and write`
-3. Copy the new token
-4. Go to [circleci.com](https://app.circleci.com) → `octoenergy` → **Organization Settings** → **Contexts** → `BILLING_TEAM_GITHUB_TOKEN`
-5. Find `GITHUB_TOKEN`, click the edit/replace option, and paste the new token
-
-The next pipeline run will pick it up automatically — no other changes needed.
 
 ### Not (yet) implemented
 
