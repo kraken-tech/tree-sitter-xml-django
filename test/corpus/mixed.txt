@@ -27,8 +27,8 @@ Full document with XML declaration
           (name))
         (content
           (dj_variable_expr
-            (variable
-              (variable_name))))
+            (dj_variable
+              (dj_variable_name))))
         (end_tag
           (name))))
     (end_tag
@@ -49,8 +49,8 @@ Django in element content alongside text
     (content
       (char_data)
       (dj_variable_expr
-        (variable
-          (variable_name)))
+        (dj_variable
+          (dj_variable_name)))
       (char_data))
     (end_tag
       (name))))
@@ -68,7 +68,7 @@ Django comment alongside XML comment
     (start_tag
       (name))
     (content
-      (unpaired_dj_comment)
+      (dj_unpaired_comment)
       (comment))
     (end_tag
       (name))))
@@ -89,8 +89,8 @@ Django expression in attribute, text in content
         name: (name)
         value: (att_value
           (dj_variable_expr
-            (variable
-              (variable_name)))))
+            (dj_variable
+              (dj_variable_name)))))
       (attribute
         name: (name)
         value: (att_value)))
@@ -116,21 +116,21 @@ Deeply nested Django inside XML
         (start_tag
           (name))
         (content
-          (paired_statement
-            (tag_name)
-            (variable
-              (variable_name))
+          (dj_paired_statement
+            (dj_tag_name)
+            (dj_variable
+              (dj_variable_name))
             (element
               (start_tag
                 (name))
               (content
                 (dj_variable_expr
-                  (variable
-                    (variable_name))))
+                  (dj_variable
+                    (dj_variable_name))))
               (end_tag
                 (name)))
-            (tag_name)
-            (end_paired_statement)))
+            (dj_tag_name)
+            (dj_end_paired_statement)))
         (end_tag
           (name))))
     (end_tag
@@ -149,14 +149,14 @@ XML entity inside Django context
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
         (entity_ref
           (name))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -174,8 +174,8 @@ CDATA alongside Django
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)))
+        (dj_variable
+          (dj_variable_name)))
       (cdata_section
         (cdata_start)
         (cdata)))
@@ -199,8 +199,8 @@ Processing instruction alongside Django
         (pi_target)
         (pi_content))
       (dj_variable_expr
-        (variable
-          (variable_name))))
+        (dj_variable
+          (dj_variable_name))))
     (end_tag
       (name))))
 
@@ -217,31 +217,31 @@ Django tag boundary crossing: opening tag inside if/else, closing tag outside
     (start_tag
       name: (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (keyword_operator)
-        (variable
-          (variable_name))
-        (paired_statement
-          (tag_name)
-          (variable
-            (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
+        (dj_paired_statement
+          (dj_tag_name)
+          (dj_variable
+            (dj_variable_name))
           (start_tag
             name: (name)
             (attribute
               name: (name)
               value: (att_value)))
-          (branch_statement
-            (tag_name))
+          (dj_branch_statement
+            (dj_tag_name))
           (start_tag
             name: (name)
             (attribute
               name: (name)
               value: (att_value)))
-          (tag_name)
-          (end_paired_statement))
+          (dj_tag_name)
+          (dj_end_paired_statement))
         (element
           (start_tag
             name: (name))
@@ -251,8 +251,8 @@ Django tag boundary crossing: opening tag inside if/else, closing tag outside
             name: (name)))
         (end_tag
           name: (name))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       name: (name))))
 
@@ -276,15 +276,15 @@ Multiple sibling elements as children of paired statement
 ---
 
 (document
-  (paired_statement
-    (tag_name)
-    (variable
-      (variable_name))
-    (operator)
-    (variable
-      (variable_name)
-      (filter
-        (filter_name)))
+  (dj_paired_statement
+    (dj_tag_name)
+    (dj_variable
+      (dj_variable_name))
+    (dj_operator)
+    (dj_variable
+      (dj_variable_name)
+      (dj_filter
+        (dj_filter_name)))
     (element
       (start_tag
         (name)
@@ -368,14 +368,14 @@ Multiple sibling elements as children of paired statement
                   (att_value)))
               (content
                 (dj_variable_expr
-                  (variable
-                    (variable_name)
-                    (filter
-                      (filter_name)
-                      (number))
-                    (filter
-                      (filter_name)
-                      (filter_argument))))
+                  (dj_variable
+                    (dj_variable_name)
+                    (dj_filter
+                      (dj_filter_name)
+                      (dj_number))
+                    (dj_filter
+                      (dj_filter_name)
+                      (dj_filter_argument))))
                 (char_data))
               (end_tag
                 (name))))
@@ -383,5 +383,5 @@ Multiple sibling elements as children of paired statement
             (name))))
       (end_tag
         (name)))
-    (tag_name)
-    (end_paired_statement)))
+    (dj_tag_name)
+    (dj_end_paired_statement)))
