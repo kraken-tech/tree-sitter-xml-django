@@ -52,9 +52,9 @@ Unpaired statement - include
         (dj_tag_name)
         (dj_string)
         (dj_keyword)
-        (dj_variable
-          (dj_variable_name))
-        (dj_string)
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_string))
         (dj_keyword)))
     (end_tag
       (name))))
@@ -276,13 +276,45 @@ with statement
     (content
       (dj_paired_statement
         (dj_tag_name)
-        (dj_variable
-          (dj_variable_name))
-        (dj_variable
-          (dj_variable_name))
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_variable
+            (dj_variable_name)))
         (dj_variable_expr
           (dj_variable
             (dj_variable_name)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+with statement - assignment value types
+==================
+
+<root>{% with x=7 y="text" z=val|length %}{% endwith %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_number))
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_string))
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_variable
+            (dj_variable_name)
+            (dj_filter
+              (dj_filter_name))))
         (dj_tag_name)
         (dj_end_paired_statement)))
     (end_tag

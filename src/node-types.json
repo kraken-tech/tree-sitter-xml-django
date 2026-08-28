@@ -145,6 +145,44 @@
     }
   },
   {
+    "type": "dj_assignment",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "dj_assignment_target",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "dj_boolean",
+            "named": true
+          },
+          {
+            "type": "dj_number",
+            "named": true
+          },
+          {
+            "type": "dj_string",
+            "named": true
+          },
+          {
+            "type": "dj_variable",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "dj_boolean",
     "named": true,
     "fields": {}
@@ -157,6 +195,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "dj_assignment",
+          "named": true
+        },
         {
           "type": "dj_boolean",
           "named": true
@@ -252,6 +294,10 @@
         },
         {
           "type": "comment",
+          "named": true
+        },
+        {
+          "type": "dj_assignment",
           "named": true
         },
         {
@@ -361,6 +407,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "dj_assignment",
+          "named": true
+        },
         {
           "type": "dj_boolean",
           "named": true
@@ -849,6 +899,10 @@
   },
   {
     "type": "char_data",
+    "named": true
+  },
+  {
+    "type": "dj_assignment_target",
     "named": true
   },
   {
