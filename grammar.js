@@ -203,8 +203,10 @@ export default grammar({
     // =========================================================================
 
     // Only {% ... %} (statements), {# ... #} (comments), and {{ ... }}
-    // (expressions) break char_data.
-    char_data: _ => token(prec(-1, /([^<&{]|\{[^{%#])+/)),
+    // (expressions) break char_data. prec(1) outbids the /\s/ extra so that
+    // whitespace-only text (e.g. the space between </b> and </para>) is kept
+    // as a char_data node instead of being silently consumed.
+    char_data: _ => token(prec(1, /([^<&{]|\{[^{%#])+/)),
 
     cdata_section: $ => seq($.cdata_start, optional($.cdata), ']]>'),
 

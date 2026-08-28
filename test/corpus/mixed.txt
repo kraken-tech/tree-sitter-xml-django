@@ -22,6 +22,7 @@ Full document with XML declaration
     (start_tag
       (name))
     (content
+      (char_data)
       (element
         (start_tag
           (name))
@@ -30,7 +31,8 @@ Full document with XML declaration
             (dj_variable
               (dj_variable_name))))
         (end_tag
-          (name))))
+          (name)))
+      (char_data))
     (end_tag
       (name))))
 
@@ -285,6 +287,7 @@ Multiple sibling elements as children of paired statement
       (dj_variable_name)
       (dj_filter
         (dj_filter_name)))
+    (char_data)
     (element
       (start_tag
         (name)
@@ -292,13 +295,16 @@ Multiple sibling elements as children of paired statement
           (name)
           (att_value)))
       (content
+        (char_data)
         (element
           (start_tag
             (name))
           (end_tag
-            (name))))
+            (name)))
+        (char_data))
       (end_tag
         (name)))
+    (char_data)
     (element
       (start_tag
         (name)
@@ -306,6 +312,7 @@ Multiple sibling elements as children of paired statement
           (name)
           (att_value)))
       (content
+        (char_data)
         (element
           (start_tag
             (name)
@@ -335,21 +342,25 @@ Multiple sibling elements as children of paired statement
                 (name))))
           (end_tag
             (name)))
+        (char_data)
         (element
           (start_tag
             (name))
           (end_tag
             (name)))
+        (char_data)
         (element
           (start_tag
             (name))
           (end_tag
             (name)))
+        (char_data)
         (element
           (start_tag
             (name))
           (end_tag
             (name)))
+        (char_data)
         (element
           (start_tag
             (name)
@@ -380,7 +391,8 @@ Multiple sibling elements as children of paired statement
               (end_tag
                 (name))))
           (end_tag
-            (name))))
+            (name)))
+        (char_data))
       (end_tag
         (name)))
     (dj_tag_name)
