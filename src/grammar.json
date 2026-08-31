@@ -2208,7 +2208,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "dj_number"
+                "name": "dj_number_expr"
               },
               {
                 "type": "SYMBOL",

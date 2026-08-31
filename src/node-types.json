@@ -195,7 +195,7 @@
             "named": true
           },
           {
-            "type": "dj_number",
+            "type": "dj_number_expr",
             "named": true
           },
           {

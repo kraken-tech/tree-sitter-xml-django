@@ -391,7 +391,8 @@ with statement - assignment value types
         (dj_tag_name)
         (dj_assignment
           (dj_assignment_target)
-          (dj_number))
+          (dj_number_expr
+            (dj_number)))
         (dj_assignment
           (dj_assignment_target)
           (dj_string))
@@ -401,6 +402,33 @@ with statement - assignment value types
             (dj_variable_name)
             (dj_filter
               (dj_filter_name))))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+with statement - number expression assignment value
+==================
+
+<root>{% with x=7|add:1 %}{% endwith %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_number_expr
+            (dj_number)
+            (dj_filter
+              (dj_filter_name)
+              (dj_number))))
         (dj_tag_name)
         (dj_end_paired_statement)))
     (end_tag

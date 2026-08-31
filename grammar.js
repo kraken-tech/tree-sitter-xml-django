@@ -435,7 +435,7 @@ export default grammar({
     dj_assignment: $ => seq(
       field('name', alias($.dj_variable_name, $.dj_assignment_target)),
       '=',
-      field('value', choice($.dj_variable, $.dj_string, $.dj_number, $.dj_boolean)),
+      field('value', choice($.dj_variable, $.dj_string, $.dj_number_expr, $.dj_boolean)),
     ),
 
     _dj_attribute: $ => seq(
