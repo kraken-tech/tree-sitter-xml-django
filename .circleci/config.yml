@@ -87,23 +87,14 @@ jobs:
               echo "No tag for $TAG found — version $VERSION is new. Will publish."
             fi
       - ktl-nexus/login
+      - ktl-nexus/configure_uv
       - run:
           name: Install build tools
           command: pipx install build twine
       - run:
           name: Build package
           command: make package
-      - run:
-          name: Publish package to Nexus
-          command: |
-            twine upload \
-              --skip-existing \
-              --client-cert="${HOME}/certificates/ktl-ca-circleci.pem" \
-              --cert="/etc/ssl/certs/ca-certificates.crt" \
-              --repository-url="https://${KTL_NEXUS_URL}/repository/pypi-kraken/" \
-              --username="${KTL_NEXUS_CI_USER_READWRITE_USERNAME}" \
-              --password="${KTL_NEXUS_CI_USER_READWRITE_PASSWORD}" \
-              dist/*
+      - ktl-nexus/publish_python_package
       - run:
           name: Generate GitHub App installation token
           command: |
