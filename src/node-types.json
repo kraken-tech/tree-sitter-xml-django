@@ -493,6 +493,11 @@
     }
   },
   {
+    "type": "filter_argument",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "keyword",
     "named": true,
     "fields": {}
@@ -816,6 +821,11 @@
     }
   },
   {
+    "type": "variable_name",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "xml_decl",
     "named": true,
     "fields": {},
@@ -995,10 +1005,6 @@
     "named": true
   },
   {
-    "type": "filter_argument",
-    "named": true
-  },
-  {
     "type": "filter_name",
     "named": true
   },
@@ -1076,10 +1082,6 @@
   },
   {
     "type": "tag_name",
-    "named": true
-  },
-  {
-    "type": "variable_name",
     "named": true
   },
   {
