@@ -59,6 +59,26 @@
           {
             "type": "att_value",
             "named": true
+          },
+          {
+            "type": "dj_comment_statement",
+            "named": true
+          },
+          {
+            "type": "dj_variable_expr",
+            "named": true
+          },
+          {
+            "type": "paired_statement",
+            "named": true
+          },
+          {
+            "type": "unpaired_dj_comment",
+            "named": true
+          },
+          {
+            "type": "unpaired_statement",
+            "named": true
           }
         ]
       }

@@ -694,8 +694,17 @@
           "type": "FIELD",
           "name": "value",
           "content": {
-            "type": "SYMBOL",
-            "name": "att_value"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "att_value"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_django_node"
+              }
+            ]
           }
         }
       ]

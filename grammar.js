@@ -216,7 +216,7 @@ export default grammar({
     attribute: $ => seq(
       field('name', $.name),
       '=',
-      field('value', $.att_value),
+      field('value', choice($.att_value, $._django_node)),
     ),
 
     // Attribute values may contain Django statements/comments. The plain-text
