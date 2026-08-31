@@ -48,6 +48,18 @@ uvx pre-commit install --install-hooks
 | `make test` | Run tree-sitter corpus tests and Python tests |
 | `make package` | Build the Python distribution package |
 
+### Releasing a new version
+
+To publish a new version of the package to Nexus:
+
+1. Bump the `version` field in `pyproject.toml` (follows [semver](https://semver.org/))
+2. Merge the change to `main`
+
+CI will detect that the version has no corresponding git tag, publish the package to Nexus, and then push a `vX.Y.Z` tag to GitHub automatically. No manual tagging or release steps are needed.
+
+If a merge to `main` does not include a version bump, the publish step is skipped silently.
+
+
 ### Not (yet) implemented
 
 Query files (typically found at `/queries/*.scm`) are not implemented in this grammar.

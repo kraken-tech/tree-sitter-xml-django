@@ -73,15 +73,61 @@ jobs:
     executor: default
     steps:
       - checkout
+      - run:
+          name: Check if version already published
+          command: |
+            VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+            TAG="v${VERSION}"
+            echo "export VERSION=$VERSION" >> "$BASH_ENV"
+            echo "export TAG=$TAG" >> "$BASH_ENV"
+            if git ls-remote --tags origin "refs/tags/$TAG" | grep -q .; then
+              echo "Tag $TAG already exists — version $VERSION has been published. Skipping."
+              circleci-agent step halt
+            else
+              echo "No tag for $TAG found — version $VERSION is new. Will publish."
+            fi
       - ktl-nexus/login
-      - ktl-nexus/configure_uv
       - run:
           name: Install build tools
           command: pipx install build twine
       - run:
           name: Build package
           command: make package
-      - ktl-nexus/publish_python_package
+      - run:
+          name: Publish package to Nexus
+          command: |
+            twine upload \
+              --skip-existing \
+              --client-cert="${HOME}/certificates/ktl-ca-circleci.pem" \
+              --cert="/etc/ssl/certs/ca-certificates.crt" \
+              --repository-url="https://${KTL_NEXUS_URL}/repository/pypi-kraken/" \
+              --username="${KTL_NEXUS_CI_USER_READWRITE_USERNAME}" \
+              --password="${KTL_NEXUS_CI_USER_READWRITE_PASSWORD}" \
+              dist/*
+      - run:
+          name: Generate GitHub App installation token
+          command: |
+            echo "${GITHUB_APP_PRIVATE_KEY_BASE64}" | base64 -d > /tmp/gh_app_key.pem
+            now=$(date +%s)
+            header=$(printf '{"alg":"RS256","typ":"JWT"}' | base64 | tr -d '=\n' | tr '+/' '-_')
+            payload=$(printf '{"iat":%s,"exp":%s,"iss":%s}' "$((now-60))" "$((now+540))" "${GITHUB_APP_ID}" | base64 | tr -d '=\n' | tr '+/' '-_')
+            signature=$(printf '%s' "${header}.${payload}" | openssl dgst -sha256 -sign /tmp/gh_app_key.pem -binary | base64 | tr -d '=\n' | tr '+/' '-_')
+            JWT="${header}.${payload}.${signature}"
+            INSTALLATION_TOKEN=$(curl -sf \
+              -X POST \
+              -H "Authorization: Bearer ${JWT}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/app/installations/${GITHUB_APP_INSTALLATION_ID}/access_tokens" \
+              | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+            echo "export GITHUB_TOKEN=${INSTALLATION_TOKEN}" >> "$BASH_ENV"
+            rm -f /tmp/gh_app_key.pem
+      - run:
+          name: Tag release on GitHub
+          command: |
+            git config user.email "ci-bot@kraken.tech"
+            git config user.name "CI"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/octoenergy/tree-sitter-xmldjango.git" "$TAG"
 
 workflows:
   test-build-publish:
@@ -95,11 +141,10 @@ workflows:
       - publish:
           context:
             - KTL_NEXUS
+            - ISSUANCE_TEAM
           requires:
             - lint
             - test
           filters:
             branches:
               only: main
-            tags:
-              only: /^v\d+\.\d+\.\d+/
