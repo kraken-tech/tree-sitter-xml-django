@@ -1,6 +1,6 @@
 {
   "type": "module",
   "dependencies": {
-    "tree-sitter-cli": "^0.26.12"
+    "tree-sitter-cli": "^0.26.13"
   }
 }
