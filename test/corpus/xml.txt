@@ -453,7 +453,7 @@ DOCTYPE inside element content produces an error
       name: (name))))
 
 ==================
-DOCTYPE inside Django body block produces an error
+DOCTYPE inside Django body block
 ==================
 
 {% if condition %}<!DOCTYPE x>{% endif %}
@@ -465,9 +465,34 @@ DOCTYPE inside Django body block produces an error
     (tag_name)
     (variable
       (variable_name))
-    (ERROR
-      (UNEXPECTED 'D')
-      (tag_name)
-      (tag_name))
+    (doctype_decl
+      (name))
+    (tag_name)
+    (end_paired_statement)))
+
+==================
+DOCTYPE inside Django with statement body
+==================
+
+{% with x="y" %}
+<!DOCTYPE foo SYSTEM "bar.dtd">
+<r/>
+{% endwith %}
+
+---
+
+(document
+  (paired_statement
+    (tag_name)
+    (variable
+      (variable_name))
+    (dj_string)
+    (doctype_decl
+      (name)
+      (external_id
+        (system_literal)))
+    (element
+      (self_closing_tag
+        (name)))
     (tag_name)
     (end_paired_statement)))

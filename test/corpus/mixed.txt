@@ -432,3 +432,29 @@ Django if/else statement as unquoted attribute value
           (end_paired_statement))))
     (end_tag
       name: (name))))
+
+==================
+Django block opens element whose close tag falls outside the block body
+==================
+
+{% block document %}
+<document>
+{% endblock %}
+<child/>
+</document>
+
+---
+
+(document
+  (paired_statement
+    (tag_name)
+    (block_name)
+    (start_tag
+      (name))
+    (tag_name)
+    (end_paired_statement))
+  (element
+    (self_closing_tag
+      (name)))
+  (end_tag
+    (name)))
