@@ -1,4 +1,113 @@
 ==================
+comment statement with empty body
+==================
+
+<r>{% comment %}{% endcomment %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_comment_statement
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+comment statement with inner django tag
+==================
+
+<r>{% comment %}{% if True %}old content{% endif %}{% endcomment %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_comment_statement
+        (tag_name)
+        (comment_content)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+comment statement with angle brackets in body
+==================
+
+<r>{% comment %}A <section> element defines a layout region. <item>s or <container>s can be used to specify structure.{% endcomment %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_comment_statement
+        (tag_name)
+        (comment_content)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+comment statement with multi-line prose body
+==================
+
+<r>{% comment %}
+    Lorem ipsum dolor sit amet.
+    No Django tags here, just prose.
+{% endcomment %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_comment_statement
+        (tag_name)
+        (comment_content)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+comment statement with multiple blocks in same document
+==================
+
+<r>{% comment %}First comment block{% endcomment %}<p/>{% comment %}Second comment block{% endcomment %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_comment_statement
+        (tag_name)
+        (comment_content)
+        (end_paired_statement))
+      (element
+        (self_closing_tag
+          (name)))
+      (dj_comment_statement
+        (tag_name)
+        (comment_content)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
 blocktrans statement
 ==================
 
@@ -155,7 +264,8 @@ if with number comparison
         (variable
           (variable_name))
         (operator)
-        (number)
+        (number_expr
+          (number))
         (element
           (self_closing_tag
             (name)))
@@ -214,6 +324,357 @@ for loop with tuple unpacking
         (keyword_operator)
         (variable
           (variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+elif with XML elements inside nested if
+==================
+
+<root>{% if a %}{% if b %}<x/>{% elif c %}<y/>{% endif %}{% endif %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (paired_statement
+          (tag_name)
+          (variable
+            (variable_name))
+          (element
+            (self_closing_tag
+              (name)))
+          (branch_statement
+            (tag_name)
+            (variable
+              (variable_name)))
+          (element
+            (self_closing_tag
+              (name)))
+          (tag_name)
+          (end_paired_statement))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+elif with Django statement in branch body
+==================
+
+<r>{% if a %}{% elif b %}{% include "y" %}{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (branch_statement
+          (tag_name)
+          (variable
+            (variable_name)))
+        (unpaired_statement
+          (tag_name)
+          (dj_string))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+elif with Django statement in both if and elif branches
+==================
+
+<r>{% if a %}{% include "x" %}{% elif b %}{% include "y" %}{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (unpaired_statement
+          (tag_name)
+          (dj_string))
+        (branch_statement
+          (tag_name)
+          (variable
+            (variable_name)))
+        (unpaired_statement
+          (tag_name)
+          (dj_string))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+comment inside three-level nested if
+==================
+
+<r>{% if a %}{% if b %}{% if c %}{% comment %}body{% endcomment %}<x/>{% endif %}{% endif %}{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (paired_statement
+          (tag_name)
+          (variable
+            (variable_name))
+          (paired_statement
+            (tag_name)
+            (variable
+              (variable_name))
+            (dj_comment_statement
+              (tag_name)
+              (comment_content)
+              (end_paired_statement))
+            (element
+              (self_closing_tag
+                (name)))
+            (tag_name)
+            (end_paired_statement))
+          (tag_name)
+          (end_paired_statement))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+multiple elif clauses (flat repeat regression)
+==================
+
+<root>{% if a %}<x/>{% elif b %}<y/>{% elif c %}<z/>{% else %}<w/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (branch_statement
+          (tag_name)
+          (variable
+            (variable_name)))
+        (element
+          (self_closing_tag
+            (name)))
+        (branch_statement
+          (tag_name)
+          (variable
+            (variable_name)))
+        (element
+          (self_closing_tag
+            (name)))
+        (branch_statement
+          (tag_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+comment in if body followed by elif (scanner priority regression)
+==================
+
+<r>{% if a %}{% comment %}x{% endcomment %}{% elif b %}<y/>{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (dj_comment_statement
+          (tag_name)
+          (comment_content)
+          (end_paired_statement))
+        (branch_statement
+          (tag_name)
+          (variable
+            (variable_name)))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+comment inside elif branch body (scanner priority regression)
+==================
+
+<r>{% if a %}{% elif b %}{% comment %}text{% endcomment %}<x/>{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (branch_statement
+          (tag_name)
+          (variable
+            (variable_name)))
+        (dj_comment_statement
+          (tag_name)
+          (comment_content)
+          (end_paired_statement))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+elif with opening whitespace-trim dash
+==================
+
+<r>{% if a %}<x/>{%- elif b %}<y/>{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (branch_statement
+          (tag_name)
+          (variable
+            (variable_name)))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+second else clause is parsed as unpaired_statement not branch_statement
+==================
+
+<r>{% if a %}<x/>{% else %}<y/>{% else %}<z/>{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (branch_statement
+          (tag_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (unpaired_statement
+          (tag_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (tag_name)
+        (end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+elif after else is parsed as unpaired_statement not branch_statement
+==================
+
+<r>{% if a %}{% else %}<z/>{% elif b %}<y/>{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (paired_statement
+        (tag_name)
+        (variable
+          (variable_name))
+        (branch_statement
+          (tag_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (unpaired_statement
+          (tag_name)
+          (variable
+            (variable_name)))
         (element
           (self_closing_tag
             (name)))

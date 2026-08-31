@@ -12,16 +12,49 @@ export default grammar({
 
   word: $ => $._identifier,
 
+  // Tokens emitted by src/scanner.c
+  externals: $ => [
+    // Dummy token that is never referenced in any grammar rule, so the parser
+    // never asks the external scanner to produce it during normal parsing.
+    // When the parser hits a syntax error it enters a recovery mode where it
+    // speculatively tries every external token — including this one.  The
+    // scanner detects that by checking whether this token is being requested
+    // and immediately returns false, which prevents it from accidentally
+    // consuming content that isn't actually a comment body.
+    $._error_recovery_sentinel,
+    // Consumes everything between {% comment %} and
+    // the first {% endcomment %}, treating the body as opaque raw text.
+    // Using an external scanner guarantees the first occurrence of
+    // {% endcomment %} stops the token regardless of other {%...%} sequences
+    // that may appear in the body.
+    $._comment_body_text,
+    // Consumes the full `{% elif` opening sequence
+    // (including the leading `{%` and any whitespace) as a single token, emitted
+    // only when the parser is inside an if_statement context.  Consuming `{%`
+    // inside the scanner — rather than relying on the grammar's anonymous `{%`
+    // token followed by a separate `elif` keyword — prevents the GLR parser from
+    // losing the elif_clause parse path when a body node (`{% include %}`, etc.)
+    // was the last thing parsed before the elif.
+    $._elif_tag_open,
+    // Consumes the entire `{% endcomment %}` closing
+    // sequence (including `%}`) as a single opaque token.  Emitting it as one
+    // unit prevents the `%}` from being ambiguous with the closing `%}` of
+    // enclosing `{% if %}` blocks at deep nesting levels.
+    $._endcomment_tag,
+  ],
+
   extras: $ => [
     /\s/,
   ],
 
   conflicts: $ => [
     // Django templates frequently place an opening tag inside {% if %}...{% else %}
-    // with the closing tag outside (tag pair crosses a block boundary). GLR tracks
-    // both paths: full element and bare start_tag/end_tag. prec.dynamic(-1) on bare
-    // tags ensures the full element wins when both paths succeed (well-formed XML).
-    // Example :
+    // with the closing tag outside — the tag pair crosses a block boundary.
+    // The parser explores two interpretations simultaneously: a full element
+    // (start_tag + content + end_tag) and bare start_tag/end_tag nodes.  The
+    // bare-tag option is marked lower-priority so it only wins when no matching
+    // close tag exists; otherwise the full element interpretation wins.
+    // Example:
     // {% if has_dynamic_product %}
     //     <blockTable colWidths="3.2cm,3.0cm,0.3cm,2.7cm,0.3cm,2.1cm,1.9cm,1.8cm">
     // {% else %}
@@ -30,8 +63,10 @@ export default grammar({
     //     ...
     // </blockTable>
     [$._body_node, $.element],
-    // _prolog_node is a subset of _top_level_node. GLR tracks both until an
-    // element or <!DOCTYPE token resolves which repeat we're in.
+    // _prolog_node is a subset of _top_level_node (it excludes elements and
+    // DOCTYPE).  The parser can't tell which repeat it's in until it sees an
+    // element or <!DOCTYPE token, so both interpretations are tracked until
+    // one of those disambiguates.
     [$._prolog_node, $._top_level_node],
   ],
 
@@ -134,9 +169,9 @@ export default grammar({
     ),
 
     // Used inside Django statement bodies (if/for/paired). Bare start_tag/end_tag
-    // allow tag pairs that cross Django block boundaries to parse without error.
-    // prec.dynamic(-1) ensures full element wins when both paths succeed; bare
-    // tags only win when the element path fails (no matching close tag).
+    // are included here so that tag pairs crossing Django block boundaries can
+    // parse without error.  They are marked lower-priority than a full element,
+    // so bare tags are only kept when there is no matching close tag in scope.
     _body_node: $ => choice(
       $.element,
       $.char_data,
@@ -242,12 +277,13 @@ export default grammar({
     ),
 
     // -------------------------------------------------------------------------
-    // Expressions: {{ variable }} or {{ "string" }}, optionally with filters.
+    // Expressions: {{ variable }}, {{ "string" }}, or {{ 0 }}, optionally
+    // with filters.
     // -------------------------------------------------------------------------
 
     dj_variable_expr: $ => seq(
       '{{',
-      choice($.variable, $.dj_string),
+      choice($.variable, $.dj_string, $.number_expr),
       '}}',
     ),
 
@@ -261,7 +297,16 @@ export default grammar({
       repeat(seq('|', $.filter)),
     ),
 
+    // A number literal optionally followed by filters.  Mirrors `variable` and
+    // `dj_string` so that {{ 0|filter:arg }} is valid.
+    number_expr: $ => seq(
+      $.number,
+      repeat(seq('|', $.filter)),
+    ),
+
     variable_name: _ => /[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*/,
+
+    block_name: _ => /[a-zA-Z_][a-zA-Z0-9_.+-]*/,
 
     filter: $ => seq(
       $.filter_name,
@@ -298,13 +343,14 @@ export default grammar({
       $.paired_statement,
       alias($.if_statement, $.paired_statement),
       alias($.for_statement, $.paired_statement),
+      alias($.block_statement, $.paired_statement),
+      $.dj_comment_statement,
       $.unpaired_statement,
     ),
 
     paired_statement: $ => {
       const tags = [
         'autoescape',
-        'block',
         'blocktrans',
         'blocktranslate',
         'ifchanged',
@@ -321,11 +367,10 @@ export default grammar({
 
     if_statement: $ => seq(
       '{%', alias('if', $.tag_name), repeat($._dj_attribute), '%}',
-      repeat($._body_node),
-      repeat(prec.left(seq(
+      repeat(choice(
+        $._body_node,
         alias($.elif_clause, $.branch_statement),
-        repeat($._body_node),
-      ))),
+      )),
       optional(seq(
         alias($.else_clause, $.branch_statement),
         repeat($._body_node),
@@ -333,7 +378,7 @@ export default grammar({
       '{%', alias('endif', $.tag_name), alias('%}', $.end_paired_statement),
     ),
 
-    elif_clause: $ => seq('{%', alias('elif', $.tag_name), repeat($._dj_attribute), '%}'),
+    elif_clause: $ => seq(alias($._elif_tag_open, $.tag_name), repeat($._dj_attribute), '%}'),
     else_clause: $ => seq('{%', alias('else', $.tag_name), '%}'),
 
     for_statement: $ => seq(
@@ -348,16 +393,40 @@ export default grammar({
 
     empty_clause: $ => seq('{%', alias('empty', $.tag_name), '%}'),
 
+    // Block tags require their own rule because block names allow hyphens
+    // (e.g. `{% block price-sheet-header %}`), which the generic variable_name
+    // regex does not accept.
+    block_statement: $ => seq(
+      '{%', alias('block', $.tag_name), $.block_name, '%}',
+      repeat($._body_node),
+      '{%', alias('endblock', $.tag_name), optional($.block_name), alias('%}', $.end_paired_statement),
+    ),
+
     unpaired_statement: $ => seq(
       '{%', alias($._identifier, $.tag_name), repeat($._dj_attribute), '%}',
     ),
+
+    // Treats the body as opaque raw text so that comments containing `<` characters
+    // (e.g. XML element names used in documentation) does not produce ERROR nodes.
+    dj_comment_statement: $ => seq(
+      '{%', alias('comment', $.tag_name), repeat($._dj_attribute), '%}',
+      optional($.comment_content),
+      alias($._endcomment_tag, $.end_paired_statement),
+    ),
+
+    // comment_content is produced by the external scanner in src/scanner.c.
+    // The scanner consumes the entire comment body — including any inner {%…%}
+    // sequences — as a single opaque token, stopping just before the first
+    // {% endcomment %} it encounters.  This is the only reliable way to handle
+    // the multi-block case.
+    comment_content: $ => $._comment_body_text,
 
     _dj_attribute: $ => seq(
       choice(
         $.keyword,
         $.keyword_operator,
         $.operator,
-        $.number,
+        $.number_expr,
         $.boolean,
         $.dj_string,
         $.variable,
@@ -391,7 +460,7 @@ export default grammar({
 
     operator: _ => choice('==', '!=', '<', '>', '<=', '>='),
 
-    number: _ => /[0-9]+(\.[0-9]+)?/,
+    number: _ => /-?[0-9]+(\.[0-9]+)?/,
 
     boolean: _ => choice('True', 'False'),
 

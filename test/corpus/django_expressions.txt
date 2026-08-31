@@ -314,3 +314,110 @@ Multiple expressions surrounded by text in content
       (char_data))
     (end_tag
       (name))))
+
+==================
+Negative integer filter argument
+==================
+
+<root>{{ value|floatformat:-2 }}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_variable_expr
+        (variable
+          (variable_name)
+          (filter
+            (filter_name)
+            (number)))))
+    (end_tag
+      (name))))
+
+==================
+Negative float filter argument
+==================
+
+<root>{{ value|multiply:-1.5 }}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_variable_expr
+        (variable
+          (variable_name)
+          (filter
+            (filter_name)
+            (number)))))
+    (end_tag
+      (name))))
+
+==================
+Bare integer literal expression
+==================
+
+<root>{{ 0 }}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_variable_expr
+        (number_expr
+          (number))))
+    (end_tag
+      (name))))
+
+==================
+Integer literal with filter and argument
+==================
+
+<root>{{ 0|spanish_number:2 }}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_variable_expr
+        (number_expr
+          (number)
+          (filter
+            (filter_name)
+            (number)))))
+    (end_tag
+      (name))))
+
+==================
+Negative integer literal with filter
+==================
+
+<root>{{ -1|multiply:-1 }}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_variable_expr
+        (number_expr
+          (number)
+          (filter
+            (filter_name)
+            (number)))))
+    (end_tag
+      (name))))
