@@ -509,17 +509,19 @@ DOCTYPE inside Django with statement body
 ---
 
 (document
-  (paired_statement
-    (tag_name)
-    (variable
-      (variable_name))
-    (dj_string)
+  (dj_paired_statement
+    (dj_tag_name)
+    (dj_assignment
+      (dj_assignment_target)
+      (dj_string))
+    (char_data)
     (doctype_decl
       (name)
       (external_id
         (system_literal)))
+    (char_data)
     (element
       (self_closing_tag
         (name)))
-    (tag_name)
-    (end_paired_statement)))
+    (dj_tag_name)
+    (dj_end_paired_statement)))

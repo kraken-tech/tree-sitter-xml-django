@@ -329,11 +329,11 @@ Negative integer filter argument
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)
-          (filter
-            (filter_name)
-            (number)))))
+        (dj_variable
+          (dj_variable_name)
+          (dj_filter
+            (dj_filter_name)
+            (dj_number)))))
     (end_tag
       (name))))
 
@@ -351,11 +351,11 @@ Negative float filter argument
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)
-          (filter
-            (filter_name)
-            (number)))))
+        (dj_variable
+          (dj_variable_name)
+          (dj_filter
+            (dj_filter_name)
+            (dj_number)))))
     (end_tag
       (name))))
 
@@ -373,8 +373,8 @@ Bare integer literal expression
       (name))
     (content
       (dj_variable_expr
-        (number_expr
-          (number))))
+        (dj_number_expr
+          (dj_number))))
     (end_tag
       (name))))
 
@@ -392,11 +392,11 @@ Integer literal with filter and argument
       (name))
     (content
       (dj_variable_expr
-        (number_expr
-          (number)
-          (filter
-            (filter_name)
-            (number)))))
+        (dj_number_expr
+          (dj_number)
+          (dj_filter
+            (dj_filter_name)
+            (dj_number)))))
     (end_tag
       (name))))
 
@@ -414,10 +414,10 @@ Negative integer literal with filter
       (name))
     (content
       (dj_variable_expr
-        (number_expr
-          (number)
-          (filter
-            (filter_name)
-            (number)))))
+        (dj_number_expr
+          (dj_number)
+          (dj_filter
+            (dj_filter_name)
+            (dj_number)))))
     (end_tag
       (name))))
