@@ -11,8 +11,8 @@ Unpaired statement - csrf_token
     (start_tag
       (name))
     (content
-      (unpaired_statement
-        (tag_name)))
+      (dj_unpaired_statement
+        (dj_tag_name)))
     (end_tag
       (name))))
 
@@ -29,8 +29,8 @@ Unpaired statement - extends
     (start_tag
       (name))
     (content
-      (unpaired_statement
-        (tag_name)
+      (dj_unpaired_statement
+        (dj_tag_name)
         (dj_string)))
     (end_tag
       (name))))
@@ -48,14 +48,14 @@ Unpaired statement - include
     (start_tag
       (name))
     (content
-      (unpaired_statement
-        (tag_name)
+      (dj_unpaired_statement
+        (dj_tag_name)
         (dj_string)
-        (keyword)
-        (variable
-          (variable_name))
-        (dj_string)
-        (keyword)))
+        (dj_keyword)
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_string))
+        (dj_keyword)))
     (end_tag
       (name))))
 
@@ -72,10 +72,10 @@ Unpaired statement - load
     (start_tag
       (name))
     (content
-      (unpaired_statement
-        (tag_name)
-        (variable
-          (variable_name))))
+      (dj_unpaired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))))
     (end_tag
       (name))))
 
@@ -92,15 +92,15 @@ if statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -117,20 +117,20 @@ if/else statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (branch_statement
-          (tag_name))
+        (dj_branch_statement
+          (dj_tag_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -147,27 +147,27 @@ if/elif/else statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (branch_statement
-          (tag_name)
-          (variable
-            (variable_name)))
+        (dj_branch_statement
+          (dj_tag_name)
+          (dj_variable
+            (dj_variable_name)))
         (element
           (self_closing_tag
             (name)))
-        (branch_statement
-          (tag_name))
+        (dj_branch_statement
+          (dj_tag_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -184,18 +184,18 @@ for statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (keyword_operator)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -212,23 +212,23 @@ for/empty statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (keyword_operator)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (branch_statement
-          (tag_name))
+        (dj_branch_statement
+          (dj_tag_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -245,9 +245,9 @@ block statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (block_name)
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_block_name)
         (element
           (start_tag
             (name))
@@ -255,8 +255,8 @@ block statement
             (char_data))
           (end_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -273,9 +273,9 @@ block statement with hyphenated name
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (block_name)
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_block_name)
         (element
           (start_tag
             (name))
@@ -283,9 +283,9 @@ block statement with hyphenated name
             (char_data))
           (end_tag
             (name)))
-        (tag_name)
-        (block_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_block_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -302,9 +302,9 @@ block statement with dotted name
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (block_name)
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_block_name)
         (element
           (start_tag
             (name))
@@ -312,9 +312,9 @@ block statement with dotted name
             (char_data))
           (end_tag
             (name)))
-        (tag_name)
-        (block_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_block_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -331,9 +331,9 @@ block statement with plus in name
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (block_name)
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_block_name)
         (element
           (start_tag
             (name))
@@ -341,9 +341,9 @@ block statement with plus in name
             (char_data))
           (end_tag
             (name)))
-        (tag_name)
-        (block_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_block_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -360,17 +360,77 @@ with statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_variable
+            (dj_variable_name)))
         (dj_variable_expr
-          (variable
-            (variable_name)))
-        (tag_name)
-        (end_paired_statement)))
+          (dj_variable
+            (dj_variable_name)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+with statement - assignment value types
+==================
+
+<root>{% with x=7 y="text" z=val|length %}{% endwith %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_number_expr
+            (dj_number)))
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_string))
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_variable
+            (dj_variable_name)
+            (dj_filter
+              (dj_filter_name))))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+with statement - number expression assignment value
+==================
+
+<root>{% with x=7|add:1 %}{% endwith %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_assignment
+          (dj_assignment_target)
+          (dj_number_expr
+            (dj_number)
+            (dj_filter
+              (dj_filter_name)
+              (dj_number))))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -387,20 +447,20 @@ autoescape statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (keyword)
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_keyword)
         (element
           (start_tag
             (name))
           (content
             (dj_variable_expr
-              (variable
-                (variable_name))))
+              (dj_variable
+                (dj_variable_name))))
           (end_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -417,8 +477,8 @@ spaceless statement
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
+      (dj_paired_statement
+        (dj_tag_name)
         (element
           (start_tag
             (name))
@@ -426,8 +486,8 @@ spaceless statement
             (char_data))
           (end_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -444,7 +504,7 @@ Django comment
     (start_tag
       (name))
     (content
-      (unpaired_dj_comment))
+      (dj_unpaired_comment))
     (end_tag
       (name))))
 
@@ -461,24 +521,24 @@ Nested for inside if
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (paired_statement
-          (tag_name)
-          (variable
-            (variable_name))
-          (keyword_operator)
-          (variable
-            (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_paired_statement
+          (dj_tag_name)
+          (dj_variable
+            (dj_variable_name))
+          (dj_keyword_operator)
+          (dj_variable
+            (dj_variable_name))
           (element
             (self_closing_tag
               (name)))
-          (tag_name)
-          (end_paired_statement))
-        (tag_name)
-        (end_paired_statement)))
+          (dj_tag_name)
+          (dj_end_paired_statement))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -495,18 +555,18 @@ if with comparison operator
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (operator)
-        (number_expr
-          (number))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_operator)
+        (dj_number_expr
+          (dj_number))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -523,18 +583,18 @@ if with keyword operator
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (keyword_operator)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -551,15 +611,15 @@ Variable name with keyword prefix is not split by lexer
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -576,15 +636,15 @@ Variable name with keyword substring not at prefix is not split (coffer)
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -601,17 +661,17 @@ Variables with keyword prefixes in compound condition are not split (cannot, int
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -628,16 +688,16 @@ Variable with keyword prefix after keyword operator is not split (not intercept)
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (keyword_operator)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -654,15 +714,15 @@ Variable name starting with boolean prefix is not split (Falsetto)
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -679,14 +739,14 @@ keyword with no trailing whitespace before closing tag
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (keyword)
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_keyword)
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -703,10 +763,10 @@ keyword at end of unpaired statement with no trailing whitespace
     (start_tag
       (name))
     (content
-      (unpaired_statement
-        (tag_name)
+      (dj_unpaired_statement
+        (dj_tag_name)
         (dj_string)
-        (keyword)))
+        (dj_keyword)))
     (end_tag
       (name))))
 
@@ -723,14 +783,14 @@ boolean with no trailing whitespace before closing tag
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (boolean)
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_boolean)
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -744,8 +804,8 @@ Statement at document level
 ---
 
 (document
-  (unpaired_statement
-    (tag_name)
+  (dj_unpaired_statement
+    (dj_tag_name)
     (dj_string))
   (element
     (self_closing_tag
@@ -764,18 +824,18 @@ if with negative number comparison
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (operator)
-        (number_expr
-          (number))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_operator)
+        (dj_number_expr
+          (dj_number))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))
 
@@ -792,17 +852,17 @@ if with underscore digit separator in number
     (start_tag
       (name))
     (content
-      (paired_statement
-        (tag_name)
-        (variable
-          (variable_name))
-        (operator)
-        (number_expr
-          (number))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_operator)
+        (dj_number_expr
+          (dj_number))
         (element
           (self_closing_tag
             (name)))
-        (tag_name)
-        (end_paired_statement)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
     (end_tag
       (name))))

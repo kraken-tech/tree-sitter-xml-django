@@ -12,8 +12,8 @@ Simple variable
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name))))
+        (dj_variable
+          (dj_variable_name))))
     (end_tag
       (name))))
 
@@ -31,8 +31,8 @@ Dotted variable
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name))))
+        (dj_variable
+          (dj_variable_name))))
     (end_tag
       (name))))
 
@@ -50,10 +50,10 @@ Variable with filter
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)
-          (filter
-            (filter_name)))))
+        (dj_variable
+          (dj_variable_name)
+          (dj_filter
+            (dj_filter_name)))))
     (end_tag
       (name))))
 
@@ -71,11 +71,11 @@ Variable with filter and argument
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)
-          (filter
-            (filter_name)
-            (number)))))
+        (dj_variable
+          (dj_variable_name)
+          (dj_filter
+            (dj_filter_name)
+            (dj_number)))))
     (end_tag
       (name))))
 
@@ -93,11 +93,11 @@ Variable with filter and dotted argument
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)
-          (filter
-            (filter_name)
-            (filter_argument)))))
+        (dj_variable
+          (dj_variable_name)
+          (dj_filter
+            (dj_filter_name)
+            (dj_filter_argument)))))
     (end_tag
       (name))))
 
@@ -115,11 +115,11 @@ Variable with quoted filter argument
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)
-          (filter
-            (filter_name)
-            (filter_argument)))))
+        (dj_variable
+          (dj_variable_name)
+          (dj_filter
+            (dj_filter_name)
+            (dj_filter_argument)))))
     (end_tag
       (name))))
 
@@ -137,13 +137,13 @@ Variable with chained filters
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)
-          (filter
-            (filter_name))
-          (filter
-            (filter_name)
-            (number)))))
+        (dj_variable
+          (dj_variable_name)
+          (dj_filter
+            (dj_filter_name))
+          (dj_filter
+            (dj_filter_name)
+            (dj_number)))))
     (end_tag
       (name))))
 
@@ -180,8 +180,8 @@ String with filter
     (content
       (dj_variable_expr
         (dj_string
-          (filter
-            (filter_name)))))
+          (dj_filter
+            (dj_filter_name)))))
     (end_tag
       (name))))
 
@@ -201,8 +201,8 @@ Expression in attribute value
         name: (name)
         value: (att_value
           (dj_variable_expr
-            (variable
-              (variable_name))))))))
+            (dj_variable
+              (dj_variable_name))))))))
 
 ==================
 Expression mixed with text in attribute
@@ -220,8 +220,8 @@ Expression mixed with text in attribute
         name: (name)
         value: (att_value
           (dj_variable_expr
-            (variable
-              (variable_name))))))))
+            (dj_variable
+              (dj_variable_name))))))))
 
 ==================
 Expression surrounded by text in attribute
@@ -239,8 +239,8 @@ Expression surrounded by text in attribute
         name: (name)
         value: (att_value
           (dj_variable_expr
-            (variable
-              (variable_name))))))))
+            (dj_variable
+              (dj_variable_name))))))))
 
 ==================
 Multiple expressions in content
@@ -256,11 +256,11 @@ Multiple expressions in content
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)))
+        (dj_variable
+          (dj_variable_name)))
       (dj_variable_expr
-        (variable
-          (variable_name))))
+        (dj_variable
+          (dj_variable_name))))
     (end_tag
       (name))))
 
@@ -279,8 +279,8 @@ Expression surrounded by text in content
     (content
       (char_data)
       (dj_variable_expr
-        (variable
-          (variable_name))))
+        (dj_variable
+          (dj_variable_name))))
     (end_tag
       (name))))
 
@@ -298,19 +298,19 @@ Multiple expressions surrounded by text in content
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)))
+        (dj_variable
+          (dj_variable_name)))
       (char_data)
       (dj_variable_expr
-        (variable
-          (variable_name)))
+        (dj_variable
+          (dj_variable_name)))
       (char_data)
       (dj_variable_expr
-        (variable
-          (variable_name)
-          (filter
-            (filter_name)
-            (number))))
+        (dj_variable
+          (dj_variable_name)
+          (dj_filter
+            (dj_filter_name)
+            (dj_number))))
       (char_data))
     (end_tag
       (name))))
@@ -329,11 +329,11 @@ Negative integer filter argument
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)
-          (filter
-            (filter_name)
-            (number)))))
+        (dj_variable
+          (dj_variable_name)
+          (dj_filter
+            (dj_filter_name)
+            (dj_number)))))
     (end_tag
       (name))))
 
@@ -351,11 +351,11 @@ Negative float filter argument
       (name))
     (content
       (dj_variable_expr
-        (variable
-          (variable_name)
-          (filter
-            (filter_name)
-            (number)))))
+        (dj_variable
+          (dj_variable_name)
+          (dj_filter
+            (dj_filter_name)
+            (dj_number)))))
     (end_tag
       (name))))
 
@@ -373,8 +373,8 @@ Bare integer literal expression
       (name))
     (content
       (dj_variable_expr
-        (number_expr
-          (number))))
+        (dj_number_expr
+          (dj_number))))
     (end_tag
       (name))))
 
@@ -392,11 +392,11 @@ Integer literal with filter and argument
       (name))
     (content
       (dj_variable_expr
-        (number_expr
-          (number)
-          (filter
-            (filter_name)
-            (number)))))
+        (dj_number_expr
+          (dj_number)
+          (dj_filter
+            (dj_filter_name)
+            (dj_number)))))
     (end_tag
       (name))))
 
@@ -414,10 +414,10 @@ Negative integer literal with filter
       (name))
     (content
       (dj_variable_expr
-        (number_expr
-          (number)
-          (filter
-            (filter_name)
-            (number)))))
+        (dj_number_expr
+          (dj_number)
+          (dj_filter
+            (dj_filter_name)
+            (dj_number)))))
     (end_tag
       (name))))

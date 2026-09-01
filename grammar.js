@@ -27,7 +27,7 @@ export default grammar({
     // Using an external scanner guarantees the first occurrence of
     // {% endcomment %} stops the token regardless of other {%...%} sequences
     // that may appear in the body.
-    $._comment_body_text,
+    $._dj_comment_body_text,
     // Consumes the full `{% elif` opening sequence
     // (including the leading `{%` and any whitespace) as a single token, emitted
     // only when the parser is inside an if_statement context.  Consuming `{%`
@@ -35,12 +35,12 @@ export default grammar({
     // token followed by a separate `elif` keyword — prevents the GLR parser from
     // losing the elif_clause parse path when a body node (`{% include %}`, etc.)
     // was the last thing parsed before the elif.
-    $._elif_tag_open,
+    $._dj_elif_tag_open,
     // Consumes the entire `{% endcomment %}` closing
     // sequence (including `%}`) as a single opaque token.  Emitting it as one
     // unit prevents the `%}` from being ambiguous with the closing `%}` of
     // enclosing `{% if %}` blocks at deep nesting levels.
-    $._endcomment_tag,
+    $._dj_endcomment_tag,
   ],
 
   extras: $ => [
@@ -89,14 +89,14 @@ export default grammar({
     _prolog_node: $ => choice(
       $.processing_instruction,
       $.comment,
-      $._django_node,
+      $._dj_node,
     ),
 
     _top_level_node: $ => choice(
       $.element,
       $.processing_instruction,
       $.comment,
-      $._django_node,
+      $._dj_node,
       // Bare end_tag at the document root: handles the case where a Django block
       // or paired statement opens an XML element in its body but the matching
       // close tag falls outside the statement (at the document root level).
@@ -170,7 +170,7 @@ export default grammar({
       $.cdata_section,
       $.processing_instruction,
       $.comment,
-      $._django_node,
+      $._dj_node,
     ),
 
     // Used inside Django statement bodies (if/for/paired). Bare start_tag/end_tag
@@ -184,7 +184,7 @@ export default grammar({
       $.cdata_section,
       $.processing_instruction,
       $.comment,
-      $._django_node,
+      $._dj_node,
       $.doctype_decl,
       prec.dynamic(-1, $.start_tag),
       prec.dynamic(-1, $.end_tag),
@@ -202,7 +202,7 @@ export default grammar({
     start_tag: $ => seq(
       '<',
       field('name', $.name),
-      repeat(choice($.attribute, $._django_node)),
+      repeat(choice($.attribute, $._dj_node)),
       '>',
     ),
 
@@ -215,14 +215,14 @@ export default grammar({
     self_closing_tag: $ => seq(
       '<',
       field('name', $.name),
-      repeat(choice($.attribute, $._django_node)),
+      repeat(choice($.attribute, $._dj_node)),
       '/>',
     ),
 
     attribute: $ => seq(
       field('name', $.name),
       '=',
-      field('value', choice($.att_value, $._django_node)),
+      field('value', choice($.att_value, $._dj_node)),
     ),
 
     // Attribute values may contain Django statements/comments. The plain-text
@@ -230,8 +230,8 @@ export default grammar({
     // no Django content. Django variable expressions ({{ ... }}) on the other hand
     // are parsed as full nodes.
     att_value: $ => choice(
-      seq('"', repeat(choice($._att_content_double, $._reference, $._django_node)), '"'),
-      seq("'", repeat(choice($._att_content_single, $._reference, $._django_node)), "'"),
+      seq('"', repeat(choice($._att_content_double, $._reference, $._dj_node)), '"'),
+      seq("'", repeat(choice($._att_content_single, $._reference, $._dj_node)), "'"),
     ),
 
     _att_content_double: _ => token(prec(-1, /([^"<&{]|\{[^{%#])+/)),
@@ -244,8 +244,10 @@ export default grammar({
     // =========================================================================
 
     // Only {% ... %} (statements), {# ... #} (comments), and {{ ... }}
-    // (expressions) break char_data.
-    char_data: _ => token(prec(-1, /([^<&{]|\{[^{%#])+/)),
+    // (expressions) break char_data. prec(1) outbids the /\s/ extra so that
+    // whitespace-only text (e.g. the space between </b> and </para>) is kept
+    // as a char_data node instead of being silently consumed.
+    char_data: _ => token(prec(1, /([^<&{]|\{[^{%#])+/)),
 
     cdata_section: $ => seq($.cdata_start, optional($.cdata), ']]>'),
 
@@ -276,10 +278,10 @@ export default grammar({
     // Django nodes
     // =========================================================================
 
-    _django_node: $ => choice(
+    _dj_node: $ => choice(
       $.dj_variable_expr,
-      $._django_statement,
-      $._django_comment,
+      $._dj_statement,
+      $._dj_comment,
     ),
 
     // -------------------------------------------------------------------------
@@ -289,7 +291,7 @@ export default grammar({
 
     dj_variable_expr: $ => seq(
       '{{',
-      choice($.variable, $.dj_string, $.number_expr),
+      choice($.dj_variable, $.dj_string, $.dj_number_expr),
       '}}',
     ),
 
@@ -298,37 +300,37 @@ export default grammar({
     // and dj_variable_expr above.
     // -------------------------------------------------------------------------
 
-    variable: $ => seq(
-      $.variable_name,
-      repeat(seq('|', $.filter)),
+    dj_variable: $ => seq(
+      $.dj_variable_name,
+      repeat(seq('|', $.dj_filter)),
     ),
 
     // A number literal optionally followed by filters.  Mirrors `variable` and
     // `dj_string` so that {{ 0|filter:arg }} is valid.
-    number_expr: $ => seq(
-      $.number,
-      repeat(seq('|', $.filter)),
+    dj_number_expr: $ => seq(
+      $.dj_number,
+      repeat(seq('|', $.dj_filter)),
     ),
 
-    variable_name: _ => /[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*/,
+    dj_variable_name: _ => /[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*/,
 
-    block_name: _ => /[a-zA-Z_][a-zA-Z0-9_.+-]*/,
+    dj_block_name: _ => /[a-zA-Z_][a-zA-Z0-9_.+-]*/,
 
-    filter: $ => seq(
-      $.filter_name,
-      optional(seq(':', choice($.filter_argument, $._quoted_filter_argument, $.number))),
+    dj_filter: $ => seq(
+      $.dj_filter_name,
+      optional(seq(':', choice($.dj_filter_argument, $._dj_quoted_filter_argument, $.dj_number))),
     ),
 
-    filter_name: _ => /[a-zA-Z_][a-zA-Z0-9_]*/,
+    dj_filter_name: _ => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
-    filter_argument: _ => /[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*/,
+    dj_filter_argument: _ => /[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*/,
 
     // Hidden rule: a plain quoted string used as a filter argument.  We keep
     // it separate from dj_string so it does NOT greedily consume subsequent
     // pipe-filters that belong to the outer variable.
-    _quoted_filter_argument: $ => choice(
-      seq("'", alias(/[^']*/, $.filter_argument), "'"),
-      seq('"', alias(/[^"]*/, $.filter_argument), '"'),
+    _dj_quoted_filter_argument: $ => choice(
+      seq("'", alias(/[^']*/, $.dj_filter_argument), "'"),
+      seq('"', alias(/[^"]*/, $.dj_filter_argument), '"'),
     ),
 
     // A quoted string literal, optionally followed by filters.  Used in
@@ -338,23 +340,23 @@ export default grammar({
         seq("'", /[^']*/, "'"),
         seq('"', /[^"]*/, '"'),
       ),
-      repeat(seq('|', $.filter)),
+      repeat(seq('|', $.dj_filter)),
     ),
 
     // -------------------------------------------------------------------------
     // Statements
     // -------------------------------------------------------------------------
 
-    _django_statement: $ => choice(
-      $.paired_statement,
-      alias($.if_statement, $.paired_statement),
-      alias($.for_statement, $.paired_statement),
-      alias($.block_statement, $.paired_statement),
+    _dj_statement: $ => choice(
+      $.dj_paired_statement,
+      alias($.dj_if_statement, $.dj_paired_statement),
+      alias($.dj_for_statement, $.dj_paired_statement),
+      alias($.dj_block_statement, $.dj_paired_statement),
       $.dj_comment_statement,
-      $.unpaired_statement,
+      $.dj_unpaired_statement,
     ),
 
-    paired_statement: $ => {
+    dj_paired_statement: $ => {
       const tags = [
         'autoescape',
         'blocktrans',
@@ -365,59 +367,59 @@ export default grammar({
         'with',
       ];
       return choice(...tags.map(tag => seq(
-        '{%', alias(tag, $.tag_name), repeat($._dj_attribute), '%}',
+        '{%', alias(tag, $.dj_tag_name), repeat($._dj_attribute), '%}',
         repeat($._body_node),
-        '{%', alias('end' + tag, $.tag_name), repeat($._dj_attribute), alias('%}', $.end_paired_statement),
+        '{%', alias('end' + tag, $.dj_tag_name), repeat($._dj_attribute), alias('%}', $.dj_end_paired_statement),
       )));
     },
 
-    if_statement: $ => seq(
-      '{%', alias('if', $.tag_name), repeat($._dj_attribute), '%}',
+    dj_if_statement: $ => seq(
+      '{%', alias('if', $.dj_tag_name), repeat($._dj_attribute), '%}',
       repeat(choice(
         $._body_node,
-        alias($.elif_clause, $.branch_statement),
+        alias($.dj_elif_clause, $.dj_branch_statement),
       )),
       optional(seq(
-        alias($.else_clause, $.branch_statement),
+        alias($.dj_else_clause, $.dj_branch_statement),
         repeat($._body_node),
       )),
-      '{%', alias('endif', $.tag_name), alias('%}', $.end_paired_statement),
+      '{%', alias('endif', $.dj_tag_name), alias('%}', $.dj_end_paired_statement),
     ),
 
-    elif_clause: $ => seq(alias($._elif_tag_open, $.tag_name), repeat($._dj_attribute), '%}'),
-    else_clause: $ => seq('{%', alias('else', $.tag_name), '%}'),
+    dj_elif_clause: $ => seq(alias($._dj_elif_tag_open, $.dj_tag_name), repeat($._dj_attribute), '%}'),
+    dj_else_clause: $ => seq('{%', alias('else', $.dj_tag_name), '%}'),
 
-    for_statement: $ => seq(
-      '{%', alias('for', $.tag_name), repeat($._dj_attribute), '%}',
+    dj_for_statement: $ => seq(
+      '{%', alias('for', $.dj_tag_name), repeat($._dj_attribute), '%}',
       repeat($._body_node),
       optional(seq(
-        alias($.empty_clause, $.branch_statement),
+        alias($.dj_empty_clause, $.dj_branch_statement),
         repeat($._body_node),
       )),
-      '{%', alias('endfor', $.tag_name), alias('%}', $.end_paired_statement),
+      '{%', alias('endfor', $.dj_tag_name), alias('%}', $.dj_end_paired_statement),
     ),
 
-    empty_clause: $ => seq('{%', alias('empty', $.tag_name), '%}'),
+    dj_empty_clause: $ => seq('{%', alias('empty', $.dj_tag_name), '%}'),
 
     // Block tags require their own rule because block names allow hyphens
     // (e.g. `{% block price-sheet-header %}`), which the generic variable_name
     // regex does not accept.
-    block_statement: $ => seq(
-      '{%', alias('block', $.tag_name), $.block_name, '%}',
+    dj_block_statement: $ => seq(
+      '{%', alias('block', $.dj_tag_name), $.dj_block_name, '%}',
       repeat($._body_node),
-      '{%', alias('endblock', $.tag_name), optional($.block_name), alias('%}', $.end_paired_statement),
+      '{%', alias('endblock', $.dj_tag_name), optional($.dj_block_name), alias('%}', $.dj_end_paired_statement),
     ),
 
-    unpaired_statement: $ => seq(
-      '{%', alias($._identifier, $.tag_name), repeat($._dj_attribute), '%}',
+    dj_unpaired_statement: $ => seq(
+      '{%', alias($._identifier, $.dj_tag_name), repeat($._dj_attribute), '%}',
     ),
 
     // Treats the body as opaque raw text so that comments containing `<` characters
     // (e.g. XML element names used in documentation) does not produce ERROR nodes.
     dj_comment_statement: $ => seq(
-      '{%', alias('comment', $.tag_name), repeat($._dj_attribute), '%}',
-      optional($.comment_content),
-      alias($._endcomment_tag, $.end_paired_statement),
+      '{%', alias('comment', $.dj_tag_name), repeat($._dj_attribute), '%}',
+      optional($.dj_comment_content),
+      alias($._dj_endcomment_tag, $.dj_end_paired_statement),
     ),
 
     // comment_content is produced by the external scanner in src/scanner.c.
@@ -425,49 +427,59 @@ export default grammar({
     // sequences — as a single opaque token, stopping just before the first
     // {% endcomment %} it encounters.  This is the only reliable way to handle
     // the multi-block case.
-    comment_content: $ => $._comment_body_text,
+    dj_comment_content: $ => $._dj_comment_body_text,
+
+    // A key=value pair used in {% with key=value %}, {% include ... with key=val %},
+    // custom tags with keyword arguments, etc.  The LHS is an assignment_target —
+    // a name being bound, distinct from a variable being read.
+    dj_assignment: $ => seq(
+      field('name', alias($.dj_variable_name, $.dj_assignment_target)),
+      '=',
+      field('value', choice($.dj_variable, $.dj_string, $.dj_number_expr, $.dj_boolean)),
+    ),
 
     _dj_attribute: $ => seq(
       choice(
-        $.keyword,
-        $.keyword_operator,
-        $.operator,
-        $.number_expr,
-        $.boolean,
+        $.dj_keyword,
+        $.dj_keyword_operator,
+        $.dj_operator,
+        $.dj_number_expr,
+        $.dj_boolean,
         $.dj_string,
-        $.variable,
+        $.dj_variable,
+        $.dj_assignment,
       ),
-      optional(choice(',', '=')),
+      optional(','),
     ),
 
     // -------------------------------------------------------------------------
     // Comments
     // -------------------------------------------------------------------------
 
-    _django_comment: $ => $.unpaired_dj_comment,
+    _dj_comment: $ => $.dj_unpaired_comment,
 
-    unpaired_dj_comment: _ => seq('{#', /([^#]|#[^}])*/, '#}'),
+    dj_unpaired_comment: _ => seq('{#', /([^#]|#[^}])*/, '#}'),
 
     // -------------------------------------------------------------------------
     // Django keywords and operators
     // -------------------------------------------------------------------------
 
-    // Bare string literals take priority over the variable_name regex at equal length.
+    // Bare string literals take priority over the dj_variable_name regex at equal length.
     // Combined with word: $ => $._identifier, they are never matched
     // as a keyword prefix inside a longer identifier (e.g. 'and' won't split 'android'
-    // into keyword_operator + variable_name). Multi-word operators still use token() so
+    // into dj_keyword_operator + dj_variable_name). Multi-word operators still use token() so
     // they are matched as an atomic unit including the embedded space.
-    keyword: _ => choice('on', 'off', 'with', 'as', 'silent', 'only', 'from', 'random', 'by'),
+    dj_keyword: _ => choice('on', 'off', 'with', 'as', 'silent', 'only', 'from', 'random', 'by'),
 
-    keyword_operator: _ => choice(
+    dj_keyword_operator: _ => choice(
       'and', 'or', 'not', 'in', 'is',
       token(choice('not in', 'is not')),
     ),
 
-    operator: _ => choice('==', '!=', '<', '>', '<=', '>='),
+    dj_operator: _ => choice('==', '!=', '<', '>', '<=', '>='),
 
-    number: _ => /-?[0-9]+(_[0-9]+)*(\.[0-9]+(_[0-9]+)*)?/,
-    boolean: _ => choice('True', 'False'),
+    dj_number: _ => /-?[0-9]+(_[0-9]+)*(\.[0-9]+(_[0-9]+)*)?/,
+    dj_boolean: _ => choice('True', 'False'),
 
     _identifier: _ => /[a-zA-Z_]\w*/,
   },

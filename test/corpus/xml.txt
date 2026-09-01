@@ -245,6 +245,31 @@ Character reference
       (name))))
 
 ==================
+Whitespace between sibling closing tags is preserved as char_data
+==================
+
+<para>A word is <b>bold</b> </para>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (char_data)
+      (element
+        (start_tag
+          (name))
+        (content
+          (char_data))
+        (end_tag
+          (name)))
+      (char_data))
+    (end_tag
+      (name))))
+
+==================
 Deeply nested elements
 ==================
 
@@ -326,9 +351,11 @@ DOCTYPE in full RML-style document
     (start_tag
       name: (name))
     (content
+      (char_data)
       (element
         (self_closing_tag
-          name: (name))))
+          name: (name)))
+      (char_data))
     (end_tag
       name: (name))))
 
@@ -447,8 +474,8 @@ DOCTYPE inside element content produces an error
       name: (name))
     (ERROR
       (UNEXPECTED 'D')
-      (tag_name)
-      (tag_name))
+      (dj_tag_name)
+      (dj_tag_name))
     (end_tag
       name: (name))))
 
@@ -461,14 +488,14 @@ DOCTYPE inside Django body block
 ---
 
 (document
-  (paired_statement
-    (tag_name)
-    (variable
-      (variable_name))
+  (dj_paired_statement
+    (dj_tag_name)
+    (dj_variable
+      (dj_variable_name))
     (doctype_decl
       (name))
-    (tag_name)
-    (end_paired_statement)))
+    (dj_tag_name)
+    (dj_end_paired_statement)))
 
 ==================
 DOCTYPE inside Django with statement body
@@ -482,17 +509,19 @@ DOCTYPE inside Django with statement body
 ---
 
 (document
-  (paired_statement
-    (tag_name)
-    (variable
-      (variable_name))
-    (dj_string)
+  (dj_paired_statement
+    (dj_tag_name)
+    (dj_assignment
+      (dj_assignment_target)
+      (dj_string))
+    (char_data)
     (doctype_decl
       (name)
       (external_id
         (system_literal)))
+    (char_data)
     (element
       (self_closing_tag
         (name)))
-    (tag_name)
-    (end_paired_statement)))
+    (dj_tag_name)
+    (dj_end_paired_statement)))
