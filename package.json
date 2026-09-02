@@ -1,5 +1,6 @@
 {
   "type": "module",
+  "license": "BSD-3-Clause",
   "dependencies": {
     "tree-sitter-cli": "^0.26.13"
   }

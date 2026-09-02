@@ -180,4 +180,4 @@ Both stacks could be implemented together in a single scanner update.
 
 ## License
 
-UNLICENSED
+[BSD 3-Clause](LICENSE)
