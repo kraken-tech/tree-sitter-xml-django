@@ -62,8 +62,8 @@ comment statement with multi-line prose body
 ==================
 
 <r>{% comment %}
-    Lorem ipsum dolor sit amet.
-    No Django tags here, just prose.
+    This is a plain prose comment.
+    It spans multiple lines with no special characters.
 {% endcomment %}</r>
 
 ---

@@ -361,6 +361,7 @@ export default grammar({
         'autoescape',
         'blocktrans',
         'blocktranslate',
+        'filter',
         'ifchanged',
         'spaceless',
         'verbatim',

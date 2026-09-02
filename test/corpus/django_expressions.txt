@@ -421,3 +421,106 @@ Negative integer literal with filter
             (dj_number)))))
     (end_tag
       (name))))
+
+==================
+Statement tag as attribute value (string argument)
+==================
+
+<img src="{% static 'img.png' %}"/>
+
+---
+
+(document
+  (element
+    (self_closing_tag
+      name: (name)
+      (attribute
+        name: (name)
+        value: (att_value
+          (dj_unpaired_statement
+            (dj_tag_name)
+            (dj_string)))))))
+
+==================
+Statement tag as attribute value (number keyword argument)
+==================
+
+<para y="{% to_mm px=521 %}"/>
+
+---
+
+(document
+  (element
+    (self_closing_tag
+      name: (name)
+      (attribute
+        name: (name)
+        value: (att_value
+          (dj_unpaired_statement
+            (dj_tag_name)
+            (dj_assignment
+              name: (dj_assignment_target)
+              value: (dj_number_expr
+                (dj_number)))))))))
+
+==================
+Statement tag as attribute value (variable keyword argument)
+==================
+
+<para x="{% position_right_x_mm width_px=width %}"/>
+
+---
+
+(document
+  (element
+    (self_closing_tag
+      name: (name)
+      (attribute
+        name: (name)
+        value: (att_value
+          (dj_unpaired_statement
+            (dj_tag_name)
+            (dj_assignment
+              name: (dj_assignment_target)
+              value: (dj_variable
+                (dj_variable_name)))))))))
+
+==================
+Multiple statement-tag-valued attributes
+==================
+
+<storyPlace x="{% position_right_x_mm width_px=width %}" y="{% to_mm px=521 %}" width="{% to_mm px=width %}"/>
+
+---
+
+(document
+  (element
+    (self_closing_tag
+      name: (name)
+      (attribute
+        name: (name)
+        value: (att_value
+          (dj_unpaired_statement
+            (dj_tag_name)
+            (dj_assignment
+              name: (dj_assignment_target)
+              value: (dj_variable
+                (dj_variable_name))))))
+      (attribute
+        name: (name)
+        value: (att_value
+          (dj_unpaired_statement
+            (dj_tag_name)
+            (dj_assignment
+              name: (dj_assignment_target)
+              value: (dj_number_expr
+                (dj_number))))))
+      (attribute
+        name: (name)
+        value: (att_value
+          (dj_unpaired_statement
+            (dj_tag_name)
+            (dj_assignment
+              name: (dj_assignment_target)
+              value: (dj_variable
+                (dj_variable_name)))))))))
