@@ -19,7 +19,7 @@ license = {text = "BSD-3-Clause"}
 readme = "README.md"
 
 [project.urls]
-Homepage = "https://github.com/octoenergy/tree-sitter-xmldjango"
+Homepage = "https://github.com/kraken-tech/tree-sitter-xmldjango"
 
 [project.optional-dependencies]
 core = ["tree-sitter~=0.26"]

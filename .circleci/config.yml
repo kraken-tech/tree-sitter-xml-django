@@ -118,7 +118,7 @@ jobs:
             git config user.email "ci-bot@kraken.tech"
             git config user.name "CI"
             git tag -a "$TAG" -m "Release $TAG"
-            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/octoenergy/tree-sitter-xmldjango.git" "$TAG"
+            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/kraken-tech/tree-sitter-xmldjango.git" "$TAG"
 
 workflows:
   test-build-publish:
