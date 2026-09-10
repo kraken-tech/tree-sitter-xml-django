@@ -50,12 +50,12 @@ uvx pre-commit install --install-hooks
 
 ### Releasing a new version
 
-To publish a new version of the package to Nexus:
+To publish a new version of the package to PyPI:
 
 1. Bump the `version` field in `pyproject.toml` (follows [semver](https://semver.org/))
 2. Merge the change to `main`
 
-CI will detect that the version has no corresponding git tag, publish the package to Nexus, and then push a `vX.Y.Z` tag to GitHub automatically. No manual tagging or release steps are needed.
+CI will detect that the version has no corresponding git tag, publish the package to PyPI, and then push a `vX.Y.Z` tag to GitHub automatically. No manual tagging or release steps are needed.
 
 If a merge to `main` does not include a version bump, the publish step is skipped silently.
 
@@ -99,8 +99,7 @@ statements that do not follow this convention.
 Query files (typically found at `/queries/*.scm`) are not implemented in this grammar.
 The only use case for this library at the time of writing is programmatic
 tree manipulation, not editor integration. Implement these if the grammar is ever adopted
-for editor use (syntax highlighting, language injection, symbol navigation), or if we
-ever open-source this grammar parser.
+for editor use (syntax highlighting, language injection, symbol navigation).
 
 ## Limitations
 
