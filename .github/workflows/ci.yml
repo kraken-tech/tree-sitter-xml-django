@@ -36,14 +36,13 @@ jobs:
       - run: npx tree-sitter test
       - run: uv run pytest bindings/python/tests/
 
-  publish:
+  version-check:
     needs: [lint, test]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
-    environment: release
-    permissions:
-      id-token: write  # required for PyPI trusted publishing
-      contents: write  # required for pushing the release tag
+    outputs:
+      new: ${{ steps.check.outputs.new }}
+      tag: ${{ steps.check.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
       - name: Check if version already published
@@ -58,18 +57,67 @@ jobs:
           else
             echo "new=true" >> "$GITHUB_OUTPUT"
           fi
+
+  build-sdist:
+    needs: version-check
+    if: needs.version-check.outputs.new == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-        if: steps.check.outputs.new == 'true'
       - name: Build source distribution
-        if: steps.check.outputs.new == 'true'
         run: uv build --sdist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-sdist
+          path: dist/*.tar.gz
+
+  build-wheels:
+    needs: version-check
+    if: needs.version-check.outputs.new == 'true'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-15
+          - macos-15-intel
+          - windows-2025
+          - windows-11-arm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2
+        with:
+          output-dir: dist
+        env:
+          CIBW_ARCHS: native
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-wheels-${{ matrix.os }}
+          path: dist/*.whl
+
+  publish:
+    needs: [version-check, build-sdist, build-wheels]
+    if: needs.version-check.outputs.new == 'true'
+    runs-on: ubuntu-24.04
+    environment: release
+    permissions:
+      id-token: write  # required for PyPI trusted publishing
+      contents: write  # required for pushing the release tag
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: dist-*
+          merge-multiple: true
       - name: Publish to PyPI
-        if: steps.check.outputs.new == 'true'
         uses: pypa/gh-action-pypi-publish@release/v1
       - name: Tag release
-        if: steps.check.outputs.new == 'true'
         run: |
           git config user.email "ci-bot@kraken.tech"
           git config user.name "CI"
-          git tag -a "${{ steps.check.outputs.tag }}" -m "Release ${{ steps.check.outputs.tag }}"
-          git push origin "${{ steps.check.outputs.tag }}"
+          git tag -a "${{ needs.version-check.outputs.tag }}" -m "Release ${{ needs.version-check.outputs.tag }}"
+          git push origin "${{ needs.version-check.outputs.tag }}"
