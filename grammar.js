@@ -8,7 +8,7 @@
 // @ts-check
 
 export default grammar({
-  name: "xmldjango",
+  name: "xml_django",
 
   word: $ => $._identifier,
 

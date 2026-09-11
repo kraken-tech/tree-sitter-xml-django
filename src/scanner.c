@@ -1,5 +1,5 @@
 /**
- * External scanner for tree-sitter-xmldjango.
+ * External scanner for tree-sitter-xml-django.
  * Entirely LLM-generated.
  *
  * External tokens (must match the order in grammar.js `externals`):
@@ -65,12 +65,12 @@ enum TokenType {
 };
 
 /* No heap state needed. */
-void *tree_sitter_xmldjango_external_scanner_create(void) { return NULL; }
-void  tree_sitter_xmldjango_external_scanner_destroy(void *p) { (void)p; }
-unsigned tree_sitter_xmldjango_external_scanner_serialize(void *p, char *buf) {
+void *tree_sitter_xml_django_external_scanner_create(void) { return NULL; }
+void  tree_sitter_xml_django_external_scanner_destroy(void *p) { (void)p; }
+unsigned tree_sitter_xml_django_external_scanner_serialize(void *p, char *buf) {
     (void)p; (void)buf; return 0;
 }
-void tree_sitter_xmldjango_external_scanner_deserialize(
+void tree_sitter_xml_django_external_scanner_deserialize(
     void *p, const char *buf, unsigned len
 ) { (void)p; (void)buf; (void)len; }
 
@@ -309,7 +309,7 @@ static bool scan_comment_body(TSLexer *lexer) {
  * Main scan entry point
  * --------------------------------------------------------------------------- */
 
-bool tree_sitter_xmldjango_external_scanner_scan(
+bool tree_sitter_xml_django_external_scanner_scan(
     void *payload,
     TSLexer *lexer,
     const bool *valid_symbols
