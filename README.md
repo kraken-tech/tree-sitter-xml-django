@@ -1,4 +1,4 @@
-# tree-sitter-xmldjango
+# tree-sitter-xml-django
 
 Django-XML template language grammar for [tree-sitter](https://tree-sitter.github.io/tree-sitter/).
 
@@ -15,10 +15,10 @@ Supports `.xml` and `.rml` files using Django template syntax embedded in XML.
 ### Python
 
 ```python
-import tree_sitter_xmldjango as ts_xmldjango
+import tree_sitter_xml_django as ts_xml_django
 from tree_sitter import Language, Parser
 
-language = Language(ts_xmldjango.language())
+language = Language(ts_xml_django.language())
 parser = Parser(language)
 
 tree = parser.parse(b"<root>{% if condition %}<child/>{% endif %}</root>")

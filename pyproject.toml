@@ -3,10 +3,10 @@ requires = ["setuptools>=62.4.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tree-sitter-xmldjango"
+name = "tree-sitter-xml-django"
 description = "Django-XML template language grammar for tree-sitter"
 version = "0.4.2"
-keywords = ["incremental", "parsing", "tree-sitter", "xmldjango"]
+keywords = ["incremental", "parsing", "tree-sitter", "xml-django"]
 classifiers = [
   "Intended Audience :: Developers",
   "Topic :: Software Development :: Compilers",
@@ -19,7 +19,7 @@ license = {text = "BSD-3-Clause"}
 readme = "README.md"
 
 [project.urls]
-Homepage = "https://github.com/kraken-tech/tree-sitter-xmldjango"
+Homepage = "https://github.com/kraken-tech/tree-sitter-xml-django"
 
 [project.optional-dependencies]
 core = ["tree-sitter~=0.26"]

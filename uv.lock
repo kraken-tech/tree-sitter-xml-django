@@ -326,7 +326,7 @@ wheels = [
 ]
 
 [[package]]
-name = "tree-sitter-xmldjango"
+name = "tree-sitter-xml-django"
 version = "0.4.2"
 source = { editable = "." }
 

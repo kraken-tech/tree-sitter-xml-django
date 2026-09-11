@@ -11,7 +11,7 @@ from wheel.bdist_wheel import bdist_wheel
 class Build(build):
     def run(self):
         if path.isdir("queries"):
-            dest = path.join(self.build_lib, "tree_sitter_xmldjango", "queries")
+            dest = path.join(self.build_lib, "tree_sitter_xml_django", "queries")
             self.copy_tree("queries", dest)
         super().run()
 
@@ -48,15 +48,15 @@ setup(
     packages=find_packages("bindings/python"),
     package_dir={"": "bindings/python"},
     package_data={
-        "tree_sitter_xmldjango": ["*.pyi", "py.typed"],
-        "tree_sitter_xmldjango.queries": ["*.scm"],
+        "tree_sitter_xml_django": ["*.pyi", "py.typed"],
+        "tree_sitter_xml_django.queries": ["*.scm"],
     },
-    ext_package="tree_sitter_xmldjango",
+    ext_package="tree_sitter_xml_django",
     ext_modules=[
         Extension(
             name="_binding",
             sources=[
-                "bindings/python/tree_sitter_xmldjango/binding.c",
+                "bindings/python/tree_sitter_xml_django/binding.c",
                 "src/parser.c",
             ],
             define_macros=[

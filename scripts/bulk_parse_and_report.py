@@ -1,5 +1,5 @@
 """
-Parse template files through tree-sitter-xmldjango and report parse errors.
+Parse template files through tree-sitter-xml-django and report parse errors.
 
 Usage:
     python scripts/bulk_parse_and_report.py /path/to/templates
@@ -11,10 +11,10 @@ import argparse
 import re
 from pathlib import Path
 
-import tree_sitter_xmldjango
+import tree_sitter_xml_django
 from tree_sitter import Language, Node, Parser
 
-language = Language(tree_sitter_xmldjango.language())
+language = Language(tree_sitter_xml_django.language())
 parser = Parser(language)
 
 
@@ -36,7 +36,7 @@ def error_text(node: Node, source: bytes, max_len: int = 80) -> str:
 
 def main() -> None:
     arg_parser = argparse.ArgumentParser(
-        description="Parse template files through tree-sitter-xmldjango and report parse errors."
+        description="Parse template files through tree-sitter-xml-django and report parse errors."
     )
     arg_parser.add_argument(
         "directory",
