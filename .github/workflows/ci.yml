@@ -60,9 +60,9 @@ jobs:
           fi
       - uses: astral-sh/setup-uv@v5
         if: steps.check.outputs.new == 'true'
-      - name: Build package
+      - name: Build source distribution
         if: steps.check.outputs.new == 'true'
-        run: uv build
+        run: uv build --sdist
       - name: Publish to PyPI
         if: steps.check.outputs.new == 'true'
         uses: pypa/gh-action-pypi-publish@release/v1
