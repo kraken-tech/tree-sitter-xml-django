@@ -9,7 +9,7 @@ jobs:
   lint:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
@@ -22,7 +22,7 @@ jobs:
   test:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -44,7 +44,7 @@ jobs:
       new: ${{ steps.check.outputs.new }}
       tag: ${{ steps.check.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Check if version already published
         id: check
         run: |
@@ -63,7 +63,7 @@ jobs:
     if: needs.version-check.outputs.new == 'true'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v5
       - name: Build source distribution
         run: uv build --sdist
@@ -86,7 +86,7 @@ jobs:
           - windows-2025
           - windows-11-arm
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.22.0
         with:
@@ -107,7 +107,7 @@ jobs:
       id-token: write  # required for PyPI trusted publishing
       contents: write  # required for pushing the release tag
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/download-artifact@v4
         with:
           path: dist
