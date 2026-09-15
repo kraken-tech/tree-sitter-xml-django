@@ -28,18 +28,10 @@ export default grammar({
     // {% endcomment %} stops the token regardless of other {%...%} sequences
     // that may appear in the body.
     $._dj_comment_body_text,
-    // Consumes the full `{% elif` opening sequence
-    // (including the leading `{%` and any whitespace) as a single token, emitted
-    // only when the parser is inside an if_statement context.  Consuming `{%`
-    // inside the scanner — rather than relying on the grammar's anonymous `{%`
-    // token followed by a separate `elif` keyword — prevents the GLR parser from
-    // losing the elif_clause parse path when a body node (`{% include %}`, etc.)
-    // was the last thing parsed before the elif.
+    // Emitted only when the parser is inside an if_statement context.
     $._dj_elif_tag_open,
     // Consumes the entire `{% endcomment %}` closing
-    // sequence (including `%}`) as a single opaque token.  Emitting it as one
-    // unit prevents the `%}` from being ambiguous with the closing `%}` of
-    // enclosing `{% if %}` blocks at deep nesting levels.
+    // sequence (including `%}`) as a single opaque token.
     $._dj_endcomment_tag,
     // Consumed at the opening `{% tagname %}` of any paired Django statement
     // not handled by a dedicated grammar rule (if/for/block/comment).
@@ -57,9 +49,9 @@ export default grammar({
     // Django templates frequently place an opening tag inside {% if %}...{% else %}
     // with the closing tag outside — the tag pair crosses a block boundary.
     // The parser explores two interpretations simultaneously: a full element
-    // (start_tag + content + end_tag) and bare start_tag/end_tag nodes.  The
-    // bare-tag option is marked lower-priority so it only wins when no matching
-    // close tag exists; otherwise the full element interpretation wins.
+    // (start_tag + content + end_tag) and unpaired start_tag/end_tag nodes.
+    // So in the example below, the parser won't be able to pair the element start
+    // and end tags and will just fall back to unpaired.
     // Example:
     // {% if has_dynamic_product %}
     //     <blockTable colWidths="3.2cm,3.0cm,0.3cm,2.7cm,0.3cm,2.1cm,1.9cm,1.8cm">
@@ -70,21 +62,15 @@ export default grammar({
     // </blockTable>
     [$._body_node, $.element],
     // _prolog_node is a subset of _top_level_node (it excludes elements and
-    // DOCTYPE).  The parser can't tell which repeat it's in until it sees an
-    // element or <!DOCTYPE token, so both interpretations are tracked until
-    // one of those disambiguates.
+    // DOCTYPE).  The parser can't tell which it's looking at until it sees an
+    // element or <!DOCTYPE token (confirmed _top_level_node), so both interpretations
+    // are tracked until one of those disambiguates.
     [$._prolog_node, $._top_level_node],
   ],
 
   rules: {
     // At the document level we do NOT include char_data so that whitespace-only
-    // lines (e.g. trailing newlines in test files) are consumed by extras
-    // instead of generating spurious nodes.
-    //
-    // The prolog follows the XML spec: xml_decl?, misc*, doctype_decl?, misc*
-    // where misc = comment | processing_instruction | django_node.
-    // _prolog_node captures those misc nodes so that DOCTYPE remains restricted
-    // to the prolog without barring valid comments/PIs/Django statements around it.
+    // lines (e.g. trailing newlines in test files) are not counted as nodes.
     document: $ => seq(
       optional($.xml_decl),
       repeat($._prolog_node),
@@ -92,6 +78,7 @@ export default grammar({
       repeat($._top_level_node),
     ),
 
+    // Miscellaneous nodes that may appear in the prolog (before the first element).
     _prolog_node: $ => choice(
       $.processing_instruction,
       $.comment,
@@ -107,6 +94,7 @@ export default grammar({
       // or paired statement opens an XML element in its body but the matching
       // close tag falls outside the statement (at the document root level).
       // Kept at dynamic priority -1 so it only wins when no element is open.
+      // This results in a wrong parse tree, but saves us from an error node.
       prec.dynamic(-1, $.end_tag),
     ),
 
@@ -167,8 +155,7 @@ export default grammar({
     // Content nodes (inside elements or Django block bodies)
     // =========================================================================
 
-    // Used inside XML element content. No bare tags — ambiguity is confined to
-    // Django statement bodies where tag pairs may cross block boundaries.
+    // Used inside XML element content.
     _node: $ => choice(
       $.element,
       $.char_data,
@@ -179,10 +166,7 @@ export default grammar({
       $._dj_node,
     ),
 
-    // Used inside Django statement bodies (if/for/paired). Bare start_tag/end_tag
-    // are included here so that tag pairs crossing Django block boundaries can
-    // parse without error.  They are marked lower-priority than a full element,
-    // so bare tags are only kept when there is no matching close tag in scope.
+    // Used inside Django statement bodies (if/for/paired).
     _body_node: $ => choice(
       $.element,
       $.char_data,
@@ -192,6 +176,10 @@ export default grammar({
       $.comment,
       $._dj_node,
       $.doctype_decl,
+      // Unpaired start_tag/end_tag are included here so that tag pairs crossing
+      // Django block boundaries can parse without error. Unpaired tags are only
+      // kept when there is no matching close tag in scope, but it still results
+      // in a wrong parse tree.
       prec.dynamic(-1, $.start_tag),
       prec.dynamic(-1, $.end_tag),
     ),
@@ -398,7 +386,7 @@ export default grammar({
 
     dj_empty_clause: $ => seq('{%', alias('empty', $.dj_tag_name), '%}'),
 
-    // Block tags require their own rule because block names allow hyphens
+    // Block tags require their own rule because block names allow symbols like hyphens
     // (e.g. `{% block price-sheet-header %}`), which the generic variable_name
     // regex does not accept.
     dj_block_statement: $ => seq(
@@ -419,15 +407,14 @@ export default grammar({
       alias($._dj_endcomment_tag, $.dj_end_paired_statement),
     ),
 
-    // comment_content is produced by the external scanner in src/scanner.c.
+    // dj_comment_content is produced by the external scanner in src/scanner.c.
     // The scanner consumes the entire comment body — including any inner {%…%}
     // sequences — as a single opaque token, stopping just before the first
-    // {% endcomment %} it encounters.  This is the only reliable way to handle
-    // the multi-block case.
+    // {% endcomment %} it encounters.
     dj_comment_content: $ => $._dj_comment_body_text,
 
     // A key=value pair used in {% with key=value %}, {% include ... with key=val %},
-    // custom tags with keyword arguments, etc.  The LHS is an assignment_target —
+    // custom tags with keyword arguments, etc. The LHS is an assignment_target —
     // a name being bound, distinct from a variable being read.
     dj_assignment: $ => seq(
       field('name', alias($.dj_variable_name, $.dj_assignment_target)),
@@ -464,8 +451,7 @@ export default grammar({
     // Bare string literals take priority over the dj_variable_name regex at equal length.
     // Combined with word: $ => $._identifier, they are never matched
     // as a keyword prefix inside a longer identifier (e.g. 'and' won't split 'android'
-    // into dj_keyword_operator + dj_variable_name). Multi-word operators still use token() so
-    // they are matched as an atomic unit including the embedded space.
+    // into dj_keyword_operator + dj_variable_name).
     dj_keyword: _ => choice('on', 'off', 'with', 'as', 'silent', 'only', 'from', 'random', 'by'),
 
     dj_keyword_operator: _ => choice(

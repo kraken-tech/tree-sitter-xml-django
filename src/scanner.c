@@ -3,11 +3,11 @@
  * Entirely LLM-generated.
  *
  * External tokens (must match the order in grammar.js `externals`):
- *   0  _error_recovery_sentinel  — never valid in normal parsing; used to
- *                                   detect tree-sitter error-recovery mode.
- *   1  _comment_body_text        — the raw body of a {% comment %}…{% endcomment %}.
- *   2  _elif_tag_open            — `{% elif` opening sequence inside an if_statement.
- *   3  _endcomment_tag           — the full `{% endcomment %}` closing sequence.
+ *   0  _error_recovery_sentinel  -- never valid in normal parsing; used to
+ *                                    detect tree-sitter error-recovery mode.
+ *   1  _comment_body_text        -- the raw body of a {% comment %}...{% endcomment %}.
+ *   2  _elif_tag_open            -- `{% elif` opening sequence inside an if_statement.
+ *   3  _endcomment_tag           -- the full `{% endcomment %}` closing sequence.
  *   4  _generic_open_tag         -- `{% tagname` for any paired tag not handled by a
  *                                    dedicated grammar rule.
  *   5  _generic_close_tag        -- `{% endtagname` when tagname matches the top of the
@@ -15,7 +15,7 @@
  *
  * --- _comment_body_text ---
  * Consumes every character between {% comment %} and the FIRST occurrence of
- * {% endcomment %}, treating the body as a single opaque blob.  Inner {%…%}
+ * {% endcomment %}, treating the body as a single opaque blob.  Inner {%...%}
  * sequences (e.g. stale Django tags left inside a comment) are swallowed whole.
  *
  * Why an external scanner instead of a grammar rule?
@@ -30,31 +30,47 @@
  *
  * --- _elif_tag_open ---
  * Establishes the elif_clause parse path by scanning from `{` through `{% elif`
- * as a single token.  The `{%`, optional trim dash, and leading whitespace are
- * consumed with skip=true so they are excluded from the emitted token; only the
- * four characters of `elif` are included.  This makes the resulting tag_name
- * node span just `elif`, consistent with every other tag_name node in the tree.
+ * as a single token.
  * Emitted only when valid_symbols indicates the parser is inside an if_statement
- * body (i.e. an elif_clause can start here).  By consuming `{%` inside the
- * scanner rather than relying on the grammar's anonymous `{%` token, the
- * elif_clause parse path is established at the `{` character — before the GLR
- * state for unpaired_statement can compete.  This fixes ERROR nodes caused by
- * the parser losing the elif_clause path after a Django-only body node
- * ({% include %} etc.).
+ * body (i.e. an elif_clause can start here).
+ *
+ * Why an external scanner instead of a grammar rule?
+ * By consuming `{%` inside the scanner rather than relying on the grammar's
+ * anonymous `{%` token, the elif_clause parse path is established at the `{`
+ * character -- before the GLR state for unpaired_statement can compete. This fixes
+ * ERROR nodes caused by the parser losing the elif_clause path after a
+ * Django-only body node ({% include %} etc.).
  *
  * --- _endcomment_tag ---
- * Consumes the entire `{% endcomment %}` closing sequence (including `%}`) as
- * one opaque token.  This prevents the `%}` from being ambiguous with the
- * closing `%}` of enclosing `{% if %}` blocks at deep nesting levels (gap 6).
- * Must be tried BEFORE _comment_body_text when both are valid so that an empty
- * comment body (`{% comment %}{% endcomment %}`) emits this token rather than
- * an empty (invalid) comment_body_text.
+ * This prevents the `%}` from being ambiguous with the closing `%}` of enclosing
+ * `{% if %}` blocks at deep nesting levels. Must be tried BEFORE
+ * _comment_body_text when both are valid so that an empty comment body
+ * (`{% comment %}{% endcomment %}`) emits this token rather than an empty
+ * (invalid) comment_body_text.
+ *
+ * --- _generic_open_tag / _generic_close_tag / _elif_tag_open (combined scan) ---
+ * All three tokens share the same `{% tagname` prologue.  They are handled in a
+ * single combined scan (try_scan_dj_tag) that reads `{%tagname` once, then
+ * dispatches based on the tag name and which valid_symbols are set.
+ *
+ * _generic_open_tag: Scans `{% tagname` for any tag name not in the dedicated-rule
+ * exclusion list (if/for/block/comment and their branch/close keywords). On success
+ * the tag name is pushed onto the scanner's Django tag stack so the matching close
+ * token can be identified. Tags beginning with "end" are excluded (they are close
+ * tokens, not opens).  Because both _generic_open_tag (external) and the regular
+ * `{%` token (for dj_unpaired_statement) are valid at the same position in a GLR
+ * state, tree-sitter explores the paired and unpaired parse paths simultaneously.
+ * If no matching {% endtag %} is ever found, the paired path fails and the GLR
+ * engine falls back to dj_unpaired_statement.
+ *
+ * _generic_close_tag: Scans `{% endXXX` and emits the token only when XXX matches
+ * the tag name at the top of the Django stack.  On success the stack is popped.
  *
  * Error-recovery mode:
  * During tree-sitter error recovery ALL external tokens are marked valid.
  * The scanner detects this by checking valid_symbols[ERROR_RECOVERY_SENTINEL]
  * and immediately returns false, preventing it from accidentally consuming
- * content that isn't actually a comment body or elif keyword.
+ * content that isn't actually a comment body or tag.
  */
 
 #include "tree_sitter/parser.h"
@@ -162,8 +178,7 @@ static bool is_excluded_open_tag(const char *name) {
  * trimming dashes and arbitrary whitespace around the keyword.
  *
  * Returns true (setting result_symbol) if the full sequence is matched.
- * Returns false without advancing if the input does not match — the caller
- * must NOT have called mark_end before this point since we advance speculatively.
+ * Returns false without advancing if the input does not match.
  *
  * NOTE: On a successful match, all characters including the final '}' are
  * consumed.  mark_end() is called once at the end to commit the token.
@@ -190,7 +205,7 @@ static bool try_scan_endcomment_tag(TSLexer *lexer) {
         lexer->advance(lexer, false);
     }
 
-    /* Word boundary — must not be followed by another word character */
+    /* Word boundary -- must not be followed by another word character */
     if (is_word_char(lexer->lookahead)) return false;
 
     /* Skip whitespace before closing %} */
@@ -255,13 +270,13 @@ static bool scan_comment_body(TSLexer *lexer) {
         lexer->advance(lexer, false);
 
         if (lexer->lookahead != '%') {
-            /* Plain '{' — include it and carry on. */
+            /* Plain '{' -- include it and carry on. */
             lexer->mark_end(lexer);
             has_content = true;
             continue;
         }
 
-        /* ---- '{%' found — is it {% endcomment %}? ---- */
+        /* ---- '{%' found -- is it {% endcomment %}? ---- */
 
         lexer->advance(lexer, false); /* consume '%' */
 
@@ -291,21 +306,21 @@ static bool scan_comment_body(TSLexer *lexer) {
             int32_t c = lexer->lookahead;
             bool boundary = !is_word_char(c);
             if (boundary) {
-                /* This IS {% endcomment %} — stop here. */
+                /* This IS {% endcomment %} -- stop here. */
                 if (!has_content) return false;
                 lexer->result_symbol = COMMENT_BODY_TEXT;
                 return true;
             }
         }
 
-        /* ---- Not {% endcomment %} — consume to closing '%}' ---- */
+        /* ---- Not {% endcomment %} -- consume to closing '%}' ---- */
 
         while (lexer->lookahead != 0) {
             if (lexer->lookahead == '%') {
                 lexer->advance(lexer, false);
                 if (lexer->lookahead == '}') {
                     lexer->advance(lexer, false);
-                    /* Include the whole {%…%} tag in the confirmed token. */
+                    /* Include the whole {%...%} tag in the confirmed token. */
                     lexer->mark_end(lexer);
                     has_content = true;
                     goto next_outer;
