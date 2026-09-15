@@ -41,6 +41,12 @@ export default grammar({
     // unit prevents the `%}` from being ambiguous with the closing `%}` of
     // enclosing `{% if %}` blocks at deep nesting levels.
     $._dj_endcomment_tag,
+    // Consumed at the opening `{% tagname %}` of any paired Django statement
+    // not handled by a dedicated grammar rule (if/for/block/comment).
+    $._dj_generic_open_tag,
+    // Consumed at the closing `{% endtagname %}` when the tag name (minus the
+    // "end" prefix) matches the top of the scanner's stack.
+    $._dj_generic_close_tag,
   ],
 
   extras: $ => [
@@ -356,23 +362,13 @@ export default grammar({
       $.dj_unpaired_statement,
     ),
 
-    dj_paired_statement: $ => {
-      const tags = [
-        'autoescape',
-        'blocktrans',
-        'blocktranslate',
-        'filter',
-        'ifchanged',
-        'spaceless',
-        'verbatim',
-        'with',
-      ];
-      return choice(...tags.map(tag => seq(
-        '{%', alias(tag, $.dj_tag_name), repeat($._dj_attribute), '%}',
-        repeat($._body_node),
-        '{%', alias('end' + tag, $.dj_tag_name), repeat($._dj_attribute), alias('%}', $.dj_end_paired_statement),
-      )));
-    },
+    // Generic paired statement: handles any {% tag %}...{% endtag %} pair
+    // whose tag name is not claimed by a dedicated rule (if/for/block/comment).
+    dj_paired_statement: $ => seq(
+      alias($._dj_generic_open_tag, $.dj_tag_name), repeat($._dj_attribute), '%}',
+      repeat($._body_node),
+      alias($._dj_generic_close_tag, $.dj_tag_name), repeat($._dj_attribute), alias('%}', $.dj_end_paired_statement),
+    ),
 
     dj_if_statement: $ => seq(
       '{%', alias('if', $.dj_tag_name), repeat($._dj_attribute), '%}',

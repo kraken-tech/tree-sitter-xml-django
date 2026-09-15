@@ -8,6 +8,10 @@
  *   1  _comment_body_text        — the raw body of a {% comment %}…{% endcomment %}.
  *   2  _elif_tag_open            — `{% elif` opening sequence inside an if_statement.
  *   3  _endcomment_tag           — the full `{% endcomment %}` closing sequence.
+ *   4  _generic_open_tag         -- `{% tagname` for any paired tag not handled by a
+ *                                    dedicated grammar rule.
+ *   5  _generic_close_tag        -- `{% endtagname` when tagname matches the top of the
+ *                                    Django tag stack.
  *
  * --- _comment_body_text ---
  * Consumes every character between {% comment %} and the FIRST occurrence of
@@ -55,6 +59,9 @@
 
 #include "tree_sitter/parser.h"
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 /* Must match the order of tokens in grammar.js `externals`. */
 enum TokenType {
@@ -62,17 +69,62 @@ enum TokenType {
     COMMENT_BODY_TEXT       = 1,
     ELIF_TAG_OPEN           = 2,
     ENDCOMMENT_TAG          = 3,
+    GENERIC_OPEN_TAG        = 4,
+    GENERIC_CLOSE_TAG       = 5,
 };
 
-/* No heap state needed. */
-void *tree_sitter_xml_django_external_scanner_create(void) { return NULL; }
-void  tree_sitter_xml_django_external_scanner_destroy(void *p) { (void)p; }
-unsigned tree_sitter_xml_django_external_scanner_serialize(void *p, char *buf) {
-    (void)p; (void)buf; return 0;
+/* ---------------------------------------------------------------------------
+ * Scanner state -- Django tag name stack
+ * --------------------------------------------------------------------------- */
+
+/* Arbitrary stack size limits */
+#define DJANGO_STACK_MAX_DEPTH  16
+#define DJANGO_TAG_NAME_MAX_LEN 32
+
+typedef struct {
+    char     names[DJANGO_STACK_MAX_DEPTH][DJANGO_TAG_NAME_MAX_LEN + 1];
+    uint8_t  depth;
+} ScannerState;
+
+void *tree_sitter_xml_django_external_scanner_create(void) {
+    ScannerState *state = (ScannerState *)calloc(1, sizeof(ScannerState));
+    return state;
 }
+
+void tree_sitter_xml_django_external_scanner_destroy(void *payload) {
+    free(payload);
+}
+
+unsigned tree_sitter_xml_django_external_scanner_serialize(void *payload, char *buffer) {
+    ScannerState *state = (ScannerState *)payload;
+    unsigned size = 0;
+    buffer[size++] = (char)state->depth;
+    for (unsigned i = 0; i < state->depth; i++) {
+        unsigned len = (unsigned)strlen(state->names[i]);
+        memcpy(buffer + size, state->names[i], len + 1); /* include '\0' */
+        size += len + 1;
+    }
+    return size;
+}
+
 void tree_sitter_xml_django_external_scanner_deserialize(
-    void *p, const char *buf, unsigned len
-) { (void)p; (void)buf; (void)len; }
+    void *payload, const char *buf, unsigned length
+) {
+    ScannerState *state = (ScannerState *)payload;
+    state->depth = 0;
+    if (length == 0) return;
+    unsigned pos = 0;
+    uint8_t raw_depth = (uint8_t)(unsigned char)buf[pos++];
+    state->depth = raw_depth > DJANGO_STACK_MAX_DEPTH ? DJANGO_STACK_MAX_DEPTH : raw_depth;
+    for (unsigned i = 0; i < state->depth && pos < length; i++) {
+        unsigned name_len = 0;
+        while (pos < length && buf[pos] != '\0' && name_len < DJANGO_TAG_NAME_MAX_LEN) {
+            state->names[i][name_len++] = buf[pos++];
+        }
+        state->names[i][name_len] = '\0';
+        if (pos < length) pos++; /* skip null terminator */
+    }
+}
 
 /* ---------------------------------------------------------------------------
  * Helpers
@@ -85,6 +137,21 @@ static bool is_space(int32_t c) {
 static bool is_word_char(int32_t c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
            (c >= '0' && c <= '9') || c == '_';
+}
+
+/* Tags that have their own dedicated grammar rules and must NOT be captured
+ * by the generic open-tag scanner. */
+static const char *const EXCLUDED_OPEN_TAGS[] = {
+    "if", "for", "block", "comment",
+    "elif", "else", "empty",
+    NULL
+};
+
+static bool is_excluded_open_tag(const char *name) {
+    for (int i = 0; EXCLUDED_OPEN_TAGS[i] != NULL; i++) {
+        if (strcmp(name, EXCLUDED_OPEN_TAGS[i]) == 0) return true;
+    }
+    return false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -140,53 +207,6 @@ static bool try_scan_endcomment_tag(TSLexer *lexer) {
 
     lexer->mark_end(lexer);
     lexer->result_symbol = ENDCOMMENT_TAG;
-    return true;
-}
-
-/* ---------------------------------------------------------------------------
- * try_scan_elif_tag_open
- *
- * Attempts to consume the full `{% elif` opening sequence from the current
- * lexer position.  The scanner is called here at the `{` character, BEFORE
- * the grammar's anonymous `{%` token is consumed.  By capturing `{%` inside
- * the scanner we establish the elif_clause path at the earliest possible
- * point, preventing the GLR parser from losing it after a Django-only body
- * node ({% include %}, etc.) was the previous token.
- *
- * Handles optional whitespace-trimming dashes and arbitrary whitespace
- * between `{%` and `elif`.
- *
- * Returns true (setting result_symbol) on a full match; false otherwise.
- * Tree-sitter resets the lexer position on false, so partial advances are safe.
- * --------------------------------------------------------------------------- */
-
-static bool try_scan_elif_tag_open(TSLexer *lexer) {
-    /* Must start with '{' — consume but exclude from token (skip=true) */
-    if (lexer->lookahead != '{') return false;
-    lexer->advance(lexer, true);
-
-    /* Must be followed by '%' — also excluded from token */
-    if (lexer->lookahead != '%') return false;
-    lexer->advance(lexer, true);
-
-    /* Optional trim dash — excluded from token */
-    if (lexer->lookahead == '-') lexer->advance(lexer, true);
-
-    /* Skip whitespace — excluded from token */
-    while (is_space(lexer->lookahead)) lexer->advance(lexer, true);
-
-    /* Match "elif" — included in token (skip=false) so tag_name spans only "elif",
-     * consistent with every other tag_name node in the tree. */
-    static const char kw[] = "elif";
-    for (int i = 0; kw[i] != '\0'; i++) {
-        if (lexer->lookahead != (int32_t)(unsigned char)kw[i]) return false;
-        lexer->advance(lexer, false);
-    }
-
-    /* Word boundary — must not be followed by another word character */
-    if (is_word_char(lexer->lookahead)) return false;
-
-    lexer->result_symbol = ELIF_TAG_OPEN;
     return true;
 }
 
@@ -298,11 +318,173 @@ static bool scan_comment_body(TSLexer *lexer) {
         next_outer:;
     }
 
-    /* EOF — capture any trailing normal chars since the last mark_end call. */
+    /* EOF -- capture any trailing normal chars since the last mark_end call. */
     if (!has_content) return false;
     lexer->mark_end(lexer);
     lexer->result_symbol = COMMENT_BODY_TEXT;
     return true;
+}
+
+/* ---------------------------------------------------------------------------
+ * has_close_tag
+ *
+ * Scans forward from the current lexer position looking for `{% endXXX`
+ * where XXX matches `tagname` exactly (case-sensitive, word boundary
+ * required after `endXXX`), after encountering a `{%` opening tag.
+ * Returns true if a matching close tag is found, false otherwise.
+ *
+ * Must be called AFTER `lexer->mark_end` has been set at the end of the
+ * opening tag name.  All advances here are speculative -- because mark_end
+ * was already called, the emitted token's extent is already fixed and these
+ * characters will be re-presented to the lexer for the next token when the
+ * scanner returns true.  When the scanner returns false, tree-sitter resets
+ * the lexer to the position it was at before the scanner was called, so the
+ * speculative advances are also discarded in that case.
+ * --------------------------------------------------------------------------- */
+static bool has_close_tag(TSLexer *lexer, const char *tagname,
+                           unsigned tagname_len) {
+    /* All advances here MUST use skip=false.
+     * skip=false advances are purely speculative lookahead: they consume input
+     * but do not extend the token beyond the mark_end position. */
+    while (lexer->lookahead != 0) {
+        /* Fast path: skip until we see '{' */
+        if (lexer->lookahead != '{') {
+            lexer->advance(lexer, false);
+            continue;
+        }
+        lexer->advance(lexer, false); /* consume '{' */
+
+        if (lexer->lookahead != '%') continue; /* not '{%', keep scanning */
+        lexer->advance(lexer, false);           /* consume '%' */
+
+        /* Optional trim dash */
+        if (lexer->lookahead == '-') lexer->advance(lexer, false);
+
+        /* Skip whitespace */
+        while (is_space(lexer->lookahead)) lexer->advance(lexer, false);
+
+        /* Must start with "end" */
+        static const char end_pfx[] = "end";
+        bool has_end = true;
+        for (int i = 0; end_pfx[i] != '\0'; i++) {
+            if (lexer->lookahead != (int32_t)(unsigned char)end_pfx[i]) {
+                has_end = false;
+                break;
+            }
+            lexer->advance(lexer, false);
+        }
+        if (!has_end) continue;
+
+        /* Must be followed by tagname */
+        bool name_ok = true;
+        for (unsigned i = 0; i < tagname_len; i++) {
+            if (lexer->lookahead != (int32_t)(unsigned char)tagname[i]) {
+                name_ok = false;
+                break;
+            }
+            lexer->advance(lexer, false);
+        }
+        if (!name_ok) continue;
+
+        /* Word boundary -- next char must not be a word character */
+        if (!is_word_char(lexer->lookahead)) return true;
+        /* else: `endXXXlonger` -- not our close tag, keep scanning */
+    }
+    return false;
+}
+
+/* ---------------------------------------------------------------------------
+ * try_scan_dj_tag
+ *
+ * Combined scanner for ELIF_TAG_OPEN, GENERIC_CLOSE_TAG, and GENERIC_OPEN_TAG.
+ *
+ * Searches for a `{% tagname` (incl. `elif`) sequence and dispatches to the
+ * appropriate token type.
+ * Input flags indicate which token types are valid at the current parse position.
+ *
+ * Dispatch order (preserves the original priority intent):
+ *   1. ELIF_TAG_OPEN    -- exact keyword "elif", most specific
+ *   2. GENERIC_CLOSE_TAG -- requires stack match, more specific than open
+ *   3. GENERIC_OPEN_TAG  -- generic fallback, requires a forward-scan for close
+ *
+ * Token span: `{%[-][whitespace]` is consumed with skip=true and excluded from
+ * the emitted node's source range.
+ * --------------------------------------------------------------------------- */
+
+static bool try_scan_dj_tag(TSLexer *lexer, ScannerState *state,
+                              bool need_elif, bool need_close, bool need_open) {
+    /* Skip leading whitespace */
+    while (is_space(lexer->lookahead)) lexer->advance(lexer, true);
+
+    /* Must start with '{%' */
+    if (lexer->lookahead != '{') return false;
+    lexer->advance(lexer, true);
+    if (lexer->lookahead != '%') return false;
+    lexer->advance(lexer, true);
+
+    /* Optional whitespace-trimming dash */
+    if (lexer->lookahead == '-') lexer->advance(lexer, true);
+
+    /* Skip whitespace between '%' and the keyword */
+    while (is_space(lexer->lookahead)) lexer->advance(lexer, true);
+
+    /* Read tag name -- skip=false so these characters appear in the token span */
+    char name[DJANGO_TAG_NAME_MAX_LEN + 1];
+    unsigned name_len = 0;
+    while (is_word_char(lexer->lookahead) && name_len < DJANGO_TAG_NAME_MAX_LEN) {
+        name[name_len++] = (char)lexer->lookahead;
+        lexer->advance(lexer, false);
+    }
+    name[name_len] = '\0';
+
+    if (name_len == 0) return false;
+
+    /* Word boundary -- must not be followed by another word character */
+    if (is_word_char(lexer->lookahead)) return false;
+
+    /* 1. ELIF_TAG_OPEN */
+    if (need_elif && strcmp(name, "elif") == 0) {
+        lexer->result_symbol = ELIF_TAG_OPEN;
+        return true;
+    }
+
+    /* 2. GENERIC_CLOSE_TAG */
+    if (need_close && state->depth > 0 &&
+        name_len > 3 && strncmp(name, "end", 3) == 0) {
+        const char *suffix = name + 3;
+        if (strcmp(suffix, state->names[state->depth - 1]) == 0) {
+            state->depth--;
+            lexer->result_symbol = GENERIC_CLOSE_TAG;
+            return true;
+        }
+    }
+
+    /* 3. GENERIC_OPEN_TAG */
+    if (need_open) {
+        /* Tags beginning with "end" are close tokens, not opens */
+        if (name_len > 3 && strncmp(name, "end", 3) == 0) return false;
+        /* Tags with dedicated grammar rules */
+        if (is_excluded_open_tag(name)) return false;
+        /* Stack full -- fall through to dj_unpaired_statement */
+        if (state->depth >= DJANGO_STACK_MAX_DEPTH) return false;
+        /* A close tag is "end" (3 chars) + this name; if the combined length
+         * exceeds DJANGO_TAG_NAME_MAX_LEN the close tag's name would be
+         * truncated in the read buffer and never matched -- fall through. */
+        if (name_len > DJANGO_TAG_NAME_MAX_LEN - 3) return false;
+
+        /* Fix the token end at the end of the tag name.  Subsequent advances
+         * in has_close_tag are speculative and do not extend the emitted token. */
+        lexer->mark_end(lexer);
+
+        if (!has_close_tag(lexer, name, name_len)) return false;
+
+        memcpy(state->names[state->depth], name, name_len + 1);
+        state->depth++;
+        lexer->result_symbol = GENERIC_OPEN_TAG;
+        return true;
+    }
+
+    return false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -314,21 +496,12 @@ bool tree_sitter_xml_django_external_scanner_scan(
     TSLexer *lexer,
     const bool *valid_symbols
 ) {
-    (void)payload;
+    ScannerState *state = (ScannerState *)payload;
 
     /* Detect tree-sitter error-recovery mode: during error recovery all
        external tokens are marked valid, including the sentinel which is
        never valid during normal parsing. */
     if (valid_symbols[ERROR_RECOVERY_SENTINEL]) return false;
-
-    /* ELIF_TAG_OPEN must be tried first.  During error recovery or in ambiguous
-       GLR states, COMMENT_BODY_TEXT can be spuriously present in valid_symbols
-       at the same time as ELIF_TAG_OPEN.  If we checked COMMENT_BODY_TEXT first,
-       scan_comment_body would consume the {% elif … %} sequence as raw comment
-       content before ELIF_TAG_OPEN gets a chance. */
-    if (valid_symbols[ELIF_TAG_OPEN]) {
-        if (try_scan_elif_tag_open(lexer)) return true;
-    }
 
     /* ENDCOMMENT_TAG must be tried before COMMENT_BODY_TEXT.  When an empty
        comment body is present both tokens are in valid_symbols; we must emit
@@ -339,6 +512,16 @@ bool tree_sitter_xml_django_external_scanner_scan(
 
     if (valid_symbols[COMMENT_BODY_TEXT]) {
         return scan_comment_body(lexer);
+    }
+
+    /* ELIF_TAG_OPEN, GENERIC_CLOSE_TAG, and GENERIC_OPEN_TAG all start with
+       {%tagname, so use a combined scan */
+    bool need_elif  = valid_symbols[ELIF_TAG_OPEN];
+    bool need_close = valid_symbols[GENERIC_CLOSE_TAG];
+    bool need_open  = valid_symbols[GENERIC_OPEN_TAG];
+
+    if (need_elif || need_close || need_open) {
+        return try_scan_dj_tag(lexer, state, need_elif, need_close, need_open);
     }
 
     return false;
