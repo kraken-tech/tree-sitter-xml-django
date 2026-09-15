@@ -712,3 +712,464 @@ elif after else is parsed as unpaired_statement not branch_statement
         (dj_end_paired_statement)))
     (end_tag
       (name))))
+
+==================
+elif and endtag on new lines (whitespace-skip regression)
+==================
+
+<r>{% if a %}
+<x/>
+{% elif b %}
+<y/>
+{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (char_data)
+        (element
+          (self_closing_tag
+            (name)))
+        (dj_branch_statement
+          (dj_tag_name)
+          (dj_variable
+            (dj_variable_name)))
+        (char_data)
+        (element
+          (self_closing_tag
+            (name)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+generic paired tag with body on new lines (whitespace-skip regression)
+==================
+
+<r>{% editable %}
+content
+{% endeditable %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (char_data)
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+custom unknown paired Django tag
+==================
+
+<r>{% editable %}content{% endeditable %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (char_data)
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+sequential if blocks at same level
+==================
+
+<r>{% if a %}<x/>{% endif %}{% if b %}<y/>{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (dj_tag_name)
+        (dj_end_paired_statement))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+sequential for loops at same level
+==================
+
+<r>{% for x in xs %}<item/>{% endfor %}{% for y in ys %}<item/>{% endfor %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (dj_tag_name)
+        (dj_end_paired_statement))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
+        (element
+          (self_closing_tag
+            (name)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+sequential block statements at same level
+==================
+
+<r>{% block nav %}<a/>{% endblock %}{% block footer %}<b/>{% endblock %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_block_name)
+        (element
+          (self_closing_tag
+            (name)))
+        (dj_tag_name)
+        (dj_end_paired_statement))
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_block_name)
+        (element
+          (self_closing_tag
+            (name)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+sequential generic paired tags at same level
+==================
+
+<r>{% foo %}text{% endfoo %}{% bar %}text{% endbar %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (char_data)
+        (dj_tag_name)
+        (dj_end_paired_statement))
+      (dj_paired_statement
+        (dj_tag_name)
+        (char_data)
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+builtin if nested inside generic paired tag
+==================
+
+<r>{% editable %}{% if cond %}<x/>{% endif %}{% endeditable %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_paired_statement
+          (dj_tag_name)
+          (dj_variable
+            (dj_variable_name))
+          (element
+            (self_closing_tag
+              (name)))
+          (dj_tag_name)
+          (dj_end_paired_statement))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+generic paired tag nested inside if body
+==================
+
+<r>{% if cond %}{% editable %}content{% endeditable %}{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_paired_statement
+          (dj_tag_name)
+          (char_data)
+          (dj_tag_name)
+          (dj_end_paired_statement))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+generic paired tag in both if and else branches
+==================
+
+<r>{% if a %}{% editable %}content{% endeditable %}{% else %}{% editable %}content{% endeditable %}{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_paired_statement
+          (dj_tag_name)
+          (char_data)
+          (dj_tag_name)
+          (dj_end_paired_statement))
+        (dj_branch_statement
+          (dj_tag_name))
+        (dj_paired_statement
+          (dj_tag_name)
+          (char_data)
+          (dj_tag_name)
+          (dj_end_paired_statement))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+nested generic paired tags
+==================
+
+<r>{% outer %}{% inner %}text{% endinner %}{% endouter %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_paired_statement
+          (dj_tag_name)
+          (char_data)
+          (dj_tag_name)
+          (dj_end_paired_statement))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+with nested inside for
+==================
+
+<r>{% for x in xs %}{% with y=x.label %}<p/>{% endwith %}{% endfor %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
+        (dj_paired_statement
+          (dj_tag_name)
+          (dj_assignment
+            (dj_assignment_target)
+            (dj_variable
+              (dj_variable_name)))
+          (element
+            (self_closing_tag
+              (name)))
+          (dj_tag_name)
+          (dj_end_paired_statement))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+autoescape wrapping if
+==================
+
+<r>{% autoescape on %}{% if cond %}<p/>{% endif %}{% endautoescape %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_keyword)
+        (dj_paired_statement
+          (dj_tag_name)
+          (dj_variable
+            (dj_variable_name))
+          (element
+            (self_closing_tag
+              (name)))
+          (dj_tag_name)
+          (dj_end_paired_statement))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+spaceless wrapping for
+==================
+
+<r>{% spaceless %}{% for x in xs %}<item/>{% endfor %}{% endspaceless %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_paired_statement
+          (dj_tag_name)
+          (dj_variable
+            (dj_variable_name))
+          (dj_keyword_operator)
+          (dj_variable
+            (dj_variable_name))
+          (element
+            (self_closing_tag
+              (name)))
+          (dj_tag_name)
+          (dj_end_paired_statement))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+block nested inside if
+==================
+
+<r>{% if show %}{% block content %}<p>text</p>{% endblock %}{% endif %}</r>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_paired_statement
+          (dj_tag_name)
+          (dj_block_name)
+          (element
+            (start_tag
+              (name))
+            (content
+              (char_data))
+            (end_tag
+              (name)))
+          (dj_tag_name)
+          (dj_end_paired_statement))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))

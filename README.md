@@ -79,20 +79,18 @@ grammar handles them with a single catch-all rule (`dj_unpaired_statement`) that
 `{% identifier %}` not claimed by a more specific rule.  The tag name is deliberately not
 enumerated; knowing it adds nothing to the parse.
 
-**Paired statements** (e.g. `{% block %}...{% endblock %}`, `{% if %}...{% endif %}`) enclose a
-body and require a matching closing tag.  The grammar must know the tag name at parse time in
-order to look for the correct `{% endXXX %}` closing token — this is why paired tags are handled
-by named rules or an explicit whitelist rather than a catch-all.
+**Paired statements with unique rules** `block`, `if-elif-else`, `for` are unique Django tags
+with specific sequences that are handled separately to regular paired statements.
 
-This distinction explains what happens with an **unknown paired tag**: because the parser has no
-rule telling it to look for a closing `{% endcustom %}`, the opening tag falls through to the
-catch-all and is recorded as a `dj_unpaired_statement`.  The closing `{% endcustom %}` is then
-parsed as a second, separate `dj_unpaired_statement`.  See
-[Unknown paired Django tags](#unknown-paired-django-tags) under Limitations for the planned fix.
+For **all other paired tags** (e.g. `{% editable %}...{% endeditable %}`), the external
+scanner maintains a stack of open Django tag names.  When it encounters `{% endXXX %}`, it checks
+whether `XXX` is on the stack and, if so, emits a specialised close token that closes the
+corresponding `dj_paired_statement`. This means arbitrary third-party and project-specific paired
+tags are handled automatically without needing to enumerate them in the grammar.
 
-N.B: It's important to note that the `{% [tag] %} ... {% end[tag] %}` convention is just that,
-a convention not a rule of Django syntax. Any proposed fix would need to be lenient on paired
-statements that do not follow this convention.
+N.B: The `{% [tag] %} ... {% end[tag] %}` convention is just that — a convention, not a rule of
+Django syntax. The scanner is deliberately lenient: a tag that has no matching `{% endXXX %}` in
+the remaining input is still treated as an unpaired statement rather than an error.
 
 ### Not (yet) implemented
 
@@ -102,6 +100,59 @@ tree manipulation, not editor integration. Implement these if the grammar is eve
 for editor use (syntax highlighting, language injection, symbol navigation).
 
 ## Limitations
+
+### Whitespace or newlines before branch/close tags are not preserved as `char_data`
+
+Leading whitespace (newlines, spaces) immediately before closing paired tags such as
+`{% elif %}`, or `{% endXXX %}` is consumed by the external scanner with
+`skip=true` as part of establishing the correct GLR parse path.  When the whitespace
+immediately precedes one of these tags with nothing else on the same line, it does not
+appear as a `char_data` node in the parse tree:
+
+```django
+{% if a %}
+{% elif b %}...{% endif %}
+{# the \n between if-body and {% elif %} is silently dropped #}
+
+{% mytag %}
+{% endmytag %}
+{# the \n between open and close is silently dropped #}
+
+<para>This is well{% if use_whitespace %} {% elif use_hyphen %}-{% endif %}known fact</para>
+{# Resolves to "This is wellknown fact" when use_whitespace=True #}
+```
+
+When there is any other content on the same line before the branch/close tag, normal
+`char_data` nodes are produced for the surrounding whitespace:
+
+```django
+{% if a %}
+  <x/>
+{% elif b %}...{% endif %}
+{# \n after {% if a %} and \n after <x/> both become char_data nodes #}
+```
+
+This is a known limitation of the GLR path-resolution mechanism in the scanner.
+Removing the `skip=true` whitespace advance causes GLR to commit to the wrong parse
+path for certain body content (e.g. `<!DOCTYPE>` nodes), so the current approach
+is retained.
+
+### Generic paired tag whose close tag appears only inside a comment body
+
+If the only occurrence of `{% endXXX %}` in the remaining input sits inside a
+`{% comment %}…{% endcomment %}` block, the scanner will treat it as a valid
+close tag, emit `_generic_open_tag` for `XXX`, and then never emit the matching
+`_generic_close_tag` (because the comment body is opaque and consumes the
+`{% endXXX %}`).  This produces an `ERROR` node:
+
+```django
+{# BUG: produces ERROR — {% endmytag %} inside comment is unreachable #}
+{% mytag %}{% comment %}{% endmytag %}{% endcomment %}
+```
+
+The correct fix is to make the lookahead scanner skip `{% comment %}` blocks, but
+this is an uncommon pattern in practice and the added scanner complexity is not
+currently justified.
 
 ### XML tags spanning Django conditional branches
 
@@ -131,17 +182,17 @@ produce incorrect parse trees:
 
 The second case appears to parse without `ERROR` nodes when the pattern sits at
 the document root, but in practice these templates have a wrapping parent
-element.  Inside XML element content (`_node`), bare `end_tag` is not allowed,
+element.  Inside XML element content (`_node`), unpaired `end_tag` is not allowed,
 so the closing tag is silently consumed as the close of the parent element
 instead, producing a structurally wrong tree.
 
-Adding bare `start_tag`/`end_tag` alternatives to regular XML content causes
-GLR ambiguity: the parser begins treating every ordinary opening tag as a bare
+Adding unpaired `start_tag`/`end_tag` alternatives to regular XML content causes
+GLR ambiguity: the parser begins treating every ordinary opening tag as an unpaired
 node and orphans its close tag, breaking large amounts of valid XML.
 
 The one exception is when **both** the mismatched open and close tags land
 inside Django statement bodies (e.g. inside a `{% for %}` or `{% block %}`
-body), because that context already allows bare tags:
+body), because that context already allows unpaired tags:
 
 ```django
 {% for item in items %}
@@ -156,26 +207,7 @@ body), because that context already allows bare tags:
 When it encounters a `</tag>` whose name is not on the stack it emits a
 distinct `_orphan_end_tag` token rather than a normal `end_tag`, allowing the
 grammar to admit it in `_node` context without competing with legitimate close
-tags.  This is non-trivial — the scanner needs to coordinate with Django block
-boundaries — but it avoids the GLR ambiguity that makes the pure-grammar
-approach unworkable.  The same scanner update would also be a natural place to
-address [unknown paired Django tags](#unknown-paired-django-tags).
-
-### Unknown paired Django tags
-
-The grammar handles known built-in paired tags by name (`autoescape`, `block`,
-`filter`, `for`, `if`, `comment`, etc.).  Any tag not in that list — including
-third-party or project-specific paired tags — is parsed as two separate
-`dj_unpaired_statement` nodes rather than a single `dj_paired_statement` with
-a body.
-
-**If a fix becomes necessary:** the same external scanner approach described
-above for XML tags applies here.  The scanner would maintain a second stack of
-open Django tag names; when it encounters `{% endXXX %}`, it checks whether
-`XXX` is on the stack and, if so, emits a specialised close token that the
-grammar uses to close the corresponding `dj_paired_statement`.  This removes
-the need for a tag whitelist and handles arbitrary custom and third-party tags.
-Both stacks could be implemented together in a single scanner update.
+tags.
 
 ## License
 
