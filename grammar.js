@@ -312,7 +312,7 @@ export default grammar({
 
     dj_filter: $ => seq(
       $.dj_filter_name,
-      optional(seq(':', choice($.dj_filter_argument, $._dj_quoted_filter_argument, $.dj_number))),
+      optional(seq(':', choice($.dj_variable_name, $._dj_quoted_filter_argument, $.dj_number))),
     ),
 
     dj_filter_name: _ => /[a-zA-Z_][a-zA-Z0-9_]*/,

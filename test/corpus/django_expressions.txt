@@ -80,6 +80,28 @@ Variable with filter and argument
       (name))))
 
 ==================
+Variable with filter and variable argument
+==================
+
+<root>{{ x|default:fallback_var }}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_variable_expr
+        (dj_variable
+          (dj_variable_name)
+          (dj_filter
+            (dj_filter_name)
+            (dj_variable_name)))))
+    (end_tag
+      (name))))
+
+==================
 Variable with filter and dotted argument
 ==================
 
@@ -97,7 +119,7 @@ Variable with filter and dotted argument
           (dj_variable_name)
           (dj_filter
             (dj_filter_name)
-            (dj_filter_argument)))))
+            (dj_variable_name)))))
     (end_tag
       (name))))
 
