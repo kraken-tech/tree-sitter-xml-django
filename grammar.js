@@ -419,7 +419,7 @@ export default grammar({
     dj_assignment: $ => seq(
       field('name', alias($.dj_variable_name, $.dj_assignment_target)),
       '=',
-      field('value', choice($.dj_variable, $.dj_string, $.dj_number_expr, $.dj_boolean)),
+      field('value', choice($.dj_variable, $.dj_string, $.dj_number_expr, $.dj_keyword_literal)),
     ),
 
     _dj_attribute: $ => seq(
@@ -428,7 +428,7 @@ export default grammar({
         $.dj_keyword_operator,
         $.dj_operator,
         $.dj_number_expr,
-        $.dj_boolean,
+        $.dj_keyword_literal,
         $.dj_string,
         $.dj_variable,
         $.dj_assignment,
@@ -462,7 +462,7 @@ export default grammar({
     dj_operator: _ => choice('==', '!=', '<', '>', '<=', '>='),
 
     dj_number: _ => /-?[0-9]+(_[0-9]+)*(\.[0-9]+(_[0-9]+)*)?/,
-    dj_boolean: _ => choice('True', 'False'),
+    dj_keyword_literal: _ => choice('True', 'False', 'None'),
 
     _identifier: _ => /[a-zA-Z_]\w*/,
   },

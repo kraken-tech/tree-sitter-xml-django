@@ -1809,7 +1809,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "dj_boolean"
+                "name": "dj_keyword_literal"
               }
             ]
           }
@@ -1840,7 +1840,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "dj_boolean"
+              "name": "dj_keyword_literal"
             },
             {
               "type": "SYMBOL",
@@ -2006,7 +2006,7 @@
       "type": "PATTERN",
       "value": "-?[0-9]+(_[0-9]+)*(\\.[0-9]+(_[0-9]+)*)?"
     },
-    "dj_boolean": {
+    "dj_keyword_literal": {
       "type": "CHOICE",
       "members": [
         {
@@ -2016,6 +2016,10 @@
         {
           "type": "STRING",
           "value": "False"
+        },
+        {
+          "type": "STRING",
+          "value": "None"
         }
       ]
     },

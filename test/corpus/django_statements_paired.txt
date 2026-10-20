@@ -237,7 +237,34 @@ if with boolean
     (content
       (dj_paired_statement
         (dj_tag_name)
-        (dj_boolean)
+        (dj_keyword_literal)
+        (element
+          (self_closing_tag
+            (name)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+if with None
+==================
+
+<root>{% if value is None %}<item/>{% endif %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_keyword_literal)
         (element
           (self_closing_tag
             (name)))
