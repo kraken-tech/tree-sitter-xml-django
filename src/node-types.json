@@ -211,11 +211,6 @@
     }
   },
   {
-    "type": "dj_assignment_target",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "dj_boolean",
     "named": true,
     "fields": {}
@@ -346,14 +341,13 @@
         {
           "type": "dj_number",
           "named": true
+        },
+        {
+          "type": "dj_variable_name",
+          "named": true
         }
       ]
     }
-  },
-  {
-    "type": "dj_filter_argument",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "dj_keyword",
@@ -616,11 +610,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "dj_variable_name",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "doctype_decl",
@@ -1056,11 +1045,19 @@
     "named": true
   },
   {
+    "type": "dj_assignment_target",
+    "named": true
+  },
+  {
     "type": "dj_block_name",
     "named": true
   },
   {
     "type": "dj_end_paired_statement",
+    "named": true
+  },
+  {
+    "type": "dj_filter_argument",
     "named": true
   },
   {
@@ -1073,6 +1070,10 @@
   },
   {
     "type": "dj_tag_name",
+    "named": true
+  },
+  {
+    "type": "dj_variable_name",
     "named": true
   },
   {

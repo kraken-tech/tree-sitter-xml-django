@@ -1123,7 +1123,7 @@
                   "members": [
                     {
                       "type": "SYMBOL",
-                      "name": "dj_filter_argument"
+                      "name": "dj_variable_name"
                     },
                     {
                       "type": "SYMBOL",
