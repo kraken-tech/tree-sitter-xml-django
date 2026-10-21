@@ -191,7 +191,7 @@
         "required": true,
         "types": [
           {
-            "type": "dj_boolean",
+            "type": "dj_keyword_literal_expr",
             "named": true
           },
           {
@@ -211,11 +211,6 @@
     }
   },
   {
-    "type": "dj_boolean",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "dj_branch_statement",
     "named": true,
     "fields": {},
@@ -228,11 +223,11 @@
           "named": true
         },
         {
-          "type": "dj_boolean",
+          "type": "dj_keyword",
           "named": true
         },
         {
-          "type": "dj_keyword",
+          "type": "dj_keyword_literal_expr",
           "named": true
         },
         {
@@ -280,10 +275,6 @@
           "named": true
         },
         {
-          "type": "dj_boolean",
-          "named": true
-        },
-        {
           "type": "dj_comment_content",
           "named": true
         },
@@ -293,6 +284,10 @@
         },
         {
           "type": "dj_keyword",
+          "named": true
+        },
+        {
+          "type": "dj_keyword_literal_expr",
           "named": true
         },
         {
@@ -353,6 +348,30 @@
     "type": "dj_keyword",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "dj_keyword_literal",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "dj_keyword_literal_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dj_filter",
+          "named": true
+        },
+        {
+          "type": "dj_keyword_literal",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "dj_keyword_operator",
@@ -416,10 +435,6 @@
           "named": true
         },
         {
-          "type": "dj_boolean",
-          "named": true
-        },
-        {
           "type": "dj_branch_statement",
           "named": true
         },
@@ -433,6 +448,10 @@
         },
         {
           "type": "dj_keyword",
+          "named": true
+        },
+        {
+          "type": "dj_keyword_literal_expr",
           "named": true
         },
         {
@@ -535,11 +554,11 @@
           "named": true
         },
         {
-          "type": "dj_boolean",
+          "type": "dj_keyword",
           "named": true
         },
         {
-          "type": "dj_keyword",
+          "type": "dj_keyword_literal_expr",
           "named": true
         },
         {
@@ -596,6 +615,10 @@
       "multiple": false,
       "required": true,
       "types": [
+        {
+          "type": "dj_keyword_literal_expr",
+          "named": true
+        },
         {
           "type": "dj_number_expr",
           "named": true
@@ -1002,6 +1025,10 @@
   },
   {
     "type": "False",
+    "named": false
+  },
+  {
+    "type": "None",
     "named": false
   },
   {
