@@ -1034,6 +1034,10 @@
             {
               "type": "SYMBOL",
               "name": "dj_number_expr"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "dj_keyword_literal_expr"
             }
           ]
         },
@@ -1074,6 +1078,31 @@
         {
           "type": "SYMBOL",
           "name": "dj_number"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "|"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "dj_filter"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "dj_keyword_literal_expr": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "dj_keyword_literal"
         },
         {
           "type": "REPEAT",
@@ -1809,7 +1838,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "dj_keyword_literal"
+                "name": "dj_keyword_literal_expr"
               }
             ]
           }
@@ -1840,7 +1869,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "dj_keyword_literal"
+              "name": "dj_keyword_literal_expr"
             },
             {
               "type": "SYMBOL",

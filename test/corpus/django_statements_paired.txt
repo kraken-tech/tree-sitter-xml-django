@@ -237,7 +237,8 @@ if with boolean
     (content
       (dj_paired_statement
         (dj_tag_name)
-        (dj_keyword_literal)
+        (dj_keyword_literal_expr
+          (dj_keyword_literal))
         (element
           (self_closing_tag
             (name)))
@@ -264,7 +265,8 @@ if with None
         (dj_variable
           (dj_variable_name))
         (dj_keyword_operator)
-        (dj_keyword_literal)
+        (dj_keyword_literal_expr
+          (dj_keyword_literal))
         (element
           (self_closing_tag
             (name)))
