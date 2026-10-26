@@ -219,13 +219,10 @@ export default grammar({
       field('value', choice($.att_value, $._dj_node)),
     ),
 
-    // Attribute values may contain Django statements/comments. The plain-text
-    // portions are hidden nodes so they don't clutter the tree when there is
-    // no Django content. Django variable expressions ({{ ... }}) on the other hand
-    // are parsed as full nodes.
+    // Attribute values may contain Django statements/comments and plain text.
     att_value: $ => choice(
-      seq('"', repeat(choice($._att_content_double, $._reference, $._dj_node)), '"'),
-      seq("'", repeat(choice($._att_content_single, $._reference, $._dj_node)), "'"),
+      seq('"', repeat(choice(alias($._att_content_double, $.att_content), $._reference, $._dj_node)), '"'),
+      seq("'", repeat(choice(alias($._att_content_single, $.att_content), $._reference, $._dj_node)), "'"),
     ),
 
     _att_content_double: _ => token(prec(-1, /([^"<&{]|\{[^{%#])+/)),

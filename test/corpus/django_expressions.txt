@@ -282,6 +282,7 @@ Expression mixed with text in attribute
       (attribute
         name: (name)
         value: (att_value
+          (att_content)
           (dj_variable_expr
             (dj_variable
               (dj_variable_name))))))))
@@ -303,7 +304,8 @@ Expression surrounded by text in attribute
         value: (att_value
           (dj_variable_expr
             (dj_variable
-              (dj_variable_name))))))))
+              (dj_variable_name)))
+          (att_content))))))
 
 ==================
 Multiple expressions in content

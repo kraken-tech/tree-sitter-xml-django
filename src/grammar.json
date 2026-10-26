@@ -737,8 +737,13 @@
                 "type": "CHOICE",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_att_content_double"
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_att_content_double"
+                    },
+                    "named": true,
+                    "value": "att_content"
                   },
                   {
                     "type": "SYMBOL",
@@ -770,8 +775,13 @@
                 "type": "CHOICE",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_att_content_single"
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_att_content_single"
+                    },
+                    "named": true,
+                    "value": "att_content"
                   },
                   {
                     "type": "SYMBOL",

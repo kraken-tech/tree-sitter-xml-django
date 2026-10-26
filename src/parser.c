@@ -199,8 +199,8 @@ static const char * const ts_symbol_names[] = {
   [anon_sym_SLASH_GT] = "/>",
   [anon_sym_DQUOTE] = "\"",
   [anon_sym_SQUOTE] = "'",
-  [sym__att_content_double] = "_att_content_double",
-  [sym__att_content_single] = "_att_content_single",
+  [sym__att_content_double] = "att_content",
+  [sym__att_content_single] = "att_content",
   [sym_char_data] = "char_data",
   [anon_sym_RBRACK_RBRACK_GT] = "]]>",
   [sym_cdata_start] = "cdata_start",
@@ -357,7 +357,7 @@ static const TSSymbol ts_symbol_map[] = {
   [anon_sym_DQUOTE] = anon_sym_DQUOTE,
   [anon_sym_SQUOTE] = anon_sym_SQUOTE,
   [sym__att_content_double] = sym__att_content_double,
-  [sym__att_content_single] = sym__att_content_single,
+  [sym__att_content_single] = sym__att_content_double,
   [sym_char_data] = sym_char_data,
   [anon_sym_RBRACK_RBRACK_GT] = anon_sym_RBRACK_RBRACK_GT,
   [sym_cdata_start] = sym_cdata_start,
@@ -583,11 +583,11 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .named = false,
   },
   [sym__att_content_double] = {
-    .visible = false,
+    .visible = true,
     .named = true,
   },
   [sym__att_content_single] = {
-    .visible = false,
+    .visible = true,
     .named = true,
   },
   [sym_char_data] = {
