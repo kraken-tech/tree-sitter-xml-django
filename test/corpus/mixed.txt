@@ -95,7 +95,8 @@ Django expression in attribute, text in content
               (dj_variable_name)))))
       (attribute
         name: (name)
-        value: (att_value)))
+        value: (att_value
+          (att_content))))
     (content
       (char_data))
     (end_tag
@@ -234,14 +235,16 @@ Django tag boundary crossing: opening tag inside if/else, closing tag outside
             name: (name)
             (attribute
               name: (name)
-              value: (att_value)))
+              value: (att_value
+                (att_content))))
           (dj_branch_statement
             (dj_tag_name))
           (start_tag
             name: (name)
             (attribute
               name: (name)
-              value: (att_value)))
+              value: (att_value
+                (att_content))))
           (dj_tag_name)
           (dj_end_paired_statement))
         (element
@@ -293,7 +296,8 @@ Multiple sibling elements as children of paired statement
         (name)
         (attribute
           (name)
-          (att_value)))
+          (att_value
+            (att_content))))
       (content
         (char_data)
         (element
@@ -310,7 +314,8 @@ Multiple sibling elements as children of paired statement
         (name)
         (attribute
           (name)
-          (att_value)))
+          (att_value
+            (att_content))))
       (content
         (char_data)
         (element
@@ -318,21 +323,24 @@ Multiple sibling elements as children of paired statement
             (name)
             (attribute
               (name)
-              (att_value)))
+              (att_value
+                (att_content))))
           (content
             (element
               (start_tag
                 (name)
                 (attribute
                   (name)
-                  (att_value)))
+                  (att_value
+                    (att_content))))
               (content
                 (element
                   (start_tag
                     (name)
                     (attribute
                       (name)
-                      (att_value)))
+                      (att_value
+                        (att_content))))
                   (content
                     (char_data))
                   (end_tag
@@ -366,17 +374,20 @@ Multiple sibling elements as children of paired statement
             (name)
             (attribute
               (name)
-              (att_value)))
+              (att_value
+                (att_content))))
           (content
             (element
               (start_tag
                 (name)
                 (attribute
                   (name)
-                  (att_value))
+                  (att_value
+                    (att_content)))
                 (attribute
                   (name)
-                  (att_value)))
+                  (att_value
+                    (att_content))))
               (content
                 (dj_variable_expr
                   (dj_variable

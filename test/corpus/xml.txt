@@ -112,7 +112,8 @@ Element with attribute
       name: (name)
       (attribute
         name: (name)
-        value: (att_value)))))
+        value: (att_value
+          (att_content))))))
 
 ==================
 Element with multiple attributes
@@ -128,10 +129,12 @@ Element with multiple attributes
       name: (name)
       (attribute
         name: (name)
-        value: (att_value))
+        value: (att_value
+          (att_content)))
       (attribute
         name: (name)
-        value: (att_value)))))
+        value: (att_value
+          (att_content))))))
 
 ==================
 Namespaced element
@@ -147,7 +150,8 @@ Namespaced element
       name: (name)
       (attribute
         name: (name)
-        value: (att_value)))))
+        value: (att_value
+          (att_content))))))
 
 ==================
 XML comment

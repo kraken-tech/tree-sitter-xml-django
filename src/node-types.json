@@ -8,6 +8,10 @@
       "required": false,
       "types": [
         {
+          "type": "att_content",
+          "named": true
+        },
+        {
           "type": "char_ref",
           "named": true
         },
@@ -1054,6 +1058,10 @@
   {
     "type": "as",
     "named": false
+  },
+  {
+    "type": "att_content",
+    "named": true
   },
   {
     "type": "by",
