@@ -1172,6 +1172,10 @@
     "named": false
   },
   {
+    "type": "reversed",
+    "named": false
+  },
+  {
     "type": "silent",
     "named": false
   },
