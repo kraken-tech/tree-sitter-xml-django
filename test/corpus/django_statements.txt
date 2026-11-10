@@ -200,6 +200,35 @@ for statement
       (name))))
 
 ==================
+for statement with reversed keyword
+==================
+
+<root>{% for item in items reversed %}<item/>{% endfor %}</root>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword_operator)
+        (dj_variable
+          (dj_variable_name))
+        (dj_keyword)
+        (element
+          (self_closing_tag
+            (name)))
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
 for/empty statement
 ==================
 

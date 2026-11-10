@@ -456,7 +456,7 @@ export default grammar({
     // Combined with word: $ => $._identifier, they are never matched
     // as a keyword prefix inside a longer identifier (e.g. 'and' won't split 'android'
     // into dj_keyword_operator + dj_variable_name).
-    dj_keyword: _ => choice('on', 'off', 'with', 'as', 'silent', 'only', 'from', 'random', 'by'),
+    dj_keyword: _ => choice('on', 'off', 'with', 'as', 'silent', 'only', 'from', 'random', 'by', 'reversed'),
 
     dj_keyword_operator: _ => choice(
       'and', 'or', 'not', 'in', 'is',
