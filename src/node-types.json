@@ -338,6 +338,10 @@
           "named": true
         },
         {
+          "type": "dj_keyword_literal",
+          "named": true
+        },
+        {
           "type": "dj_number",
           "named": true
         },
