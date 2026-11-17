@@ -1171,6 +1171,10 @@
                     {
                       "type": "SYMBOL",
                       "name": "dj_number"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "dj_keyword_literal"
                     }
                   ]
                 }
