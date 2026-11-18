@@ -68,13 +68,16 @@ export default grammar({
     // element or <!DOCTYPE token (confirmed _top_level_node), so both interpretations
     // are tracked until one of those disambiguates.
     [$._prolog_node, $._top_level_node],
+    // Django nodes such as {% load %} may precede an xml_decl or be ordinary prolog/top-level
+    // nodes; the parser can't tell until it sees whether `<?` is followed by `xml`.
+    [$.document, $._prolog_node, $._top_level_node],
   ],
 
   rules: {
     // At the document level we do NOT include char_data so that whitespace-only
     // lines (e.g. trailing newlines in test files) are not counted as nodes.
     document: $ => seq(
-      optional($.xml_decl),
+      optional(seq(repeat($._dj_node), $.xml_decl)),
       repeat($._prolog_node),
       optional($.doctype_decl),
       repeat($._top_level_node),
@@ -104,13 +107,13 @@ export default grammar({
     // XML Declaration
     // =========================================================================
 
-    xml_decl: $ => seq(
+    xml_decl: $ => prec.dynamic(1, seq(
       '<?', 'xml',
       seq('version', '=', $.version_num),
       optional(seq('encoding', '=', $.enc_name)),
       optional(seq('standalone', '=', $.standalone_value)),
       '?>',
-    ),
+    )),
 
     version_num: _ => token(choice(
       seq('"', /1\.[0-9]+/, '"'),
