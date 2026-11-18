@@ -37,6 +37,50 @@ Full document with XML declaration
       (name))))
 
 ==================
+Django tag immediately before XML declaration
+==================
+
+{% load x %}<?xml version="1.0" encoding="UTF-8"?>
+<report/>
+
+---
+
+(document
+  (dj_unpaired_statement
+    (dj_tag_name)
+    (dj_variable
+      (dj_variable_name)))
+  (xml_decl
+    (version_num)
+    (enc_name))
+  (element
+    (self_closing_tag
+      (name))))
+
+==================
+Django tags on separate lines before XML declaration
+==================
+
+{% load x %}
+{# comment #}
+<?xml version="1.0"?>
+<report/>
+
+---
+
+(document
+  (dj_unpaired_statement
+    (dj_tag_name)
+    (dj_variable
+      (dj_variable_name)))
+  (dj_unpaired_comment)
+  (xml_decl
+    (version_num))
+  (element
+    (self_closing_tag
+      (name))))
+
+==================
 Django in element content alongside text
 ==================
 
