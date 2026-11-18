@@ -80,6 +80,26 @@ Unpaired statement - load
       (name))))
 
 ==================
+Unpaired statement after whitespace-only text
+==================
+
+<p> {% now "Y" %}</p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (char_data)
+      (dj_unpaired_statement
+        (dj_tag_name)
+        (dj_string)))
+    (end_tag
+      (name))))
+
+==================
 if statement
 ==================
 
@@ -103,6 +123,26 @@ if statement
         (dj_end_paired_statement)))
     (end_tag
       (name))))
+
+==================
+if statement with whitespace-only text before body expression
+==================
+
+{% if a %} {{ b }}{% endif %}
+
+---
+
+(document
+  (dj_paired_statement
+    (dj_tag_name)
+    (dj_variable
+      (dj_variable_name))
+    (char_data)
+    (dj_variable_expr
+      (dj_variable
+        (dj_variable_name)))
+    (dj_tag_name)
+    (dj_end_paired_statement)))
 
 ==================
 if/else statement
@@ -404,6 +444,7 @@ block statement wrapping document root element
             (name))))
       (end_tag
         (name)))
+    (char_data)
     (dj_tag_name)
     (dj_end_paired_statement)))
 
@@ -439,6 +480,7 @@ extends with block statement wrapping document root element
             (name))))
       (end_tag
         (name)))
+    (char_data)
     (dj_tag_name)
     (dj_end_paired_statement)))
 
@@ -690,6 +732,24 @@ Django comment
       (name))))
 
 ==================
+Django comment after whitespace-only text
+==================
+
+<p> {# c #}</p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (char_data)
+      (dj_unpaired_comment))
+    (end_tag
+      (name))))
+
+==================
 Nested for inside if
 ==================
 
@@ -722,6 +782,36 @@ Nested for inside if
         (dj_end_paired_statement)))
     (end_tag
       (name))))
+
+==================
+Nested if after whitespace-only text in element inside if
+==================
+
+{% if a %}<p> {% if b %}x{% endif %}</p>{% endif %}
+
+---
+
+(document
+  (dj_paired_statement
+    (dj_tag_name)
+    (dj_variable
+      (dj_variable_name))
+    (element
+      (start_tag
+        (name))
+      (content
+        (char_data)
+        (dj_paired_statement
+          (dj_tag_name)
+          (dj_variable
+            (dj_variable_name))
+          (char_data)
+          (dj_tag_name)
+          (dj_end_paired_statement)))
+      (end_tag
+        (name)))
+    (dj_tag_name)
+    (dj_end_paired_statement)))
 
 ==================
 if with comparison operator

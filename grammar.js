@@ -39,6 +39,8 @@ export default grammar({
     // Consumed at the closing `{% endtagname %}` when the tag name (minus the
     // "end" prefix) matches the top of the scanner's stack.
     $._dj_generic_close_tag,
+    // Character data that does not start with '{'.
+    $._char_data,
   ],
 
   extras: $ => [
@@ -235,10 +237,14 @@ export default grammar({
     // =========================================================================
 
     // Only {% ... %} (statements), {# ... #} (comments), and {{ ... }}
-    // (expressions) break char_data. prec(1) outbids the /\s/ extra so that
-    // whitespace-only text (e.g. the space between </b> and </para>) is kept
-    // as a char_data node instead of being silently consumed.
-    char_data: _ => token(prec(1, /([^<&{]|\{[^{%#])+/)),
+    // (expressions) break char_data.  Text is lexed by the external scanner
+    // so that whitespace-only text (e.g. the space in `<p> {{ a }}</p>`) is
+    // kept as a char_data node instead of being absorbed by a following { token.
+    // Text starting with '{' is left to the internal lexer.
+    char_data: $ => choice(
+      $._char_data,
+      token(prec(1, /\{[^{%#]([^<&{]|\{[^{%#])*/)),
+    ),
 
     cdata_section: $ => seq($.cdata_start, optional($.cdata), ']]>'),
 

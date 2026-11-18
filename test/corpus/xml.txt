@@ -527,5 +527,6 @@ DOCTYPE inside Django with statement body
     (element
       (self_closing_tag
         (name)))
+    (char_data)
     (dj_tag_name)
     (dj_end_paired_statement)))

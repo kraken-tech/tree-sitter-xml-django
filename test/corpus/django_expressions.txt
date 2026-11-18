@@ -367,11 +367,68 @@ Multiple expressions in content
       (dj_variable_expr
         (dj_variable
           (dj_variable_name)))
+      (char_data)
       (dj_variable_expr
         (dj_variable
           (dj_variable_name))))
     (end_tag
       (name))))
+
+==================
+Expression after whitespace-only text in content
+==================
+
+<p> {{ a }}</p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (char_data)
+      (dj_variable_expr
+        (dj_variable
+          (dj_variable_name))))
+    (end_tag
+      (name))))
+
+==================
+Expression on its own indented line in content
+==================
+
+<p>
+  {{ a }}
+</p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (char_data)
+      (dj_variable_expr
+        (dj_variable
+          (dj_variable_name)))
+      (char_data))
+    (end_tag
+      (name))))
+
+==================
+Expression at document level after whitespace is not char_data
+==================
+
+  {{ a }}
+
+---
+
+(document
+  (dj_variable_expr
+    (dj_variable
+      (dj_variable_name))))
 
 ==================
 Expression surrounded by text in content

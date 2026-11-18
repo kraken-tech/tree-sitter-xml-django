@@ -12,6 +12,7 @@
  *                                    dedicated grammar rule.
  *   5  _generic_close_tag        -- `{% endtagname` when tagname matches the top of the
  *                                    Django tag stack.
+ *   6  _char_data                -- XML character data not starting with '{'.
  *
  * --- _comment_body_text ---
  * Consumes every character between {% comment %} and the FIRST occurrence of
@@ -66,6 +67,19 @@
  * _generic_close_tag: Scans `{% endXXX` and emits the token only when XXX matches
  * the tag name at the top of the Django stack.  On success the stack is popped.
  *
+ * --- _char_data ---
+ * Consumes text up to the next XML markup or Django delimiter.
+ * Emitted only for text that does not start with '{'.
+ *
+ * Why an external scanner instead of a grammar rule?
+ * Whitespace is an extra.  A regex char_data token that can start with
+ * whitespace shares its first transitions with "skip whitespace, then lex
+ * `{{`", so for whitespace-only text before `{{`, `{%` or `{#` the lexer
+ * prefers the longer match and folds the whitespace into the Django token.
+ * The external scanner runs before the internal lexer, so it claims the
+ * whitespace as char_data first.  It must also run before the combined tag
+ * scan, which skips leading whitespace.
+ *
  * Error-recovery mode:
  * During tree-sitter error recovery ALL external tokens are marked valid.
  * The scanner detects this by checking valid_symbols[ERROR_RECOVERY_SENTINEL]
@@ -87,6 +101,7 @@ enum TokenType {
     ENDCOMMENT_TAG          = 3,
     GENERIC_OPEN_TAG        = 4,
     GENERIC_CLOSE_TAG       = 5,
+    CHAR_DATA               = 6,
 };
 
 /* ---------------------------------------------------------------------------
@@ -341,6 +356,40 @@ static bool scan_comment_body(TSLexer *lexer) {
 }
 
 /* ---------------------------------------------------------------------------
+ * scan_char_data
+ *
+ * Returns false without advancing if the text would start with '{' (left to
+ * the internal lexer, see _char_data above) or with XML markup.  Otherwise
+ * consumes text up to, but not including, the next `<`, `&`, `{{`, `{%` or
+ * `{#`.  mark_end is called before each '{' so the token can end there if
+ * the '{' turns out to open a Django delimiter.
+ * --------------------------------------------------------------------------- */
+static bool scan_char_data(TSLexer *lexer) {
+    int32_t c = lexer->lookahead;
+    if (c == 0 || c == '<' || c == '&' || c == '{') return false;
+
+    while (lexer->lookahead != 0 &&
+           lexer->lookahead != '<' && lexer->lookahead != '&') {
+        if (lexer->lookahead == '{') {
+            lexer->mark_end(lexer);
+            lexer->advance(lexer, false);
+            c = lexer->lookahead;
+            if (c == '{' || c == '%' || c == '#') {
+                lexer->result_symbol = CHAR_DATA;
+                return true;
+            }
+            /* '{' followed by EOF, '<' or '&' is still text; the loop
+             * condition handles the stop. */
+            continue;
+        }
+        lexer->advance(lexer, false);
+    }
+    lexer->mark_end(lexer);
+    lexer->result_symbol = CHAR_DATA;
+    return true;
+}
+
+/* ---------------------------------------------------------------------------
  * has_close_tag
  *
  * Scans forward from the current lexer position looking for `{% endXXX`
@@ -527,6 +576,12 @@ bool tree_sitter_xml_django_external_scanner_scan(
 
     if (valid_symbols[COMMENT_BODY_TEXT]) {
         return scan_comment_body(lexer);
+    }
+
+    /* CHAR_DATA must be tried before the combined tag scan, which skips
+       leading whitespace that belongs in char_data. */
+    if (valid_symbols[CHAR_DATA]) {
+        if (scan_char_data(lexer)) return true;
     }
 
     /* ELIF_TAG_OPEN, GENERIC_CLOSE_TAG, and GENERIC_OPEN_TAG all start with
