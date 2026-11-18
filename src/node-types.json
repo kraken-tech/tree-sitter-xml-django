@@ -108,6 +108,11 @@
     }
   },
   {
+    "type": "char_data",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "char_ref",
     "named": true,
     "fields": {}
@@ -1077,10 +1082,6 @@
   },
   {
     "type": "cdata_start",
-    "named": true
-  },
-  {
-    "type": "char_data",
     "named": true
   },
   {

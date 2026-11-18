@@ -101,42 +101,6 @@ for editor use (syntax highlighting, language injection, symbol navigation).
 
 ## Limitations
 
-### Whitespace or newlines before branch/close tags are not preserved as `char_data`
-
-Leading whitespace (newlines, spaces) immediately before closing paired tags such as
-`{% elif %}`, or `{% endXXX %}` is consumed by the external scanner with
-`skip=true` as part of establishing the correct GLR parse path.  When the whitespace
-immediately precedes one of these tags with nothing else on the same line, it does not
-appear as a `char_data` node in the parse tree:
-
-```django
-{% if a %}
-{% elif b %}...{% endif %}
-{# the \n between if-body and {% elif %} is silently dropped #}
-
-{% mytag %}
-{% endmytag %}
-{# the \n between open and close is silently dropped #}
-
-<para>This is well{% if use_whitespace %} {% elif use_hyphen %}-{% endif %}known fact</para>
-{# Resolves to "This is wellknown fact" when use_whitespace=True #}
-```
-
-When there is any other content on the same line before the branch/close tag, normal
-`char_data` nodes are produced for the surrounding whitespace:
-
-```django
-{% if a %}
-  <x/>
-{% elif b %}...{% endif %}
-{# \n after {% if a %} and \n after <x/> both become char_data nodes #}
-```
-
-This is a known limitation of the GLR path-resolution mechanism in the scanner.
-Removing the `skip=true` whitespace advance causes GLR to commit to the wrong parse
-path for certain body content (e.g. `<!DOCTYPE>` nodes), so the current approach
-is retained.
-
 ### Generic paired tag whose close tag appears only inside a comment body
 
 If the only occurrence of `{% endXXX %}` in the remaining input sits inside a

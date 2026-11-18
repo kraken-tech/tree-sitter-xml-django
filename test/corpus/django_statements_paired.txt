@@ -108,6 +108,30 @@ comment statement with multiple blocks in same document
       (name))))
 
 ==================
+comment statement on its own indented line
+==================
+
+<p>
+  {% comment %}x{% endcomment %}
+</p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (char_data)
+      (dj_comment_statement
+        (dj_tag_name)
+        (dj_comment_content)
+        (dj_end_paired_statement))
+      (char_data))
+    (end_tag
+      (name))))
+
+==================
 blocktrans statement
 ==================
 
@@ -767,6 +791,7 @@ elif and endtag on new lines (whitespace-skip regression)
         (element
           (self_closing_tag
             (name)))
+        (char_data)
         (dj_branch_statement
           (dj_tag_name)
           (dj_variable
@@ -775,6 +800,7 @@ elif and endtag on new lines (whitespace-skip regression)
         (element
           (self_closing_tag
             (name)))
+        (char_data)
         (dj_tag_name)
         (dj_end_paired_statement)))
     (end_tag
@@ -816,6 +842,28 @@ custom unknown paired Django tag
     (start_tag
       (name))
     (content
+      (dj_paired_statement
+        (dj_tag_name)
+        (char_data)
+        (dj_tag_name)
+        (dj_end_paired_statement)))
+    (end_tag
+      (name))))
+
+==================
+custom unknown paired Django tag after whitespace-only text
+==================
+
+<p> {% mytag %}x{% endmytag %}</p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (name))
+    (content
+      (char_data)
       (dj_paired_statement
         (dj_tag_name)
         (char_data)

@@ -406,6 +406,7 @@ Multiple sibling elements as children of paired statement
         (char_data))
       (end_tag
         (name)))
+    (char_data)
     (dj_tag_name)
     (dj_end_paired_statement)))
 
@@ -475,6 +476,7 @@ Django block opens element whose close tag falls outside the block body
     (char_data)
     (start_tag
       (name))
+    (char_data)
     (dj_tag_name)
     (dj_end_paired_statement))
   (element

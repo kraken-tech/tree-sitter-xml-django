@@ -836,15 +836,24 @@
       }
     },
     "char_data": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PREC",
-        "value": 1,
-        "content": {
-          "type": "PATTERN",
-          "value": "([^<&{]|\\{[^{%#])+"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_char_data"
+        },
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "PREC",
+            "value": 1,
+            "content": {
+              "type": "PATTERN",
+              "value": "\\{[^{%#]([^<&{]|\\{[^{%#])*"
+            }
+          }
         }
-      }
+      ]
     },
     "cdata_section": {
       "type": "SEQ",
@@ -2116,6 +2125,10 @@
     {
       "type": "SYMBOL",
       "name": "_dj_generic_close_tag"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_char_data"
     }
   ],
   "inline": [],
